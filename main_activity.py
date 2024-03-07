@@ -557,6 +557,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.txtSaveActivityNama.setText("")
         self.ui.txtSaveActivityCari.setText("")
 
+    def displaySelectedActivityCode(self):
+        a = self.ui.tbSaveActivityTabel.selectedIndexes()
+        if a:
+            getRow = a[0].row()
+            getCode = self.saveActivityModel.index(getRow, 0).data()
+            getName = self.saveActivityModel.index(getRow, 1).data()
+            self.ui.txtSaveActivityCode.setText(getCode)
+            self.ui.txtSaveActivityNama.setText(getName)
+
     # END Activity Menu=====================================================================================================
 
     # START Integration Menu================================================================================================
