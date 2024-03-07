@@ -1,0 +1,32 @@
+Kata kunci untuk menjalankan CNC dengan serial monitor
+
+Keyword 1 (Servo kembali ke posisi awal):
+moveStep:x,y,z,k,jedakartu;
+
+Keterangan :
+'moveStep:' = ditulis sebagai keyword untuk menggerakkan mesin CNC
+'x' = nilai stepper sumbu x mesin cnc (range nilai 0 - 700)
+'y' = nilai stepper sumbu y mesin cnc (range nilai 0 - 3500)
+'z' = nilai stepper sumbu z (servo) mesin cnc (range nilai 0 - 180) [Servo akan kembali ke posisi awal setelah servo digerakkan]
+'k' = nilai stepper sumbu y kartu (range nilai 0 - 850)
+'jedakartu' = lamanya waktu kartu didalam mesin edc
+';' = akhiran untuk mengeksekusi koordinat yang dimasukan
+
+Keyword 2 (Servo tidak langsung kembali ke posisi awal):
+config:x,y,z,k,jedakartu;
+
+Keterangan :
+'moveStep:' = ditulis sebagai keyword untuk menggerakkan mesin CNC
+'x' = nilai stepper sumbu x mesin cnc (range nilai 0 - 700)
+'y' = nilai stepper sumbu y mesin cnc (range nilai 0 - 3500)
+'z' = nilai stepper sumbu z (servo) mesin cnc (range nilai 0 - 180) [Servo tidak akan kembali ke posisi awal setelah servo digerakkan]
+'k' = nilai stepper sumbu y kartu (range nilai 0 - 850)
+'jedakartu' = lamanya waktu kartu didalam mesin edc
+';' = akhiran untuk mengeksekusi koordinat yang dimasukan
+
+Keyword 3:
+home;
+
+Keterangan :
+'home' = ditulis sebagai keyword untuk menggerakkan mesin CNC ke home
+';' = akhiran untuk mengeksekusi keyword yang dimasukan

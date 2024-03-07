@@ -1,0 +1,2946 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>820</width>
+    <height>678</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>820</width>
+    <height>16777215</height>
+   </size>
+  </property>
+  <property name="cursor">
+   <cursorShape>ArrowCursor</cursorShape>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QWidget {
+	max-width: 1240px
+}</string>
+   </property>
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="geometry">
+     <rect>
+      <x>-30</x>
+      <y>0</y>
+      <width>851</width>
+      <height>651</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>851</width>
+      <height>651</height>
+     </size>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="dashboard_1">
+     <widget class="QPushButton" name="btToGetStarted">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>140</y>
+        <width>781</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 60px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+</string>
+      </property>
+      <property name="text">
+       <string>Create Project</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btRunning">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>300</y>
+        <width>781</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 60px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Open Project</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>0</y>
+        <width>831</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+	background-color: rgb(204, 0, 0);
+	color: white;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>431</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 30px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="text">
+        <string>Welcome to RPA Integration</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btLogout">
+       <property name="geometry">
+        <rect>
+         <x>670</x>
+         <y>30</y>
+         <width>111</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Logout</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btRestart">
+       <property name="geometry">
+        <rect>
+         <x>540</x>
+         <y>30</y>
+         <width>111</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Restart</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="btRunning_5">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>460</y>
+        <width>781</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 60px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Running</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="createProject_2">
+     <widget class="QFrame" name="frame_14">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>0</y>
+        <width>821</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+	background-color: rgb(204, 0, 0);
+	color: white;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_50">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>211</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 30px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="text">
+        <string>Create Project</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QLineEdit" name="txtCreateProjectNama">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>150</y>
+        <width>191</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btCreateProjectKembali">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>50</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Back</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtCreateProjectCari">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>290</y>
+        <width>191</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbGetData_10">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>130</y>
+        <width>151</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>$getCurrentDate</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_51">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>150</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 17px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Project name</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_52">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>290</y>
+        <width>101</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 17px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Search Data</string>
+      </property>
+     </widget>
+     <widget class="QTableView" name="tbCreateProjectTabel">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>340</y>
+        <width>801</width>
+        <height>251</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btCreateProjectCari">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>290</y>
+        <width>81</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Search</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbGetData_11">
+      <property name="geometry">
+       <rect>
+        <x>690</x>
+        <y>310</y>
+        <width>151</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 15px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Project List Item</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btCreateProjectSimpan">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>50</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Save</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="txtCreateProjectKet">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>200</y>
+        <width>191</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QTextEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_53">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>190</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 17px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Description</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Integration_3">
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>560</y>
+        <width>16</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-weight: bold;
+	color: black;
+	font-size: 20px;
+}</string>
+      </property>
+      <property name="text">
+       <string>y</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>560</y>
+        <width>16</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-weight: bold;
+	color: black;
+	font-size: 20px;
+}</string>
+      </property>
+      <property name="text">
+       <string>x</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtIntegrationX">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>540</y>
+        <width>51</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame_2">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>0</y>
+        <width>821</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+	background-color: rgb(204, 0, 0);
+	color: white;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_4">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>341</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 30px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="text">
+        <string>INTEGRATION ROBOT</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btIntegrationSimpan">
+       <property name="geometry">
+        <rect>
+         <x>700</x>
+         <y>50</y>
+         <width>81</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+
+</string>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btIntegrationKembali">
+       <property name="geometry">
+        <rect>
+         <x>610</x>
+         <y>50</y>
+         <width>81</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+
+</string>
+       </property>
+       <property name="text">
+        <string>Back</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btBack_2">
+       <property name="geometry">
+        <rect>
+         <x>700</x>
+         <y>154</y>
+         <width>81</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+
+</string>
+       </property>
+       <property name="text">
+        <string>Back</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="btintegrationSetData">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>590</y>
+        <width>81</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 16px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+
+</string>
+      </property>
+      <property name="text">
+       <string>Set Data</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QTableView" name="tbIntegrationTabel">
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>180</y>
+        <width>381</width>
+        <height>441</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtIntegrationY">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>540</y>
+        <width>51</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>116</y>
+        <width>131</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-weight: bold;
+	color: black;
+}</string>
+      </property>
+      <property name="text">
+       <string>Insert Description</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtIntegrationKet">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>140</y>
+        <width>301</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+	font-style:italic;
+}
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>Please insert description now**</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="slIntegrationX">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>240</y>
+        <width>31</width>
+        <height>301</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QSlider::groove:vertical {
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                    stop:0 #ddd, stop:1 #aaa);
+        border: 1px solid #bbb;
+        width: 10px;
+        border-radius: 5px;
+    }
+
+    QSlider::handle:vertical {
+        background: qradialgradient(cx:0, cy:0, cx:1, cy:1,
+                                    stop:0 #eee, stop:1 #ccc);
+        border: 1px solid #777;
+        width: 30px; 
+        height: 30px; 
+        margin: -15px -10px;
+        border-radius: 15px;
+    }</string>
+      </property>
+      <property name="maximum">
+       <number>700</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::TicksBothSides</enum>
+      </property>
+      <property name="tickInterval">
+       <number>5</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>560</y>
+        <width>16</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-weight: bold;
+	color: black;
+	font-size: 20px;
+}</string>
+      </property>
+      <property name="text">
+       <string>z</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>560</y>
+        <width>16</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-weight: bold;
+	color: black;
+	font-size: 20px;
+}</string>
+      </property>
+      <property name="text">
+       <string>k</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="slIntegrationZ">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>240</y>
+        <width>31</width>
+        <height>301</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QSlider::groove:vertical {
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                    stop:0 #ddd, stop:1 #aaa);
+        border: 1px solid #bbb;
+        width: 10px;
+        border-radius: 5px;
+    }
+
+    QSlider::handle:vertical {
+        background: qradialgradient(cx:0, cy:0, cx:1, cy:1,
+                                    stop:0 #eee, stop:1 #ccc);
+        border: 1px solid #777;
+        width: 30px; 
+        height: 30px; 
+        margin: -15px -10px;
+        border-radius: 15px;
+    }</string>
+      </property>
+      <property name="maximum">
+       <number>180</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::TicksBothSides</enum>
+      </property>
+      <property name="tickInterval">
+       <number>5</number>
+      </property>
+     </widget>
+     <widget class="QSlider" name="slIntegrationY">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>240</y>
+        <width>31</width>
+        <height>301</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QSlider::groove:vertical {
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                    stop:0 #ddd, stop:1 #aaa);
+        border: 1px solid #bbb;
+        width: 10px;
+        border-radius: 5px;
+    }
+
+    QSlider::handle:vertical {
+        background: qradialgradient(cx:0, cy:0, cx:1, cy:1,
+                                    stop:0 #eee, stop:1 #ccc);
+        border: 1px solid #777;
+        width: 30px; 
+        height: 30px; 
+        margin: -15px -10px;
+        border-radius: 15px;
+    }</string>
+      </property>
+      <property name="maximum">
+       <number>3500</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::TicksBothSides</enum>
+      </property>
+      <property name="tickInterval">
+       <number>5</number>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btIntegrationReset">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>590</y>
+        <width>81</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 16px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+
+</string>
+      </property>
+      <property name="text">
+       <string>Reset</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtIntegrationK">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>540</y>
+        <width>51</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_10">
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>136</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-weight: bold;
+	color: black;
+	font-size: 16px;
+}</string>
+      </property>
+      <property name="text">
+       <string>Search Data</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btIntegrationEdit">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>590</y>
+        <width>81</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 16px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+
+</string>
+      </property>
+      <property name="text">
+       <string>Edit</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QSlider" name="slIntegrationK">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>240</y>
+        <width>31</width>
+        <height>301</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QSlider::groove:vertical {
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                    stop:0 #ddd, stop:1 #aaa);
+        border: 1px solid #bbb;
+        width: 10px;
+        border-radius: 5px;
+    }
+
+    QSlider::handle:vertical {
+        background: qradialgradient(cx:0, cy:0, cx:1, cy:1,
+                                    stop:0 #eee, stop:1 #ccc);
+        border: 1px solid #777;
+        width: 30px; 
+        height: 30px; 
+        margin: -15px -10px;
+        border-radius: 15px;
+    }</string>
+      </property>
+      <property name="maximum">
+       <number>850</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::TicksBothSides</enum>
+      </property>
+      <property name="tickInterval">
+       <number>5</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtIntegrationCari">
+      <property name="geometry">
+       <rect>
+        <x>540</x>
+        <y>130</y>
+        <width>191</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtIntegrationZ">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>540</y>
+        <width>51</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btIntegrationCari">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>130</y>
+        <width>81</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+
+</string>
+      </property>
+      <property name="text">
+       <string>Search</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtIntegrationDelay">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>200</y>
+        <width>241</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+	font-style:italic;
+}
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>Insert delay if you needed</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_55">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>180</y>
+        <width>211</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-weight: bold;
+	color: black;
+}</string>
+      </property>
+      <property name="text">
+       <string>Insert Delay Process</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_56">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>200</y>
+        <width>51</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Times New Roman</family>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-weight: bold;
+	color: black;
+	font-style: italic;
+	font-family: &quot;Times New Roman&quot;;
+}</string>
+      </property>
+      <property name="text">
+       <string>Per m/s</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btIntegrationHapus">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>590</y>
+        <width>81</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 16px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+
+</string>
+      </property>
+      <property name="text">
+       <string>Delete</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="saveActivity_4">
+     <widget class="QFrame" name="frame_8">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>0</y>
+        <width>821</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+	background-color: rgb(204, 0, 0);
+	color: white;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_29">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>191</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 30px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="text">
+        <string>Save Activity</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QLabel" name="label_30">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>280</y>
+        <width>101</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 17px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Search Data</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btSaveActivityCari">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>280</y>
+        <width>81</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Search</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QTableView" name="tbSaveActivityTabel">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>330</y>
+        <width>801</width>
+        <height>291</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="txtSaveActivityTanggal">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>130</y>
+        <width>151</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>$getCurrentDate</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btSaveActivityKembali">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>50</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Back</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtSaveActivityCari">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>280</y>
+        <width>191</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtSaveActivityNama">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>150</y>
+        <width>191</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_31">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>150</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 17px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Activity Name</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbGetData_5">
+      <property name="geometry">
+       <rect>
+        <x>690</x>
+        <y>310</y>
+        <width>151</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 15px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Activity List Item</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btSaveActivitySimpan">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>50</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Save</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_54">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>190</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 17px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Description</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="txtSaveActivityKet">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>200</y>
+        <width>191</width>
+        <height>70</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QTextEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="openProject_5">
+     <widget class="QTableView" name="tbOpenProjectTabel">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>260</y>
+        <width>801</width>
+        <height>351</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="txtOpenProjectGetData">
+      <property name="geometry">
+       <rect>
+        <x>670</x>
+        <y>210</y>
+        <width>67</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>$getData</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>50</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Back</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame_3">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>0</y>
+        <width>821</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+	background-color: rgb(204, 0, 0);
+	color: white;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_12">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>251</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 30px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="text">
+        <string>Open Project</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="btOpenProjectBuka">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>200</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Open</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btOpenProjectCari">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>200</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Search</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_13">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>200</y>
+        <width>101</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 17px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Search Data</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btOpenProjectKembali">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>50</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Back</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtOpenProjectCari">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>200</y>
+        <width>201</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="runProject_6">
+     <widget class="QLabel" name="txtRunningProjectGetData">
+      <property name="geometry">
+       <rect>
+        <x>670</x>
+        <y>210</y>
+        <width>67</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>$getData</string>
+      </property>
+     </widget>
+     <widget class="QTableView" name="tbRunningProjectTabel">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>260</y>
+        <width>801</width>
+        <height>351</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btRunningProjectCari">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>200</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Search</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_27">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>200</y>
+        <width>101</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 17px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Search Data</string>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame_7">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>0</y>
+        <width>821</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+	background-color: rgb(204, 0, 0);
+	color: white;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_28">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>251</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 30px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="text">
+        <string>Running Project</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="btRunningProjectRun">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>200</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Run</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_11">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>50</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Back</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btRunningProjectKembali">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>50</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+	display: flex;
+   	flex-direction: column;
+  	align-items: center; 
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Back</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtRunningProjectCari">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>200</y>
+        <width>191</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+}</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>820</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

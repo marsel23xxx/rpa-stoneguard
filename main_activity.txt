@@ -1,0 +1,128 @@
+import sys
+
+import pymysql
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import QMessageBox
+
+from aktivitas import Ui_MainWindow
+
+
+def koneksi():
+    connection = pymysql.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="db_sari",
+        charset="utf8mb4",
+        cursorclass=pymysql.cursors.DictCursor,
+    )
+    return connection
+
+
+# ===============================================================================================
+#                                  Halaman untuk eksekusi pembuatan proyek
+# ===============================================================================================
+
+
+def generate_kode_project():
+    try:
+        connection = koneksi()
+        with connection.cursor() as cursor:
+            sql = "SELECT MAX(kd_project) FROM project"
+            cursor.execute(sql)
+            result = cursor.fetchone()
+
+            if result["MAX(kd_project)"]:
+                latest_code = result["MAX(kd_project)"]
+                kode_int = int(latest_code[1:]) + 1
+                new_kode = f"P{kode_int:04d}"
+            else:
+                new_kode = "P0001"
+            return new_kode
+    finally:
+        connection.close()
+
+
+def setProyek():
+    nampro = ui.txtCreateProjectNama.text()
+    deskripsi = ui.txtCreateProjectKet.toPlainText()
+
+    if not nampro:
+        QMessageBox.warning(MainWindow, "Peringatan", "Harap masukkan nama proyek.")
+        return
+
+    try:
+        connection = koneksi()
+        with connection.cursor() as cursor:
+
+            kd_project = generate_kode_project()
+            sql = "SELECT * FROM project WHERE nama_project=%s"
+            cursor.execute(sql, (nampro,))
+            result = cursor.fetchone()
+            if result:
+                QMessageBox.warning(
+                    MainWindow,
+                    "Peringatan",
+                    f"Proyek dengan nama '{nampro}' sudah ada.",
+                )
+                return
+
+            sql = "INSERT INTO project (kd_project, nama_project, keterangan) VALUES (%s, %s, %s)"
+            cursor.execute(sql, (kd_project, nampro, deskripsi))
+            connection.commit()
+
+            QMessageBox.information(MainWindow, "Sukses", "Proyek berhasil disimpan.")
+
+            refreshTableView()
+
+    finally:
+        connection.close()
+
+
+def refreshTableView():
+    try:
+        connection = koneksi()
+        with connection.cursor() as cursor:
+
+            sql = "SELECT * FROM projects"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+
+            MainWindow.model.clear()
+
+            for row_data in result:
+                kode = QStandardItem(row_data["kd_project"])
+                nama_item = QStandardItem(row_data["nama_proyek"])
+                deskripsi_item = QStandardItem(row_data["deskripsi"])
+                MainWindow.model.appendRow([kode, nama_item, deskripsi_item])
+
+    finally:
+        connection.close()
+
+
+# ===========================================================================================
+
+
+def setGetStarted():
+    ui.stackedWidget.setCurrentWidget(ui.createProject_2)
+
+
+def setDashboard():
+    ui.stackedWidget.setCurrentWidget(ui.dashboard_1)
+
+
+if __name__ == "__main__":
+    import sys
+
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    index_dashboard_1 = ui.stackedWidget.indexOf(ui.dashboard_1)
+    ui.stackedWidget.setCurrentIndex(index_dashboard_1)
+    ui.btToGetStarted.clicked.connect(setGetStarted)
+    ui.btCreateProjectKembali.clicked.connect(setDashboard)
+    ui.btCreateProjectSimpan.clicked.connect(setProyek)
+    sys.exit(app.exec_())

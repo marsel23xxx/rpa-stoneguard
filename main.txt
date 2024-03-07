@@ -1,0 +1,144 @@
+import sys
+
+import pymysql
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import QMessageBox, QPushButton
+
+from view_activity import Ui_MainWindow
+
+
+def koneksi():
+    try:
+        connection = pymysql.connect(
+            host="localhost",
+            user="admin",
+            password="Marsel@010799",
+            database="db_sari",
+            charset="utf8mb4",
+            cursorclass=pymysql.cursors.DictCursor,
+        )
+        return connection
+    except pymysql.err.OperationalError as e:
+        # QMessageBox.critical(None, "Kesalahan", f"Kesalahan koneksi: {e}")
+        print(e)
+        return None
+
+
+def generate_kode_project():
+    try:
+        connection = koneksi()
+        if connection:
+            with connection.cursor() as cursor:
+                sql = "SELECT MAX(kd_project) FROM project"
+                cursor.execute(sql)
+                result = cursor.fetchone()
+
+                if result["MAX(kd_project)"]:
+                    latest_code = result["MAX(kd_project)"]
+                    kode_int = int(latest_code[1:]) + 1
+                    new_kode = f"P{kode_int:04d}"
+                else:
+                    new_kode = "P0001"
+                return new_kode
+
+        ui.lbCreateProjectKode.setText(new_kode)
+    finally:
+        if connection:
+            connection.close()
+
+
+def setProyek():
+    nampro = ui.txtCreateProjectNama.text()
+    deskripsi = ui.txtCreateProjectKet.toPlainText()
+    kd_project = ui.lbGetData_10.text()
+
+    if not nampro:
+        QMessageBox.warning(MainWindow, "Peringatan", "Harap masukkan nama proyek.")
+        return
+
+    try:
+        connection = koneksi()
+        if connection:
+            with connection.cursor() as cursor:
+                sql = "SELECT * FROM project WHERE nama_project=%s"
+                cursor.execute(sql, (nampro,))
+                result = cursor.fetchone()
+                if result:
+                    QMessageBox.warning(
+                        MainWindow,
+                        "Peringatan",
+                        f"Proyek dengan nama '{nampro}' sudah ada.",
+                    )
+                    return
+
+                sql = "INSERT INTO project (kd_project, nama_project, keterangan) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (kd_project, nampro, deskripsi))
+                connection.commit()
+
+                QMessageBox.information(
+                    MainWindow, "Sukses", "Proyek berhasil disimpan."
+                )
+
+                refreshTableView()
+
+    finally:
+        if connection:
+            connection.close()
+
+
+def refreshTableView():
+    try:
+        connection = koneksi()
+        if connection:
+            with connection.cursor() as cursor:
+                sql = "SELECT * FROM project"
+                cursor.execute(sql)
+                result = cursor.fetchall()
+
+                MainWindow.model.clear()
+
+                MainWindow.model.setHorizontalHeaderLabels(
+                    ["Kode Project", "Nama Proyek", "Deskripsi"]
+                )
+
+                for row_data in result:
+                    kode = QStandardItem(row_data["kd_project"])
+                    nama_item = QStandardItem(row_data["nama_project"])
+                    deskripsi_item = QStandardItem(row_data["keterangan"])
+                    MainWindow.model.appendRow([kode, nama_item, deskripsi_item])
+
+                ui.tbCreateProjectTabel.setModel(MainWindow.model)
+
+    finally:
+        if connection:
+            connection.close()
+
+
+def setGetStarted():
+    ui.stackedWidget.setCurrentWidget(ui.createProject_2)
+
+
+def setDashboard():
+    ui.stackedWidget.setCurrentWidget(ui.dashboard_1)
+
+
+def __init__(self):
+    super(MainWindow, self).__init__()
+    self.model = QStandardItemModel()
+
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.showMaximized()
+    MainWindow.show()
+    index_dashboard_1 = ui.stackedWidget.indexOf(ui.dashboard_1)
+    ui.stackedWidget.setCurrentIndex(index_dashboard_1)
+    ui.btToGetStarted.clicked.connect(setGetStarted)
+    ui.btCreateProjectKembali.clicked.connect(setDashboard)
+    ui.btCreateProjectSimpan.clicked.connect(setProyek)
+    refreshTableView()
+    sys.exit(app.exec_())

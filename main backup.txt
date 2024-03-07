@@ -1,0 +1,152 @@
+import sys
+
+import pymysql
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import QMessageBox
+
+from view_activity import Ui_MainWindow
+
+
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.model = QStandardItemModel()
+
+        self.ui.tbCreateProjectTabel.setModel(
+            self.model
+        )  # Mengatur model untuk QTableView
+
+        # Menghubungkan tombol dan fungsi yang sesuai
+        self.ui.btToGetStarted.clicked.connect(self.setGetStarted)
+        self.ui.btCreateProjectKembali.clicked.connect(self.setDashboard)
+        self.ui.btCreateProjectSimpan.clicked.connect(self.setProyek)
+
+        self.setDashboard()
+        self.refreshTableView()
+
+    # Fungsi-fungsi lainnya tetap tidak berubah
+
+    def setProyek(self):
+        nampro = self.ui.txtCreateProjectNama.text()
+        deskripsi = self.ui.txtCreateProjectKet.toPlainText()
+        kd_project = self.ui.lbGetData_10.text()
+
+        if not nampro:
+            QMessageBox.warning(self, "Peringatan", "Harap masukkan nama proyek.")
+            return
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM project WHERE nama_project=%s"
+                    cursor.execute(sql, (nampro,))
+                    result = cursor.fetchone()
+                    if result:
+                        QMessageBox.warning(
+                            self,
+                            "Peringatan",
+                            f"Proyek dengan nama '{nampro}' sudah ada.",
+                        )
+                        return
+
+                    sql = "INSERT INTO project (kd_project, nama_project, keterangan) VALUES (%s, %s, %s)"
+                    cursor.execute(sql, (kd_project, nampro, deskripsi))
+                    connection.commit()
+
+                    QMessageBox.information(self, "Sukses", "Proyek berhasil disimpan.")
+
+                    self.refreshTableView()
+
+        finally:
+            if connection:
+                connection.close()
+
+    def setGetStarted(self):
+        self.ui.stackedWidget.setCurrentWidget(self.ui.createProject_2)
+
+    def setDashboard(self):
+        self.ui.stackedWidget.setCurrentWidget(self.ui.dashboard_1)
+
+    def refreshTableView(self):
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM project"
+                    cursor.execute(sql)
+                    result = cursor.fetchall()
+
+                    self.model.clear()
+
+                    self.model.setHorizontalHeaderLabels(
+                        ["Kode Project", "Nama Proyek", "Deskripsi"]
+                    )
+
+                    font = QtGui.QFont()
+                    font.setPointSize(20)
+
+                    precision = 2
+
+                    for i, row_data in enumerate(result):
+                        kode = QStandardItem(row_data["kd_project"])
+                        nama_item = QStandardItem(row_data["nama_project"])
+                        deskripsi_item = QStandardItem(row_data["keterangan"])
+
+                        kode.setFont(font)
+                        nama_item.setFont(font)
+                        deskripsi_item.setFont(font)
+
+                        if i == 0:
+                            self.model.setData(
+                                self.model.index(0, 0),
+                                "Kode Project",
+                                QtCore.Qt.TextAlignmentRole,
+                            )
+                            self.model.setData(
+                                self.model.index(0, 1),
+                                "Nama Proyek",
+                                QtCore.Qt.TextAlignmentRole,
+                            )
+                            self.model.setData(
+                                self.model.index(0, 2),
+                                "Deskripsi",
+                                QtCore.Qt.TextAlignmentRole,
+                            )
+                    if i > 0:
+                        kode.setTextAlignment(QtCore.Qt.AlignCenter)
+                        nama_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                        deskripsi_item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                    self.model.appendRow([kode, nama_item, deskripsi_item])
+
+        finally:
+            if connection:
+                connection.close()
+
+
+def koneksi():
+    try:
+        connection = pymysql.connect(
+            host="localhost",
+            user="admin",
+            password="Marsel@010799",
+            database="db_sari",
+            charset="utf8mb4",
+            cursorclass=pymysql.cursors.DictCursor,
+        )
+        return connection
+    except pymysql.err.OperationalError as e:
+        # QMessageBox.critical(None, "Kesalahan", f"Kesalahan koneksi: {e}")
+        print(e)
+        return None
+
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    mainWindow = MainWindow()
+    mainWindow.showMaximized()
+    sys.exit(app.exec_())

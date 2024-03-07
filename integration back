@@ -1,0 +1,70 @@
+def refreshIntegrationTable(self):
+        a = self.ui.lbIntegrationGetCode.text()
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM koordinat WHERE kd_activity=%s"
+                    cursor.execute(sql, (a))
+                    result = cursor.fetchall()
+
+                    self.integrationModel.clear()
+                    self.integrationModel.setHorizontalHeaderLabels(
+                        ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbIntegrationTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbIntegrationTabel.setColumnWidth(0, 100)
+                    self.ui.tbIntegrationTabel.setColumnWidth(1, 100)
+                    self.ui.tbIntegrationTabel.setColumnWidth(2, 100)
+                    self.ui.tbIntegrationTabel.setColumnWidth(3, 100)
+                    self.ui.tbIntegrationTabel.setColumnWidth(4, 100)
+                    self.ui.tbIntegrationTabel.setColumnWidth(5, 100)
+                    self.ui.tbIntegrationTabel.setColumnWidth(6, 400)
+                    self.ui.tbIntegrationTabel.setColumnWidth(7, 100)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_kor"])
+                        b = QStandardItem(row_data["x"])
+                        c = QStandardItem(row_data["y"])
+                        d = QStandardItem(row_data["z"])
+                        e = QStandardItem(row_data["k"])
+                        f = QStandardItem(row_data["delay"])
+                        g = QStandardItem(row_data["keterangan"])
+                        h = QStandardItem(row_data["kd_activity"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+                        d.setFont(font)
+                        e.setFont(font)
+                        f.setFont(font)
+                        g.setFont(font)
+                        h.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+                        d.setTextAlignment(QtCore.Qt.AlignCenter)
+                        e.setTextAlignment(QtCore.Qt.AlignCenter)
+                        f.setTextAlignment(QtCore.Qt.AlignCenter)
+                        g.setTextAlignment(QtCore.Qt.AlignCenter)
+                        h.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.integrationModel.appendRow([a, b, c, d, e, f, g, h])
+                        self.ui.tbIntegrationTabel.resizeColumnsToContents()
+                        self.ui.tbIntegrationTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
