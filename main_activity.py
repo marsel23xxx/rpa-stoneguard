@@ -493,58 +493,69 @@ class MainWindow(QtWidgets.QMainWindow):
                 connection.close()
 
     def searchDataActivity(self, cariData):
+        getCode = self.ui.lbSaveActivityGetCode.text()
         cariData = self.ui.txtSaveActivityCari.text()
 
-        try:
-            connection = koneksi()
-            if connection:
-                with connection.cursor() as cursor:
-                    sql = "SELECT * FROM activity WHERE nama_activity LIKE %s OR kd_activity LIKE %s"
-                    cursor.execute(
-                        sql,
-                        ("%" + cariData + "%", "%" + cariData + "%"),
-                    )
-                    result = cursor.fetchall()
-
-                    self.saveActivityModel.clear()
-                    self.saveActivityModel.setHorizontalHeaderLabels(
-                        ["Activity Code", "Activity Name", "Description", "c-d"]
-                    )
-                    font = QtGui.QFont()
-                    font.setPointSize(14)
-
-                    header_view = self.ui.tbSaveActivityTabel.horizontalHeader()
-
-                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
-                    font = header_view.font()
-                    font.setPointSize(18)
-                    header_view.setFont(font)
-
-                    for i, row_data in enumerate(result):
-                        a = QStandardItem(row_data["kd_activity"])
-                        b = QStandardItem(row_data["nama_activity"])
-                        c = QStandardItem(row_data["keterangan"])
-                        d = QStandardItem(row_data["kd_project"])
-
-                        a.setFont(font)
-                        b.setFont(font)
-                        c.setFont(font)
-                        d.setFont(font)
-
-                        a.setTextAlignment(QtCore.Qt.AlignCenter)
-                        b.setTextAlignment(QtCore.Qt.AlignCenter)
-                        c.setTextAlignment(QtCore.Qt.AlignCenter)
-                        d.setTextAlignment(QtCore.Qt.AlignCenter)
-
-                        self.saveActivityModel.appendRow([a, b, c, d])
-                        self.ui.tbSaveActivityTabel.resizeColumnsToContents()
-                        self.ui.tbSaveActivityTabel.verticalHeader().setDefaultSectionSize(
-                            50
+        if cariData.strip():
+            try:
+                connection = koneksi()
+                if connection:
+                    with connection.cursor() as cursor:
+                        sql = "SELECT * FROM activity WHERE kd_project=%s AND (nama_activity LIKE %s OR kd_activity LIKE %s)"
+                        cursor.execute(
+                            sql,
+                            (getCode, "%" + cariData + "%", "%" + cariData + "%"),
                         )
+                        result = cursor.fetchall()
 
-        finally:
-            if connection:
-                connection.close()
+                        self.saveActivityModel.clear()
+                        self.saveActivityModel.setHorizontalHeaderLabels(
+                            ["Code", "Activity Name", "Description", ""]
+                        )
+                        font = QtGui.QFont()
+                        font.setPointSize(14)
+
+                        header_view = self.ui.tbSaveActivityTabel.horizontalHeader()
+
+                        header_view.setStyleSheet(
+                            "background-color: rgb(114, 159, 207);"
+                        )
+                        font = header_view.font()
+                        font.setPointSize(18)
+                        header_view.setFont(font)
+
+                        self.ui.tbSaveActivityTabel.setColumnWidth(0, 100)
+                        self.ui.tbSaveActivityTabel.setColumnWidth(1, 400)
+                        self.ui.tbSaveActivityTabel.setColumnWidth(2, 500)
+                        self.ui.tbSaveActivityTabel.setColumnWidth(3, 1)
+
+                        for i, row_data in enumerate(result):
+                            a = QStandardItem(row_data["kd_activity"])
+                            b = QStandardItem(row_data["nama_activity"])
+                            c = QStandardItem(row_data["keterangan"])
+                            d = QStandardItem(row_data["kd_project"])
+
+                            a.setFont(font)
+                            b.setFont(font)
+                            c.setFont(font)
+                            d.setFont(font)
+
+                            a.setTextAlignment(QtCore.Qt.AlignCenter)
+                            b.setTextAlignment(QtCore.Qt.AlignCenter)
+                            c.setTextAlignment(QtCore.Qt.AlignCenter)
+                            d.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                            self.saveActivityModel.appendRow([a, b, c, d])
+                            self.ui.tbSaveActivityTabel.verticalHeader().setDefaultSectionSize(
+                                50
+                            )
+
+            finally:
+                if connection:
+                    connection.close()
+
+        else:
+            self.refreshSaveActivityTable()
 
     def keyReleaseEventActivity(self, event):
         if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
@@ -556,6 +567,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.txtSaveActivityKet.setText("")
         self.ui.txtSaveActivityNama.setText("")
         self.ui.txtSaveActivityCari.setText("")
+
+    def setupActivityTable(self):
+        self.ui.tbIntegrationTabel.clicked.connect(self.displaySelectedActivityCode)
 
     def displaySelectedActivityCode(self):
         a = self.ui.tbSaveActivityTabel.selectedIndexes()
