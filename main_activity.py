@@ -56,9 +56,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.txtSaveActivityCari.keyReleaseEvent = self.searchDataActivity
         self.refreshSaveActivityTable()
         self.getCreateActivityCode()
+        self.setupActivityTable()
         self.ui.btSaveActivitySimpan.clicked.connect(self.setActivityData)
         self.ui.tbSaveActivityTabel.resizeColumnsToContents()
         self.ui.tbSaveActivityTabel.verticalHeader().setDefaultSectionSize(50)
+        self.ui.btSaveActivityOpen.clicked.connect(self.goToIntegration)
 
         # Komponen bagian Integration
         self.ui.btIntegrationKembali.clicked.connect(self.setDashboard)
@@ -87,6 +89,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.refreshOpenProjectTable()
         self.setupOpenProjectTable()
         self.ui.btOpenProjectBuka.clicked.connect(self.goToActivityMenu2)
+        self.ui.btIntegrationSimpan.clicked.connect(self.setActivitySaved)
+        self.ui.btOpenProjectDelete.clicked.connect(self.deleteProject)
 
     def defaultMenu(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.dashboard_1)
@@ -267,14 +271,14 @@ class MainWindow(QtWidgets.QMainWindow):
     # END Create Poject==========================================================================================================
 
     def setLogout(self):
-        reply = QMessageBox.question(
+        a = QMessageBox.question(
             self,
             "Exit Confirmation",
             "Are you sure you want to exit ?",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No,
         )
-        if reply == QMessageBox.Yes:
+        if a == QMessageBox.Yes:
             QApplication.instance().quit()
 
     def setDashboard(self):
@@ -294,6 +298,17 @@ class MainWindow(QtWidgets.QMainWindow):
     def setIntegration(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.Integration_3)
         self.refreshIntegrationTable()
+
+    def setActivitySaved(self):
+        a = QMessageBox.question(
+            self,
+            "Confirmation",
+            "Yeaay, The coordinats has been saved....",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if a == QMessageBox.Yes:
+            self.ui.stackedWidget.setCurrentWidget(self.ui.saveActivity_4)
 
     def setActivity(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.saveActivity_4)
@@ -345,6 +360,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.lbIntegrationGetCode.setText(a)
             self.ui.txtIntegrationGetActivityName.setText(b)
             self.setIntegration()
+            self.setActivityEmptyColumn()
+            self.getCreateActivityCode()
 
     def setActivityData(self):
         a = self.ui.txtSaveActivityCode.text()
@@ -569,7 +586,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.txtSaveActivityCari.setText("")
 
     def setupActivityTable(self):
-        self.ui.tbIntegrationTabel.clicked.connect(self.displaySelectedActivityCode)
+        self.ui.tbSaveActivityTabel.clicked.connect(self.displaySelectedActivityCode)
 
     def displaySelectedActivityCode(self):
         a = self.ui.tbSaveActivityTabel.selectedIndexes()
@@ -577,8 +594,10 @@ class MainWindow(QtWidgets.QMainWindow):
             getRow = a[0].row()
             getCode = self.saveActivityModel.index(getRow, 0).data()
             getName = self.saveActivityModel.index(getRow, 1).data()
+            getDesc = self.saveActivityModel.index(getRow, 2).data()
             self.ui.txtSaveActivityCode.setText(getCode)
             self.ui.txtSaveActivityNama.setText(getName)
+            self.ui.txtSaveActivityKet.setText(getDesc)
 
     # END Activity Menu=====================================================================================================
 
@@ -626,17 +645,31 @@ class MainWindow(QtWidgets.QMainWindow):
             connection = koneksi()
             if connection:
                 with connection.cursor() as cursor:
-                    sql = "INSERT INTO koordinat (kd_kor, x, y, z, k, delay, keterangan, kd_activity) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-                    cursor.execute(sql, (a, b, c, d, e, f, g, h))
+                    sql_check = "SELECT * FROM koordinat WHERE kd_kor = %s"
+                    cursor.execute(sql_check, (a,))
+                    exist = cursor.fetchone()
+
+                    if exist:
+                        sql_update = "UPDATE koordinat SET x = %s, y = %s, z = %s, k = %s, delay = %s, keterangan = %s WHERE kd_kor = %s"
+                        cursor.execute(sql_update, (b, c, d, e, f, g, a))
+                        QMessageBox.information(
+                            self,
+                            "Success",
+                            "Your Coordinats has been successfully updated.",
+                        )
+                    else:
+                        sql_insert = "INSERT INTO koordinat (kd_kor, x, y, z, k, delay, keterangan, kd_activity) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                        cursor.execute(sql_insert, (a, b, c, d, e, f, g, h))
+                        QMessageBox.information(
+                            self,
+                            "Success",
+                            "Your Coordinats has been successfully saved.",
+                        )
+
                     connection.commit()
-
-                    QMessageBox.information(
-                        self, "Sukses", "Your Coordinats has been successfully saved."
-                    )
-
                     self.refreshIntegrationTable()
                     self.getIntegrationCode()
-                    self.setIntegrationEmptyColumn()
+                    # self.setIntegrationEmptyColumn()
 
         finally:
             if connection:
@@ -683,7 +716,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         QMessageBox.information(
                             self,
                             "Success",
-                            "The activity has been successfully deleted.",
+                            "The coordinat has been successfully deleted.",
                         )
 
                         self.refreshIntegrationTable()
@@ -844,20 +877,21 @@ class MainWindow(QtWidgets.QMainWindow):
         if a:
             getRow = a[0].row()
             getCode = self.integrationModel.index(getRow, 0).data()
-            getX = self.integrationModel.index(getRow, 1).data()
-            getY = self.integrationModel.index(getRow, 2).data()
-            getZ = self.integrationModel.index(getRow, 3).data()
-            getK = self.integrationModel.index(getRow, 4).data()
-            getDelay = self.integrationModel.index(getRow, 5).data()
-            getDesc = self.integrationModel.index(getRow, 6).data()
+            getX = int(self.integrationModel.index(getRow, 1).data())
+            getY = int(self.integrationModel.index(getRow, 2).data())
+            getZ = int(self.integrationModel.index(getRow, 3).data())
+            getK = int(self.integrationModel.index(getRow, 4).data())
+            getDesc = self.integrationModel.index(getRow, 5).data()
+            getDelay = self.integrationModel.index(getRow, 6).data()
 
             self.ui.txtIntegrationCode.setText(getCode)
             self.ui.txtIntegrationKet.setText(getDelay)
             self.ui.txtIntegrationDelay.setText(getDesc)
-            self.ui.txtIntegrationX.setText(getX)
-            self.ui.txtIntegrationY.setText(getY)
-            self.ui.txtIntegrationZ.setText(getZ)
-            self.ui.txtIntegrationK.setText(getK)
+
+            self.ui.txtIntegrationX.setText(str(getX))
+            self.ui.txtIntegrationY.setText(str(getY))
+            self.ui.txtIntegrationZ.setText(str(getZ))
+            self.ui.txtIntegrationK.setText(str(getK))
 
             self.ui.slIntegrationX.setValue(getX)
             self.ui.slIntegrationY.setValue(getY)
@@ -871,8 +905,7 @@ class MainWindow(QtWidgets.QMainWindow):
             super().keyReleaseEvent(event)
 
     def setIntegrationEmptyColumn(self):
-        self.ui.txtIntegrationCode.setText()
-        self.ui.txtIntegrationKet.setText()
+        self.ui.txtIntegrationKet.setText("")
         self.ui.txtIntegrationDelay.setText("0")
         self.ui.txtIntegrationX.setText("0")
         self.ui.txtIntegrationY.setText("0")
@@ -930,6 +963,61 @@ class MainWindow(QtWidgets.QMainWindow):
                             50
                         )
 
+        finally:
+            if connection:
+                connection.close()
+
+    def setOpenProjectEmptyColumn(self):
+        self.ui.txtOpenProjectGetData.setText("")
+        self.ui.txtOpenProjectGetName.setText("")
+
+    def deleteProject(self):
+        a = self.ui.txtOpenProjectGetData.text()
+
+        if not a:
+            QMessageBox.warning(
+                self, "Warning", "Please input the activity code to delete."
+            )
+            return
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql_select = "SELECT * FROM project WHERE kd_project = %s"
+                    cursor.execute(sql_select, (a,))
+                    result = cursor.fetchone()
+
+                    if not result:
+                        QMessageBox.warning(
+                            self,
+                            "Warning",
+                            f"The project with code '{a}' does not exist.",
+                        )
+                        return
+
+                    confirmation = QMessageBox.question(
+                        self,
+                        "Confirmation",
+                        f"Are you sure you want to delete the project with code '{a}'?",
+                        QMessageBox.Yes | QMessageBox.No,
+                        QMessageBox.No,
+                    )
+
+                    if confirmation == QMessageBox.Yes:
+                        sql_delete = "DELETE FROM project WHERE kd_project = %s"
+                        cursor.execute(sql_delete, (a,))
+                        connection.commit()
+
+                        QMessageBox.information(
+                            self,
+                            "Success",
+                            "The project has been successfully deleted.",
+                        )
+                        self.setOpenProjectEmptyColumn()
+                        self.refreshOpenProjectTable()
+                    else:
+                        return
         finally:
             if connection:
                 connection.close()
