@@ -61,6 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.tbSaveActivityTabel.resizeColumnsToContents()
         self.ui.tbSaveActivityTabel.verticalHeader().setDefaultSectionSize(50)
         self.ui.btSaveActivityOpen.clicked.connect(self.goToIntegration)
+        self.ui.btSaveActivityDelete.clicked.connect(self.deleteActivity)
 
         # Komponen bagian Integration
         self.ui.btIntegrationKembali.clicked.connect(self.setDashboard)
@@ -80,6 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.refreshIntegrationTable()
         self.setupIntegrationTable()
         self.getIntegrationCode()
+        self.ui.btIntegrationHapus.clicked.connect(self.deleteIntegration)
 
         # Komponen bagian Open Project
         self.ui.btOpenProjectKembali.clicked.connect(self.setDashboard)
@@ -91,6 +93,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btOpenProjectBuka.clicked.connect(self.goToActivityMenu2)
         self.ui.btIntegrationSimpan.clicked.connect(self.setActivitySaved)
         self.ui.btOpenProjectDelete.clicked.connect(self.deleteProject)
+
+        #  komponen bagian run program
 
     def defaultMenu(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.dashboard_1)
@@ -786,66 +790,72 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def searchDataIntegration(self, cariData):
         a = self.ui.lbIntegrationGetCode.text()
-        cariData = self.ui.txtSaveActivityCari.text()
+        cariData = self.ui.txtIntegrationCari.text()
 
-        try:
-            connection = koneksi()
-            if connection:
-                with connection.cursor() as cursor:
-                    sql = "SELECT * FROM koordinat WHERE kd_activity=%s AND keterangan LIKE %s OR kd_kor LIKE %s"
-                    cursor.execute(
-                        sql,
-                        (a, "%" + cariData + "%", "%" + cariData + "%"),
-                    )
-                    result = cursor.fetchall()
+        if cariData.strip():
+            try:
+                connection = koneksi()
+                if connection:
+                    with connection.cursor() as cursor:
+                        sql = "SELECT * FROM koordinat WHERE kd_activity=%s AND (keterangan LIKE %s OR kd_kor LIKE %s)"
+                        cursor.execute(
+                            sql,
+                            (a, "%" + cariData + "%", "%" + cariData + "%"),
+                        )
+                        result = cursor.fetchall()
 
-                    self.integrationModel.clear()
-                    self.integrationModel.setHorizontalHeaderLabels(
-                        ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
-                    )
-                    font = QtGui.QFont()
-                    font.setPointSize(14)
+                        self.integrationModel.clear()
+                        self.integrationModel.setHorizontalHeaderLabels(
+                            ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                        )
+                        font = QtGui.QFont()
+                        font.setPointSize(14)
 
-                    header_view = self.ui.tbIntegrationTabel.horizontalHeader()
-                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
-                    font = header_view.font()
-                    font.setPointSize(18)
-                    header_view.setFont(font)
+                        header_view = self.ui.tbIntegrationTabel.horizontalHeader()
+                        header_view.setStyleSheet(
+                            "background-color: rgb(114, 159, 207);"
+                        )
+                        font = header_view.font()
+                        font.setPointSize(18)
+                        header_view.setFont(font)
 
-                    self.ui.tbIntegrationTabel.setColumnWidth(0, 100)
-                    self.ui.tbIntegrationTabel.setColumnWidth(1, 100)
-                    self.ui.tbIntegrationTabel.setColumnWidth(2, 100)
-                    self.ui.tbIntegrationTabel.setColumnWidth(3, 100)
-                    self.ui.tbIntegrationTabel.setColumnWidth(4, 100)
-                    self.ui.tbIntegrationTabel.setColumnWidth(5, 100)
-                    self.ui.tbIntegrationTabel.setColumnWidth(6, 400)
-                    self.ui.tbIntegrationTabel.setColumnWidth(7, 100)
+                        self.ui.tbIntegrationTabel.setColumnWidth(0, 100)
+                        self.ui.tbIntegrationTabel.setColumnWidth(1, 100)
+                        self.ui.tbIntegrationTabel.setColumnWidth(2, 100)
+                        self.ui.tbIntegrationTabel.setColumnWidth(3, 100)
+                        self.ui.tbIntegrationTabel.setColumnWidth(4, 100)
+                        self.ui.tbIntegrationTabel.setColumnWidth(5, 100)
+                        self.ui.tbIntegrationTabel.setColumnWidth(6, 400)
+                        self.ui.tbIntegrationTabel.setColumnWidth(7, 100)
 
-                    for row_data in result:
-                        items = [
-                            QStandardItem(str(row_data["kd_kor"])),
-                            QStandardItem(str(row_data["x"])),
-                            QStandardItem(str(row_data["y"])),
-                            QStandardItem(str(row_data["z"])),
-                            QStandardItem(str(row_data["k"])),
-                            QStandardItem(str(row_data["delay"])),
-                            QStandardItem(str(row_data["keterangan"])),
-                            QStandardItem(str(row_data["kd_activity"])),
-                        ]
-                        for item in items:
-                            item.setFont(font)
-                            item.setTextAlignment(QtCore.Qt.AlignCenter)
+                        for row_data in result:
+                            items = [
+                                QStandardItem(str(row_data["kd_kor"])),
+                                QStandardItem(str(row_data["x"])),
+                                QStandardItem(str(row_data["y"])),
+                                QStandardItem(str(row_data["z"])),
+                                QStandardItem(str(row_data["k"])),
+                                QStandardItem(str(row_data["delay"])),
+                                QStandardItem(str(row_data["keterangan"])),
+                                QStandardItem(str(row_data["kd_activity"])),
+                            ]
+                            for item in items:
+                                item.setFont(font)
+                                item.setTextAlignment(QtCore.Qt.AlignCenter)
 
-                        self.integrationModel.appendRow(items)
+                            self.integrationModel.appendRow(items)
 
-                    self.ui.tbIntegrationTabel.resizeColumnsToContents()
-                    self.ui.tbIntegrationTabel.verticalHeader().setDefaultSectionSize(
-                        50
-                    )
+                        self.ui.tbIntegrationTabel.resizeColumnsToContents()
+                        self.ui.tbIntegrationTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
 
-        finally:
-            if connection:
-                connection.close()
+            finally:
+                if connection:
+                    connection.close()
+
+        else:
+            self.refreshIntegrationTable()
 
     def getIntegrationCode(self):
         try:
