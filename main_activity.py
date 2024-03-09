@@ -17,6 +17,7 @@ def koneksi():
             database="db_sari",
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor,
+            # 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
         )
         return connection
     except pymysql.err.OperationalError as e:
