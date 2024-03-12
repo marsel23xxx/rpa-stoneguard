@@ -1,6 +1,8 @@
 import sys
 
 import pymysql
+import serial
+import time
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableView, QTableWidgetItem
@@ -24,6 +26,8 @@ def koneksi():
         QMessageBox.critical(None, "Kesalahan", f"Kesalahan koneksi: {e}")
         return None
 
+ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600, timeout=.1)
+ser.flush()
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -70,6 +74,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.slIntegrationY.valueChanged.connect(self.updateLineEditY)
         self.ui.slIntegrationZ.valueChanged.connect(self.updateLineEditZ)
         self.ui.slIntegrationK.valueChanged.connect(self.updateLineEditK)
+
+        self.ui.slIntegrationX.sliderReleased.connect(self.releasedSlider)
+        self.ui.slIntegrationY.sliderReleased.connect(self.releasedSlider)
+        self.ui.slIntegrationZ.sliderReleased.connect(self.releasedSlider)
+        self.ui.slIntegrationK.sliderReleased.connect(self.releasedSlider)
 
         self.ui.txtIntegrationX.textChanged.connect(self.updateSliderX)
         self.ui.txtIntegrationY.textChanged.connect(self.updateSliderY)
@@ -609,16 +618,16 @@ class MainWindow(QtWidgets.QMainWindow):
     # START Integration Menu================================================================================================
 
     def updateLineEditX(self, value):
-        self.ui.txtIntegrationX.setText(str(value))
+        self.ui.txtIntegrationX.setText(value)
 
     def updateLineEditY(self, value):
-        self.ui.txtIntegrationY.setText(str(value))
+        self.ui.txtIntegrationY.setText(value)
 
     def updateLineEditZ(self, value):
-        self.ui.txtIntegrationZ.setText(str(value))
+        self.ui.txtIntegrationZ.setText(value)
 
     def updateLineEditK(self, value):
-        self.ui.txtIntegrationK.setText(str(value))
+        self.ui.txtIntegrationK.setText(value)
 
     def updateSliderX(self, value):
         self.ui.slIntegrationX.setValue(int(value))
@@ -641,6 +650,7 @@ class MainWindow(QtWidgets.QMainWindow):
         f = self.ui.txtIntegrationDelay.text()
         g = self.ui.txtIntegrationKet.text()
         h = self.ui.lbIntegrationGetCode.text()
+        sendSerial(b, c, d, e)
 
         if not b or not c or not d or not e or not g:
             QMessageBox.warning(self, "Warning", "Please input your data.")
@@ -1110,6 +1120,26 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.lbCreateAcvtivityGetProjectName.setText(b)
             self.setActivity()
 
+    def releasedSlider(self):
+        global currentX
+        global currentY
+        global currentZ
+        global currentD
+        global currentK
+        valueX = self.ui.slIntegrationX.value()
+        valueY = self.ui.slIntegrationY.value()
+        valueZ = self.ui.slIntegrationZ.value()
+        valueK = self.ui.slIntegrationK.value()
+        sendSerial(valueX, valueY, valueZ, valueK)
+
+def writeSerial(data):
+    ser.write(bytes(data, 'utf-8'))
+    time.sleep(0.05)
+
+def sendSerial(x, y, z, k):
+    data = "config:%d,%d,%d,%d;" % (x, y, z, k)
+    writeSerial(data)
+    print(data)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

@@ -30,7 +30,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="dashboard_1">
      <widget class="QPushButton" name="btToGetStarted">
@@ -570,7 +570,7 @@ QPushButton::icon {
         <x>470</x>
         <y>220</y>
         <width>811</width>
-        <height>451</height>
+        <height>431</height>
        </rect>
       </property>
      </widget>
