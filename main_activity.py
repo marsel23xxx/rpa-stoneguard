@@ -20,6 +20,7 @@ def koneksi():
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor,
             # 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
+            # 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
         )
         return connection
     except pymysql.err.OperationalError as e:
@@ -618,16 +619,16 @@ class MainWindow(QtWidgets.QMainWindow):
     # START Integration Menu================================================================================================
 
     def updateLineEditX(self, value):
-        self.ui.txtIntegrationX.setText(value)
+        self.ui.txtIntegrationX.setText(str(value))
 
     def updateLineEditY(self, value):
-        self.ui.txtIntegrationY.setText(value)
+        self.ui.txtIntegrationY.setText(str(value))
 
     def updateLineEditZ(self, value):
-        self.ui.txtIntegrationZ.setText(value)
+        self.ui.txtIntegrationZ.setText(str(value))
 
     def updateLineEditK(self, value):
-        self.ui.txtIntegrationK.setText(value)
+        self.ui.txtIntegrationK.setText(str(value))
 
     def updateSliderX(self, value):
         self.ui.slIntegrationX.setValue(int(value))
@@ -918,6 +919,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.slIntegrationY.setValue(getY)
             self.ui.slIntegrationZ.setValue(getZ)
             self.ui.slIntegrationK.setValue(getK)
+
+            sendSerial(getX, getY, getZ, getK)
 
     def keyReleaseEventIntegration(self, event):
         if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
