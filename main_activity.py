@@ -39,6 +39,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.createProjectModel = QStandardItemModel()
         self.saveActivityModel = QStandardItemModel()
         self.openProjectModel = QStandardItemModel()
+        self.chooseProjectModel = QStandardItemModel()
         self.kdProjectSignal = QtCore.pyqtSignal(str)
 
         self.defaultMenu()
@@ -93,6 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setupIntegrationTable()
         self.getIntegrationCode()
         self.ui.btIntegrationHapus.clicked.connect(self.deleteIntegration)
+        self.ui.btIntegrationReset.clicked.connect(self.setIntegrationEmptyColumn)
 
         # Komponen bagian Open Project
         self.ui.btOpenProjectKembali.clicked.connect(self.setDashboard)
@@ -106,6 +108,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btOpenProjectDelete.clicked.connect(self.deleteProject)
 
         #  komponen bagian run program
+        self.ui.btRunning.clicked.connect(self.setRunProject)
+        self.ui.btRunningProjectKembali.clicked.connect(self.setDashboard)
+        self.ui.btRunningProjectShowProject.clicked.connect(self.setRunShowProject)
+        self.ui.btRunningProjectShowActivity.clicked.connect(self.setRunShowActivity)
+
+        # Komponen bagian show project
+        self.ui.tbChooseProjectTabel.setModel(self.chooseProjectModel)
+        self.ui.txtChooseProjectCari.keyReleaseEvent = self.searchChooseProjectData
+        self.refreshChooseProjectTable()
+        self.setupChooseProjectTable()
+        self.ui.btChooseProjectOpen.clicked.connect(self.goToRunProjectGetProject)
+
 
     def defaultMenu(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.dashboard_1)
@@ -335,6 +349,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setRunProject(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.runProject_6)
+
+    def setRunShowProject(self):
+        self.ui.stackedWidget.setCurrentWidget(self.ui.getProject_7)
+
+    def setRunShowActivity(self):
+        self.ui.stackedWidget.setCurrentWidget(self.ui.getActivity_8)
 
     # START Activity Menu=====================================================================================================
 
@@ -936,10 +956,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.txtIntegrationZ.setText("0")
         self.ui.txtIntegrationK.setText("0")
 
-        self.ui.slIntegrationX.setValue(0)
-        self.ui.slIntegrationY.setValue(0)
-        self.ui.slIntegrationZ.setValue(0)
-        self.ui.slIntegrationK.setValue(0)
+        x = self.ui.slIntegrationX.setValue(0)
+        y = self.ui.slIntegrationY.setValue(0)
+        z = self.ui.slIntegrationZ.setValue(0)
+        k = self.ui.slIntegrationK.setValue(0)
+
+        sendSerial(0, 0, 0, 0)
 
     # END Integration Menu ==================================================================================
 
@@ -1123,6 +1145,300 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.lbCreateAcvtivityGetProjectName.setText(b)
             self.setActivity()
 
+    # END Open Project ===================================================================================================
+                
+    # START Run Program ==================================================================================================
+
+    def setRunProgramEmptyColumn(self):
+        self.ui.txtOpenProjectGetData.setText("")
+        self.ui.txtOpenProjectGetName.setText("")
+
+    
+    # END Run Program ====================================================================================================
+
+    # START Choose Project ===============================================================================================
+    
+    def refreshChooseProjectTable(self):
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM project"
+                    cursor.execute(sql)
+                    result = cursor.fetchall()
+
+                    self.chooseProjectModel.clear()
+                    self.chooseProjectModel.setHorizontalHeaderLabels(
+                        ["Project Code", "Project Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbChooseProjectTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_project"])
+                        b = QStandardItem(row_data["nama_project"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.chooseProjectModel.appendRow([a, b, c])
+                        self.ui.tbChooseProjectTabel.resizeColumnsToContents()
+                        self.ui.tbChooseProjectTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def searchChooseProjectData(self, cariData):
+        cariData = self.ui.txtChooseProjectCari.text()
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM project WHERE nama_project LIKE %s OR kd_project LIKE %s"
+                    cursor.execute(
+                        sql,
+                        ("%" + cariData + "%", "%" + cariData + "%"),
+                    )
+                    result = cursor.fetchall()
+
+                    self.chooseProjectModel.clear()
+                    self.chooseProjectModel.setHorizontalHeaderLabels(
+                        ["Project Code", "Project Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbChooseProjectTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_project"])
+                        b = QStandardItem(row_data["nama_project"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.chooseProjectModel.appendRow([a, b, c])
+                        self.ui.tbChooseProjectTabel.resizeColumnsToContents()
+                        self.ui.tbChooseProjectTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def keyChooseProjectReleaseEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
+            self.searchChooseProjectData(event)
+        else:
+            super().keyReleaseEvent(event)
+
+    def setupChooseProjectTable(self):
+        self.ui.tbChooseProjectTabel.clicked.connect(self.displaySelectedChooseProject)
+
+    def displaySelectedChooseProject(self):
+        a = self.ui.tbChooseProjectTabel.selectedIndexes()
+        if a:
+            getRow = a[0].row()
+            getCode = self.chooseProjectModel.index(getRow, 0).data()
+            getName = self.chooseProjectModel.index(getRow, 1).data()
+            self.ui.lbChooseProjectGetCode.setText(getCode)
+            self.ui.lbChooseProjectGetName.setText(getName)
+
+    def goToRunProjectGetProject(self):
+        a = self.ui.lbChooseProjectGetCode.text()
+        b = self.ui.lbChooseProjectGetName.text()
+        if a:
+            self.ui.txtRunningProjectGetProject.setText(a)
+            self.ui.txtRunProjectName.setText(b)
+            self.setRunProject()
+
+
+    # END Choose Project =================================================================================================
+         
+
+    # START Choose Activity ==============================================================================================
+    
+    def refreshShowActivityTable(self):
+        d = self.ui.txtRunningProjectGetProject.text()
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM activity WHERE kd_project=%s"
+                    cursor.execute(sql, (d))
+                    result = cursor.fetchall()
+
+                    self.chooseActivityModel.clear()
+                    self.chooseActivityModel.setHorizontalHeaderLabels(
+                        ["Code", "Activity Name", "Description", ""]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbChooseActivityTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbChooseActivityTabel.setColumnWidth(0, 100)
+                    self.ui.tbChooseActivityTabel.setColumnWidth(1, 400)
+                    self.ui.tbChooseActivityTabel.setColumnWidth(2, 500)
+                    self.ui.tbChooseActivityTabel.setColumnWidth(3, 1)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_activity"])
+                        b = QStandardItem(row_data["nama_activity"])
+                        c = QStandardItem(row_data["keterangan"])
+                        d = QStandardItem(row_data["kd_project"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+                        d.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+                        d.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.chooseActivityModel.appendRow([a, b, c, d])
+                        self.ui.tbChooseActivityTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def searchDataShowActivity(self, cariData):
+        getCode = self.ui.lbChooseActivityGetCode.text()
+        cariData = self.ui.txtChooseActivityCari.text()
+
+        if cariData.strip():
+            try:
+                connection = koneksi()
+                if connection:
+                    with connection.cursor() as cursor:
+                        sql = "SELECT * FROM activity WHERE kd_project=%s AND (nama_activity LIKE %s OR kd_activity LIKE %s)"
+                        cursor.execute(
+                            sql,
+                            (getCode, "%" + cariData + "%", "%" + cariData + "%"),
+                        )
+                        result = cursor.fetchall()
+
+                        self.chooseActivityModel.clear()
+                        self.chooseActivityModel.setHorizontalHeaderLabels(
+                            ["Code", "Activity Name", "Description", ""]
+                        )
+                        font = QtGui.QFont()
+                        font.setPointSize(14)
+
+                        header_view = self.ui.tbChooseActivityTabel.horizontalHeader()
+
+                        header_view.setStyleSheet(
+                            "background-color: rgb(114, 159, 207);"
+                        )
+                        font = header_view.font()
+                        font.setPointSize(18)
+                        header_view.setFont(font)
+
+                        self.ui.tbChooseActivityTabel.setColumnWidth(0, 100)
+                        self.ui.tbChooseActivityTabel.setColumnWidth(1, 400)
+                        self.ui.tbChooseActivityTabel.setColumnWidth(2, 500)
+                        self.ui.tbChooseActivityTabel.setColumnWidth(3, 1)
+
+                        for i, row_data in enumerate(result):
+                            a = QStandardItem(row_data["kd_activity"])
+                            b = QStandardItem(row_data["nama_activity"])
+                            c = QStandardItem(row_data["keterangan"])
+                            d = QStandardItem(row_data["kd_project"])
+
+                            a.setFont(font)
+                            b.setFont(font)
+                            c.setFont(font)
+                            d.setFont(font)
+
+                            a.setTextAlignment(QtCore.Qt.AlignCenter)
+                            b.setTextAlignment(QtCore.Qt.AlignCenter)
+                            c.setTextAlignment(QtCore.Qt.AlignCenter)
+                            d.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                            self.chooseActivityModel.appendRow([a, b, c, d])
+                            self.ui.tbChooseActivityTabel.verticalHeader().setDefaultSectionSize(
+                                50
+                            )
+
+            finally:
+                if connection:
+                    connection.close()
+
+        else:
+            self.refreshShowActivityTable()
+
+    def keyReleaseEventShowActivity(self, event):
+        if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
+            self.searchDataShowActivity(event)
+        else:
+            super().keyReleaseEvent(event)
+
+    def setupShowActivityTable(self):
+        self.ui.tbChooseActivityTabel.clicked.connect(self.displaySelectedShowActivityCode)
+
+    def displaySelectedShowActivityCode(self):
+        a = self.ui.tbChooseActivityTabel.selectedIndexes()
+        if a:
+            getRow = a[0].row()
+            getCode = self.chooseActivityModel.index(getRow, 0).data()
+            getName = self.chooseActivityModel.index(getRow, 1).data()
+            getPro = self.chooseActivityModel.index(getRow, 2).data()
+            self.ui.lbChooseActivityGetCode.setText(getCode)
+            self.ui.lbChooseActivityGetName.setText(getName)
+            self.ui.lbChooseActivityGetCodeProject.setText(getPro)
+
+    def goToRunProjectGetProject(self):
+        a = self.ui.lbChooseActivityGetCode.text()
+        b = self.ui.lbChooseActivityGetName.text()
+        if a:
+            self.ui.txtRunningProjectGetProject.setText(a)
+            self.ui.txtRunProjectName.setText(b)
+            self.setRunProject()
+
+
+    # END Choose Activity ================================================================================================
+
+    # Bagian set up serial ===============================================================================================
+
     def releasedSlider(self):
         global currentX
         global currentY
@@ -1133,7 +1449,7 @@ class MainWindow(QtWidgets.QMainWindow):
         valueY = self.ui.slIntegrationY.value()
         valueZ = self.ui.slIntegrationZ.value()
         valueK = self.ui.slIntegrationK.value()
-        sendSerial(valueX, valueY, valueZ, valueK)
+        sendSerial(valueX, valueY, valueK, valueZ)
 
 def writeSerial(data):
     ser.write(bytes(data, 'utf-8'))
