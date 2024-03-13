@@ -21,6 +21,7 @@ def koneksi():
             cursorclass=pymysql.cursors.DictCursor,
             # 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
             # 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
+            # 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
         )
         return connection
     except pymysql.err.OperationalError as e:
@@ -40,6 +41,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.saveActivityModel = QStandardItemModel()
         self.openProjectModel = QStandardItemModel()
         self.chooseProjectModel = QStandardItemModel()
+        self.chooseActivityModel = QStandardItemModel()
+
         self.kdProjectSignal = QtCore.pyqtSignal(str)
 
         self.defaultMenu()
@@ -119,6 +122,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.refreshChooseProjectTable()
         self.setupChooseProjectTable()
         self.ui.btChooseProjectOpen.clicked.connect(self.goToRunProjectGetProject)
+
+        # Komponen bagian show activity
+        self.ui.tbChooseActivityTabel.setModel(self.chooseActivityModel)
+        self.ui.txtChooseActivityCari.keyReleaseEvent = self.searchChooseActivity
+        self.refreshChooseActivityTable()
+        self.setupChooseActivityTable()
+        self.ui.btChooseActivityOpen.clicked.connect(self.goToRunActivityGetProject)
 
 
     def defaultMenu(self):
@@ -1279,6 +1289,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if a:
             self.ui.txtRunningProjectGetProject.setText(a)
             self.ui.txtRunProjectName.setText(b)
+            self.ui.lbChooseActivityGetCodeProject.setText(a)
             self.setRunProject()
 
 
@@ -1287,34 +1298,32 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # START Choose Activity ==============================================================================================
     
-    def refreshShowActivityTable(self):
-        d = self.ui.txtRunningProjectGetProject.text()
+    def refreshChooseActivityTable(self):
+        a = self.ui.lbChooseActivityGetCodeProject.text()
         try:
             connection = koneksi()
             if connection:
                 with connection.cursor() as cursor:
                     sql = "SELECT * FROM activity WHERE kd_project=%s"
-                    cursor.execute(sql, (d))
+                    cursor.execute(sql, (str(a)))
                     result = cursor.fetchall()
 
                     self.chooseActivityModel.clear()
                     self.chooseActivityModel.setHorizontalHeaderLabels(
-                        ["Code", "Activity Name", "Description", ""]
+                        ["Code", "Activity Name", "Description", "."]
                     )
                     font = QtGui.QFont()
                     font.setPointSize(14)
 
                     header_view = self.ui.tbChooseActivityTabel.horizontalHeader()
-
                     header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
-                    font = header_view.font()
                     font.setPointSize(18)
                     header_view.setFont(font)
 
                     self.ui.tbChooseActivityTabel.setColumnWidth(0, 100)
                     self.ui.tbChooseActivityTabel.setColumnWidth(1, 400)
                     self.ui.tbChooseActivityTabel.setColumnWidth(2, 500)
-                    self.ui.tbChooseActivityTabel.setColumnWidth(3, 1)
+                    self.ui.tbChooseActivityTabel.setColumnWidth(3, 50)
 
                     for i, row_data in enumerate(result):
                         a = QStandardItem(row_data["kd_activity"])
@@ -1333,15 +1342,13 @@ class MainWindow(QtWidgets.QMainWindow):
                         d.setTextAlignment(QtCore.Qt.AlignCenter)
 
                         self.chooseActivityModel.appendRow([a, b, c, d])
-                        self.ui.tbChooseActivityTabel.verticalHeader().setDefaultSectionSize(
-                            50
-                        )
+                        self.ui.tbChooseActivityTabel.verticalHeader().setDefaultSectionSize(50)
 
         finally:
             if connection:
                 connection.close()
 
-    def searchDataShowActivity(self, cariData):
+    def searchChooseActivity(self, cariData):
         getCode = self.ui.lbChooseActivityGetCode.text()
         cariData = self.ui.txtChooseActivityCari.text()
 
@@ -1404,7 +1411,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     connection.close()
 
         else:
-            self.refreshShowActivityTable()
+            self.refreshChooseActivityTable()
 
     def keyReleaseEventShowActivity(self, event):
         if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
@@ -1412,7 +1419,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             super().keyReleaseEvent(event)
 
-    def setupShowActivityTable(self):
+    def setupChooseActivityTable(self):
         self.ui.tbChooseActivityTabel.clicked.connect(self.displaySelectedShowActivityCode)
 
     def displaySelectedShowActivityCode(self):
@@ -1426,12 +1433,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.lbChooseActivityGetName.setText(getName)
             self.ui.lbChooseActivityGetCodeProject.setText(getPro)
 
-    def goToRunProjectGetProject(self):
+    def goToRunActivityGetProject(self):
         a = self.ui.lbChooseActivityGetCode.text()
         b = self.ui.lbChooseActivityGetName.text()
         if a:
             self.ui.txtRunningProjectGetProject.setText(a)
             self.ui.txtRunProjectName.setText(b)
+            self.refreshChooseActivityTable()
             self.setRunProject()
 
 
