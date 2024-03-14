@@ -42,6 +42,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.openProjectModel = QStandardItemModel()
         self.chooseProjectModel = QStandardItemModel()
         self.chooseActivityModel = QStandardItemModel()
+        self.runningModel_1 = QStandardItemModel()
+        self.runningModel_2 = QStandardItemModel()
 
         self.kdProjectSignal = QtCore.pyqtSignal(str)
 
@@ -111,10 +113,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btOpenProjectDelete.clicked.connect(self.deleteProject)
 
         #  komponen bagian run program
+        self.clicked_times = 0
+        self.stacked_data = []
+        self.ui.tbRunningProjectTabel_1.setModel(self.runningModel_1)
+        self.ui.tbRunningProjectTabel_2.setModel(self.runningModel_2)
+        self.refreshRunningProjectData_1()
         self.ui.btRunning.clicked.connect(self.setRunProject)
         self.ui.btRunningProjectKembali.clicked.connect(self.setDashboard)
         self.ui.btRunningProjectShowProject.clicked.connect(self.setRunShowProject)
         self.ui.btRunningProjectShowActivity.clicked.connect(self.setRunShowActivity)
+        self.ui.tbRunningProjectTabel_1.clicked.connect(self.rowClicked)
+        self.ui.btRunningProjectRight.clicked.connect(self.moveToTable2)
+        self.ui.btRunningProjectLeft.clicked.connect(self.removeFromTable2)
 
         # Komponen bagian show project
         self.ui.tbChooseProjectTabel.setModel(self.chooseProjectModel)
@@ -124,11 +134,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btChooseProjectOpen.clicked.connect(self.goToRunProjectGetProject)
 
         # Komponen bagian show activity
+        self.refreshChooseActivityTable()
         self.ui.tbChooseActivityTabel.setModel(self.chooseActivityModel)
         self.ui.txtChooseActivityCari.keyReleaseEvent = self.searchChooseActivity
-        self.refreshChooseActivityTable()
         self.setupChooseActivityTable()
         self.ui.btChooseActivityOpen.clicked.connect(self.goToRunActivityGetProject)
+        self.ui.btChooseActivityBack.clicked.connect(self.setRunProject)
 
 
     def defaultMenu(self):
@@ -337,6 +348,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def setIntegration(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.Integration_3)
         self.refreshIntegrationTable()
+        self.setIntegrationEmptyColumn()
 
     def setActivitySaved(self):
         a = QMessageBox.question(
@@ -347,6 +359,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QMessageBox.No,
         )
         if a == QMessageBox.Yes:
+            self.setIntegrationEmptyColumn()
             self.ui.stackedWidget.setCurrentWidget(self.ui.saveActivity_4)
 
     def setActivity(self):
@@ -358,12 +371,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.refreshOpenProjectTable()
 
     def setRunProject(self):
+        self.refreshRunningProjectData_1()
         self.ui.stackedWidget.setCurrentWidget(self.ui.runProject_6)
 
     def setRunShowProject(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.getProject_7)
 
     def setRunShowActivity(self):
+        self.refreshChooseActivityTable()
+        self.refreshRunningProjectData_1()
         self.ui.stackedWidget.setCurrentWidget(self.ui.getActivity_8)
 
     # START Activity Menu=====================================================================================================
@@ -681,7 +697,6 @@ class MainWindow(QtWidgets.QMainWindow):
         f = self.ui.txtIntegrationDelay.text()
         g = self.ui.txtIntegrationKet.text()
         h = self.ui.lbIntegrationGetCode.text()
-        sendSerial(b, c, d, e)
 
         if not b or not c or not d or not e or not g:
             QMessageBox.warning(self, "Warning", "Please input your data.")
@@ -950,7 +965,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.slIntegrationZ.setValue(getZ)
             self.ui.slIntegrationK.setValue(getK)
 
-            sendSerial(getX, getY, getZ, getK)
+            sendSerial(getX, getY, getK, getZ)
 
     def keyReleaseEventIntegration(self, event):
         if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
@@ -1163,6 +1178,90 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.txtOpenProjectGetData.setText("")
         self.ui.txtOpenProjectGetName.setText("")
 
+    def refreshRunningProjectData_1(self):
+        d = self.ui.txtRunningProjectGetActivity.text()
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM koordinat WHERE kd_activity=%s"
+                    cursor.execute(sql, (d,))
+                    result = cursor.fetchall()
+
+                    self.runningModel_1.clear()
+                    self.runningModel_1.setHorizontalHeaderLabels(
+                        ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbRunningProjectTabel_1.horizontalHeader()
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(0, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(1, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(2, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(3, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(4, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(5, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(6, 400)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(7, 100)
+
+                    for row_data in result:
+                        items = [
+                            QStandardItem(str(row_data["kd_kor"])),
+                            QStandardItem(str(row_data["x"])),
+                            QStandardItem(str(row_data["y"])),
+                            QStandardItem(str(row_data["z"])),
+                            QStandardItem(str(row_data["k"])),
+                            QStandardItem(str(row_data["delay"])),
+                            QStandardItem(str(row_data["keterangan"])),
+                            QStandardItem(str(row_data["kd_activity"])),
+                        ]
+                        for item in items:
+                            item.setFont(font)
+                            item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.runningModel_1.appendRow(items)
+
+                    self.ui.tbRunningProjectTabel_1.resizeColumnsToContents()
+                    self.ui.tbRunningProjectTabel_1.verticalHeader().setDefaultSectionSize(
+                        50
+                    )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def rowClicked(self, index):
+        selected_row_index = index.row()
+        column_count = self.runningModel_1.columnCount()
+        selected_row_data = []
+        for column_index in range(column_count):
+            item = self.runningModel_1.item(selected_row_index, column_index)
+            selected_row_data.append(item.text())
+
+        self.stacked_data.append(selected_row_data)
+
+
+    def moveToTable2(self):
+        if self.stacked_data:
+            for data in self.stacked_data:
+                items = [QStandardItem(str(item)) for item in data]
+                self.runningModel_2.appendRow(items)
+
+            self.clicked_times = 0
+            self.stacked_data.clear()
+
+
+    def removeFromTable2(self):
+        selected_index = self.ui.tbRunningProjectTabel_2.currentIndex()
+        if selected_index.isValid():
+            selected_row = selected_index.row()
+            self.runningModel_2.removeRow(selected_row)
     
     # END Run Program ====================================================================================================
 
@@ -1299,13 +1398,13 @@ class MainWindow(QtWidgets.QMainWindow):
     # START Choose Activity ==============================================================================================
     
     def refreshChooseActivityTable(self):
-        a = self.ui.lbChooseActivityGetCodeProject.text()
+        eii = self.ui.lbChooseActivityGetCodeProject.text()
         try:
             connection = koneksi()
             if connection:
                 with connection.cursor() as cursor:
                     sql = "SELECT * FROM activity WHERE kd_project=%s"
-                    cursor.execute(sql, (str(a)))
+                    cursor.execute(sql, (str(eii)))
                     result = cursor.fetchall()
 
                     self.chooseActivityModel.clear()
@@ -1322,8 +1421,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
                     self.ui.tbChooseActivityTabel.setColumnWidth(0, 100)
                     self.ui.tbChooseActivityTabel.setColumnWidth(1, 400)
-                    self.ui.tbChooseActivityTabel.setColumnWidth(2, 500)
-                    self.ui.tbChooseActivityTabel.setColumnWidth(3, 50)
+                    self.ui.tbChooseActivityTabel.setColumnWidth(2, 700)
+                    self.ui.tbChooseActivityTabel.setColumnWidth(3, 1)
 
                     for i, row_data in enumerate(result):
                         a = QStandardItem(row_data["kd_activity"])
@@ -1428,7 +1527,7 @@ class MainWindow(QtWidgets.QMainWindow):
             getRow = a[0].row()
             getCode = self.chooseActivityModel.index(getRow, 0).data()
             getName = self.chooseActivityModel.index(getRow, 1).data()
-            getPro = self.chooseActivityModel.index(getRow, 2).data()
+            getPro = self.chooseActivityModel.index(getRow, 3).data()
             self.ui.lbChooseActivityGetCode.setText(getCode)
             self.ui.lbChooseActivityGetName.setText(getName)
             self.ui.lbChooseActivityGetCodeProject.setText(getPro)
@@ -1437,10 +1536,12 @@ class MainWindow(QtWidgets.QMainWindow):
         a = self.ui.lbChooseActivityGetCode.text()
         b = self.ui.lbChooseActivityGetName.text()
         if a:
-            self.ui.txtRunningProjectGetProject.setText(a)
-            self.ui.txtRunProjectName.setText(b)
-            self.refreshChooseActivityTable()
+            self.ui.txtRunningProjectGetActivity.setText(a)
+            self.ui.txtRunProjectActivity.setText(b)
+            
             self.setRunProject()
+            self.refreshRunningProjectData_1()
+            self.refreshChooseActivityTable()
 
 
     # END Choose Activity ================================================================================================

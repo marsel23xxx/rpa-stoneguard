@@ -646,7 +646,7 @@ class Ui_MainWindow(object):
 "        margin: -15px -10px;\n"
 "        border-radius: 15px;\n"
 "    }")
-        self.slIntegrationZ.setMaximum(180)
+        self.slIntegrationZ.setMaximum(80)
         self.slIntegrationZ.setOrientation(QtCore.Qt.Vertical)
         self.slIntegrationZ.setTickPosition(QtWidgets.QSlider.TicksBothSides)
         self.slIntegrationZ.setTickInterval(5)
@@ -1944,7 +1944,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(5)
+        self.stackedWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
