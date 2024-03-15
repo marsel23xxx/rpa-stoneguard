@@ -4,7 +4,8 @@ import pymysql
 import serial
 import time
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableView, QTableWidgetItem
 
 from view_activity import Ui_MainWindow
@@ -19,9 +20,9 @@ def koneksi():
             database="db_sari",
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor,
-            # 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
-            # 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
-            # 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
+
+            # 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
+
         )
         return connection
     except pymysql.err.OperationalError as e:
@@ -87,6 +88,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.slIntegrationZ.sliderReleased.connect(self.releasedSlider)
         self.ui.slIntegrationK.sliderReleased.connect(self.releasedSlider)
 
+        self.ui.txtIntegrationX.editingFinished.connect(self.releasedText)
+        self.ui.txtIntegrationY.editingFinished.connect(self.releasedText)
+        self.ui.txtIntegrationZ.editingFinished.connect(self.releasedText)
+        self.ui.txtIntegrationK.editingFinished.connect(self.releasedText)
+
         self.ui.txtIntegrationX.textChanged.connect(self.updateSliderX)
         self.ui.txtIntegrationY.textChanged.connect(self.updateSliderY)
         self.ui.txtIntegrationZ.textChanged.connect(self.updateSliderZ)
@@ -125,6 +131,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.tbRunningProjectTabel_1.clicked.connect(self.rowClicked)
         self.ui.btRunningProjectRight.clicked.connect(self.moveToTable2)
         self.ui.btRunningProjectLeft.clicked.connect(self.removeFromTable2)
+
+        self.ui.btRunningProjectRun.clicked.connect(self.sendDataSerial)
 
         # Komponen bagian show project
         self.ui.tbChooseProjectTabel.setModel(self.chooseProjectModel)
@@ -1232,37 +1240,86 @@ class MainWindow(QtWidgets.QMainWindow):
                         50
                     )
 
+                    self.runningModel_2.setHorizontalHeaderLabels(
+                    ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                    )
+
+                    font_2 = QtGui.QFont()
+                    font_2.setPointSize(14)
+                    header_view_2 = self.ui.tbRunningProjectTabel_2.horizontalHeader()
+                    header_view_2.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font_2 = header_view_2.font()
+                    font_2.setPointSize(18)
+                    header_view_2.setFont(font_2)
+
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(0, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(1, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(2, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(3, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(4, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(5, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(6, 400)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(7, 100)
+
         finally:
             if connection:
                 connection.close()
 
+    
     def rowClicked(self, index):
-        selected_row_index = index.row()
-        column_count = self.runningModel_1.columnCount()
+        self.resetColorRunningModel_1()
+
         selected_row_data = []
-        for column_index in range(column_count):
-            item = self.runningModel_1.item(selected_row_index, column_index)
+        for column_index in range(self.runningModel_1.columnCount()):
+            item = self.runningModel_1.item(index.row(), column_index)
             selected_row_data.append(item.text())
 
-        self.stacked_data.append(selected_row_data)
+        if selected_row_data not in self.stacked_data:  # Periksa apakah data sudah ada sebelumnya
+            self.stacked_data.append(selected_row_data)
+            self.highlight_selected_row(index.row(), "lightblue")
+        else:
+            print("zero")
 
 
     def moveToTable2(self):
         if self.stacked_data:
             for data in self.stacked_data:
-                items = [QStandardItem(str(item)) for item in data]
-                self.runningModel_2.appendRow(items)
+                self.add_row_to_table_2(data)
 
-            self.clicked_times = 0
             self.stacked_data.clear()
+            self.resetColorRunningModel_1()
 
 
     def removeFromTable2(self):
         selected_index = self.ui.tbRunningProjectTabel_2.currentIndex()
         if selected_index.isValid():
-            selected_row = selected_index.row()
-            self.runningModel_2.removeRow(selected_row)
-    
+            self.runningModel_2.removeRow(selected_index.row())
+
+
+    def resetColorRunningModel_1(self):
+        for row in range(self.runningModel_1.rowCount()):
+            for column in range(self.runningModel_1.columnCount()):
+                item = self.runningModel_1.item(row, column)
+                if item is not None:
+                    item.setBackground(QColor("white"))
+
+
+    def highlight_selected_row(self, row_index, color):
+        for column_index in range(self.runningModel_1.columnCount()):
+            item = self.runningModel_1.item(row_index, column_index)
+            item.setBackground(QColor(color))
+
+
+    def add_row_to_table_2(self, row_data):
+        items = [QStandardItem(str(item)) for item in row_data]
+        font_2 = QtGui.QFont()
+        font_2.setPointSize(14)
+        for item in items:
+            item.setFont(font_2)  # Menggunakan font yang telah ditentukan sebelumnya
+            item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+        self.runningModel_2.appendRow(items)
+        
     # END Run Program ====================================================================================================
 
     # START Choose Project ===============================================================================================
@@ -1559,6 +1616,35 @@ class MainWindow(QtWidgets.QMainWindow):
         valueZ = self.ui.slIntegrationZ.value()
         valueK = self.ui.slIntegrationK.value()
         sendSerial(valueX, valueY, valueK, valueZ)
+
+    def releasedText(self):
+        valueX = int(self.ui.txtIntegrationX.text())
+        valueY = int(self.ui.txtIntegrationY.text())
+        valueZ = int(self.ui.txtIntegrationZ.text())
+        valueK = int(self.ui.txtIntegrationK.text())
+        sendSerial(valueX, valueY, valueK, valueZ)
+
+
+    def sendDataSerial(self):
+        data_list = []
+        for row in range(self.runningModel_2.rowCount()):
+            data_row = []
+            for column in range(self.runningModel_2.columnCount()):
+                item = self.runningModel_2.item(row, column)
+                if item is not None:
+                    data_row.append(item.text())
+            data_list.append(data_row)
+
+        for data_row in data_list:
+            if len(data_row) == 4:
+                sendSerial(*data_row) 
+
+
+    def highlightColumn(self, column_index, color):
+        for row in range(self.runningModel_2.rowCount()):
+            item = self.runningModel_2.item(row, column_index)
+            if item is not None:
+                item.setBackground(QColor(color))
 
 def writeSerial(data):
     ser.write(bytes(data, 'utf-8'))
