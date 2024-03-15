@@ -21,7 +21,7 @@ def koneksi():
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor,
 
-            # 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
+            # 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
 
         )
         return connection
@@ -144,6 +144,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.refreshChooseProjectTable()
         self.setupChooseProjectTable()
         self.ui.btChooseProjectOpen.clicked.connect(self.goToRunProjectGetProject)
+        self.ui.btChooseProjectBack.clicked.connect(self.setRunProject)
 
         # Komponen bagian show activity
         self.refreshChooseActivityTable()
@@ -352,6 +353,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QMessageBox.No,
         )
         if a == QMessageBox.Yes:
+            self.setIntegrationEmptyColumn()
             self.ui.stackedWidget.setCurrentWidget(self.ui.dashboard_1)
 
     def setGetStarted(self):
@@ -387,11 +389,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.stackedWidget.setCurrentWidget(self.ui.runProject_6)
 
     def setRunShowProject(self):
+        self.refreshChooseProjectTable()
         self.ui.stackedWidget.setCurrentWidget(self.ui.getProject_7)
-
+        
     def setRunShowActivity(self):
         self.refreshChooseActivityTable()
         self.refreshRunningProjectData_1()
+        self.setIntegrationEmptyColumn()
         self.ui.stackedWidget.setCurrentWidget(self.ui.getActivity_8)
 
     # START Activity Menu=====================================================================================================
@@ -1314,16 +1318,36 @@ class MainWindow(QtWidgets.QMainWindow):
             item.setBackground(QColor(color))
 
 
+    # def add_row_to_table_2(self, row_data):
+    #     items = [QStandardItem(str(item)) for item in row_data]
+    #     font_2 = QtGui.QFont()
+    #     font_2.setPointSize(14)
+    #     for item in items:
+    #         item.setFont(font_2)  
+    #         item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+    #     self.runningModel_2.appendRow(items)
+
     def add_row_to_table_2(self, row_data):
-        items = [QStandardItem(str(item)) for item in row_data]
+        code = QStandardItem(row_data[0])  
+        x = QStandardItem(row_data[1])  
+        y = QStandardItem(row_data[2])  
+        z = QStandardItem(row_data[3])  
+        k = QStandardItem(row_data[4])  
+        delay = QStandardItem(row_data[5])  
+        ket = QStandardItem(row_data[6])  
+        pr = QStandardItem(row_data[7]) 
+        
         font_2 = QtGui.QFont()
         font_2.setPointSize(14)
-        for item in items:
-            item.setFont(font_2)  # Menggunakan font yang telah ditentukan sebelumnya
+        for item in [code, x, y, z, k, delay, ket, pr]:
+            item.setFont(font_2)  
             item.setTextAlignment(QtCore.Qt.AlignCenter)
 
-        self.runningModel_2.appendRow(items)
+        items = [code, x, y, k, z, delay, ket, pr] + [QStandardItem('') for _ in range(0)]
         
+        self.runningModel_2.appendRow(items)
+            
     # END Run Program ====================================================================================================
 
     # START Choose Project ===============================================================================================
@@ -1696,8 +1720,8 @@ def writeSerial(data):
     ser.write(bytes(data, 'utf-8'))
     time.sleep(0.05)
 
-def sendSerial(x, y, z, k):
-    data = "config:%d,%d,%d,%d;" % (x, y, z, k)
+def sendSerial(x, y, k, z):
+    data = "config:%d,%d,%d,%d;" % (x, y, k, z)
     writeSerial(data)
     print(data)
 
