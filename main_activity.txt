@@ -1,128 +1,235 @@
-import sys
+    def refreshRunningProjectData_1(self):
+        d = self.ui.txtRunningProjectGetActivity.text()
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM koordinat WHERE kd_activity=%s"
+                    cursor.execute(sql, (d,))
+                    result = cursor.fetchall()
 
-import pymysql
-from PyQt5 import QtWidgets
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
-from PyQt5.QtWidgets import QMessageBox
+                    self.runningModel_1.clear()
+                    self.runningModel_1.setHorizontalHeaderLabels(
+                        ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
 
-from aktivitas import Ui_MainWindow
+                    header_view = self.ui.tbRunningProjectTabel_1.horizontalHeader()
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
 
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(0, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(1, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(2, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(3, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(4, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(5, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(6, 400)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(7, 100)
 
-def koneksi():
-    connection = pymysql.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="db_sari",
-        charset="utf8mb4",
-        cursorclass=pymysql.cursors.DictCursor,
-    )
-    return connection
+                    for row_data in result:
+                        items = [
+                            QStandardItem(str(row_data["kd_kor"])),
+                            QStandardItem(str(row_data["x"])),
+                            QStandardItem(str(row_data["y"])),
+                            QStandardItem(str(row_data["z"])),
+                            QStandardItem(str(row_data["k"])),
+                            QStandardItem(str(row_data["delay"])),
+                            QStandardItem(str(row_data["keterangan"])),
+                            QStandardItem(str(row_data["kd_activity"])),
+                        ]
+                        for item in items:
+                            item.setFont(font)
+                            item.setTextAlignment(QtCore.Qt.AlignCenter)
 
+                        self.runningModel_1.appendRow(items)
 
-# ===============================================================================================
-#                                  Halaman untuk eksekusi pembuatan proyek
-# ===============================================================================================
+                    self.ui.tbRunningProjectTabel_1.resizeColumnsToContents()
+                    self.ui.tbRunningProjectTabel_1.verticalHeader().setDefaultSectionSize(
+                        50
+                    )
 
+                    self.runningModel_2.setHorizontalHeaderLabels(
+                    ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                    )
 
-def generate_kode_project():
-    try:
-        connection = koneksi()
-        with connection.cursor() as cursor:
-            sql = "SELECT MAX(kd_project) FROM project"
-            cursor.execute(sql)
-            result = cursor.fetchone()
+                    font_2 = QtGui.QFont()
+                    font_2.setPointSize(14)
+                    header_view_2 = self.ui.tbRunningProjectTabel_2.horizontalHeader()
+                    header_view_2.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font_2 = header_view_2.font()
+                    font_2.setPointSize(18)
+                    header_view_2.setFont(font_2)
 
-            if result["MAX(kd_project)"]:
-                latest_code = result["MAX(kd_project)"]
-                kode_int = int(latest_code[1:]) + 1
-                new_kode = f"P{kode_int:04d}"
-            else:
-                new_kode = "P0001"
-            return new_kode
-    finally:
-        connection.close()
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(0, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(1, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(2, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(3, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(4, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(5, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(6, 400)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(7, 100)
 
+        finally:
+            if connection:
+                connection.close()
 
-def setProyek():
-    nampro = ui.txtCreateProjectNama.text()
-    deskripsi = ui.txtCreateProjectKet.toPlainText()
+    
+    def rowClicked(self, index):
+        self.resetColorRunningModel_1()
 
-    if not nampro:
-        QMessageBox.warning(MainWindow, "Peringatan", "Harap masukkan nama proyek.")
-        return
+        selected_row_data = []
+        for column_index in range(self.runningModel_1.columnCount()):
+            item = self.runningModel_1.item(index.row(), column_index)
+            selected_row_data.append(item.text())
 
-    try:
-        connection = koneksi()
-        with connection.cursor() as cursor:
-
-            kd_project = generate_kode_project()
-            sql = "SELECT * FROM project WHERE nama_project=%s"
-            cursor.execute(sql, (nampro,))
-            result = cursor.fetchone()
-            if result:
-                QMessageBox.warning(
-                    MainWindow,
-                    "Peringatan",
-                    f"Proyek dengan nama '{nampro}' sudah ada.",
-                )
-                return
-
-            sql = "INSERT INTO project (kd_project, nama_project, keterangan) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (kd_project, nampro, deskripsi))
-            connection.commit()
-
-            QMessageBox.information(MainWindow, "Sukses", "Proyek berhasil disimpan.")
-
-            refreshTableView()
-
-    finally:
-        connection.close()
-
-
-def refreshTableView():
-    try:
-        connection = koneksi()
-        with connection.cursor() as cursor:
-
-            sql = "SELECT * FROM projects"
-            cursor.execute(sql)
-            result = cursor.fetchall()
-
-            MainWindow.model.clear()
-
-            for row_data in result:
-                kode = QStandardItem(row_data["kd_project"])
-                nama_item = QStandardItem(row_data["nama_proyek"])
-                deskripsi_item = QStandardItem(row_data["deskripsi"])
-                MainWindow.model.appendRow([kode, nama_item, deskripsi_item])
-
-    finally:
-        connection.close()
+        if selected_row_data not in self.stacked_data:  # Periksa apakah data sudah ada sebelumnya
+            self.stacked_data.append(selected_row_data)
+            self.highlight_selected_row(index.row(), "lightblue")
+        else:
+            print("zero")
 
 
-# ===========================================================================================
+    def moveToTable2(self):
+        if self.stacked_data:
+            for data in self.stacked_data:
+                self.add_row_to_table_2(data)
+
+            self.stacked_data.clear()
+            self.resetColorRunningModel_1()
 
 
-def setGetStarted():
-    ui.stackedWidget.setCurrentWidget(ui.createProject_2)
+    def removeFromTable2(self):
+        selected_index = self.ui.tbRunningProjectTabel_2.currentIndex()
+        if selected_index.isValid():
+            self.runningModel_2.removeRow(selected_index.row())
 
 
-def setDashboard():
-    ui.stackedWidget.setCurrentWidget(ui.dashboard_1)
+    def resetColorRunningModel_1(self):
+        for row in range(self.runningModel_1.rowCount()):
+            for column in range(self.runningModel_1.columnCount()):
+                item = self.runningModel_1.item(row, column)
+                if item is not None:
+                    item.setBackground(QColor("white"))
 
 
-if __name__ == "__main__":
-    import sys
+    def highlight_selected_row(self, row_index, color):
+        for column_index in range(self.runningModel_1.columnCount()):
+            item = self.runningModel_1.item(row_index, column_index)
+            item.setBackground(QColor(color))
 
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    index_dashboard_1 = ui.stackedWidget.indexOf(ui.dashboard_1)
-    ui.stackedWidget.setCurrentIndex(index_dashboard_1)
-    ui.btToGetStarted.clicked.connect(setGetStarted)
-    ui.btCreateProjectKembali.clicked.connect(setDashboard)
-    ui.btCreateProjectSimpan.clicked.connect(setProyek)
-    sys.exit(app.exec_())
+
+    def add_row_to_table_2(self, row_data):
+        code = QStandardItem(row_data[0])  
+        x = QStandardItem(row_data[1])  
+        y = QStandardItem(row_data[2])  
+        z = QStandardItem(row_data[3])  
+        k = QStandardItem(row_data[4])  
+        delay = QStandardItem(row_data[5])  
+        ket = QStandardItem(row_data[6])  
+        pr = QStandardItem(row_data[7]) 
+        
+        font_2 = QtGui.QFont()
+        font_2.setPointSize(14)
+        for item in [code, x, y, z, k, delay, ket, pr]:
+            item.setFont(font_2)  
+            item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+        items = [code, x, y, k, z, delay, ket, pr] + [QStandardItem('') for _ in range(0)]
+        
+        self.runningModel_2.appendRow(items)
+
+    def releasedSlider(self):
+        global currentX
+        global currentY
+        global currentZ
+        global currentD
+        global currentK
+        valueX = self.ui.slIntegrationX.value()
+        valueY = self.ui.slIntegrationY.value()
+        valueZ = self.ui.slIntegrationZ.value()
+        valueK = self.ui.slIntegrationK.value()
+        sendSerial(valueX, valueY, valueK, valueZ)
+
+    def releasedText(self):
+        valueX = int(self.ui.txtIntegrationX.text())
+        valueY = int(self.ui.txtIntegrationY.text())
+        valueZ = int(self.ui.txtIntegrationZ.text())
+        valueK = int(self.ui.txtIntegrationK.text())
+        sendSerial(valueX, valueY, valueK, valueZ)
+
+
+    def sendDataSerial(self):
+        data_list = []
+        for row in range(self.runningModel_2.rowCount()):
+            data_row = []
+            for column in range(self.runningModel_2.columnCount()):
+                item = self.runningModel_2.item(row, column)
+                if item is not None:
+                    data_row.append(item.text())
+            data_list.append(data_row)
+
+        for data_row in data_list:
+            if len(data_row) == 4:
+                sendSerial(*data_row) 
+
+    
+    def startSendingSteps(self):
+        self.current_step = 0
+        self.timer.start(2000)
+
+
+    def highlightColumn(self, column_index, color):
+        for row in range(self.runningModel_2.rowCount()):
+            item = self.runningModel_2.item(row, column_index)
+            if item is not None:
+                item.setBackground(QColor(color))
+
+    
+    def startSendingSteps(self):
+        self.current_step = 0
+        self.timer.start(2000)
+
+    def stopSendingSteps(self):
+        self.timer.stop()
+
+
+    def sendNextStep(self):
+        row_count = self.runningModel_2.rowCount()
+        if self.current_step < row_count:
+            data_row = []
+            for column in range(1, 5):
+                item = self.runningModel_2.item(self.current_step, column)
+                if item is not None and item.text():
+                    data_row.append(int(item.text()))
+                else:
+                    data_row.append(0) 
+            sendSerial(*data_row)
+            self.current_step += 1
+        else:
+            self.stopSendingSteps()
+
+
+    def moveDataToNextColumn(self, data_row):
+        for i in range(len(data_row)):
+            next_column_index = (self.current_step + 1) % self.runningModel_2.columnCount()
+            item = QStandardItem(data_row[i])
+            self.runningModel_2.setItem(self.current_step, next_column_index, item)
+
+    def toggleSendingSteps(self):
+        if self.timer.isActive():
+            self.stopSendingSteps()
+        else:
+            self.startSendingSteps()
+
+def writeSerial(data):
+    ser.write(bytes(data, 'utf-8'))
+    time.sleep(0.05)
+
+def sendSerial(x, y, k, z):
+    data = "config:%d,%d,%d,%d;" % (x, y, k, z)
+    writeSerial(data)
+    print(data)

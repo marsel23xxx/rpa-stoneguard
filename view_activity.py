@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.stackedWidget = QtWidgets.QStackedWidget(self.centralwidget)
-        self.stackedWidget.setGeometry(QtCore.QRect(0, 0, 1290, 691))
+        self.stackedWidget.setGeometry(QtCore.QRect(10, 0, 1290, 691))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -1380,9 +1380,6 @@ class Ui_MainWindow(object):
         self.stackedWidget.addWidget(self.openProject_5)
         self.runProject_6 = QtWidgets.QWidget()
         self.runProject_6.setObjectName("runProject_6")
-        self.txtRunningProjectGetData = QtWidgets.QLabel(self.runProject_6)
-        self.txtRunningProjectGetData.setGeometry(QtCore.QRect(1100, 230, 67, 17))
-        self.txtRunningProjectGetData.setObjectName("txtRunningProjectGetData")
         self.tbRunningProjectTabel_1 = QtWidgets.QTableView(self.runProject_6)
         self.tbRunningProjectTabel_1.setGeometry(QtCore.QRect(20, 280, 551, 391))
         self.tbRunningProjectTabel_1.setObjectName("tbRunningProjectTabel_1")
@@ -1492,7 +1489,7 @@ class Ui_MainWindow(object):
         self.txtRunningProjectGetActivity.setGeometry(QtCore.QRect(510, 60, 151, 17))
         self.txtRunningProjectGetActivity.setObjectName("txtRunningProjectGetActivity")
         self.btRunningProjectRun = QtWidgets.QPushButton(self.runProject_6)
-        self.btRunningProjectRun.setGeometry(QtCore.QRect(1180, 210, 91, 51))
+        self.btRunningProjectRun.setGeometry(QtCore.QRect(1090, 210, 91, 51))
         self.btRunningProjectRun.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btRunningProjectRun.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btRunningProjectRun.setStyleSheet("QPushButton {\n"
@@ -1669,6 +1666,157 @@ class Ui_MainWindow(object):
         self.btRunningProjectShowProject.setIconSize(QtCore.QSize(50, 50))
         self.btRunningProjectShowProject.setFlat(False)
         self.btRunningProjectShowProject.setObjectName("btRunningProjectShowProject")
+        self.label_36 = QtWidgets.QLabel(self.runProject_6)
+        self.label_36.setGeometry(QtCore.QRect(720, 210, 81, 51))
+        self.label_36.setStyleSheet("QLabel {\n"
+"    font-size: 22px;\n"
+"    font-weight: bold;\n"
+"}")
+        self.label_36.setObjectName("label_36")
+        self.btRunningProjectStop = QtWidgets.QPushButton(self.runProject_6)
+        self.btRunningProjectStop.setGeometry(QtCore.QRect(1190, 210, 91, 51))
+        self.btRunningProjectStop.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btRunningProjectStop.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btRunningProjectStop.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btRunningProjectStop.setIconSize(QtCore.QSize(50, 50))
+        self.btRunningProjectStop.setFlat(False)
+        self.btRunningProjectStop.setObjectName("btRunningProjectStop")
+        self.frame_10 = QtWidgets.QFrame(self.runProject_6)
+        self.frame_10.setGeometry(QtCore.QRect(800, 200, 241, 71))
+        self.frame_10.setStyleSheet("QFrame {\n"
+"    background: rgb(173, 127, 168)rgb(204, 0, 0)\n"
+"}")
+        self.frame_10.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_10.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_10.setObjectName("frame_10")
+        self.spRunningProjectLoop = QtWidgets.QSpinBox(self.frame_10)
+        self.spRunningProjectLoop.setGeometry(QtCore.QRect(150, 10, 81, 51))
+        self.spRunningProjectLoop.setStyleSheet("QSpinBox {\n"
+"    font-size: 20px;\n"
+"    font-weight: bold;\n"
+"}")
+        self.spRunningProjectLoop.setObjectName("spRunningProjectLoop")
+        self.btRunningProjectLoop = QtWidgets.QPushButton(self.frame_10)
+        self.btRunningProjectLoop.setGeometry(QtCore.QRect(10, 10, 81, 51))
+        self.btRunningProjectLoop.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btRunningProjectLoop.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btRunningProjectLoop.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btRunningProjectLoop.setIconSize(QtCore.QSize(50, 50))
+        self.btRunningProjectLoop.setFlat(False)
+        self.btRunningProjectLoop.setObjectName("btRunningProjectLoop")
+        self.label_37 = QtWidgets.QLabel(self.frame_10)
+        self.label_37.setGeometry(QtCore.QRect(100, 10, 31, 51))
+        self.label_37.setStyleSheet("QLabel {\n"
+"    font-size: 22px;\n"
+"    font-weight: bold;\n"
+"   color: white;\n"
+"}")
+        self.label_37.setObjectName("label_37")
+        self.label_38 = QtWidgets.QLabel(self.runProject_6)
+        self.label_38.setGeometry(QtCore.QRect(720, 140, 81, 51))
+        self.label_38.setStyleSheet("QLabel {\n"
+"    font-size: 22px;\n"
+"    font-weight: bold;\n"
+"}")
+        self.label_38.setObjectName("label_38")
+        self.btRunningProjectStatus = QtWidgets.QPushButton(self.runProject_6)
+        self.btRunningProjectStatus.setEnabled(False)
+        self.btRunningProjectStatus.setGeometry(QtCore.QRect(800, 140, 241, 51))
+        self.btRunningProjectStatus.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btRunningProjectStatus.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btRunningProjectStatus.setStyleSheet("QPushButton {\n"
+"    background: rgb(204, 0, 0);\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btRunningProjectStatus.setIconSize(QtCore.QSize(50, 50))
+        self.btRunningProjectStatus.setFlat(False)
+        self.btRunningProjectStatus.setObjectName("btRunningProjectStatus")
         self.stackedWidget.addWidget(self.runProject_6)
         self.getProject_7 = QtWidgets.QWidget()
         self.getProject_7.setObjectName("getProject_7")
@@ -1944,7 +2092,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(5)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -2004,7 +2152,6 @@ class Ui_MainWindow(object):
         self.btOpenProjectBuka.setText(_translate("MainWindow", "Open"))
         self.label_13.setText(_translate("MainWindow", "Search Data"))
         self.btOpenProjectDelete.setText(_translate("MainWindow", "Delete"))
-        self.txtRunningProjectGetData.setText(_translate("MainWindow", "$getData"))
         self.btRunningProjectShowActivity.setText(_translate("MainWindow", "Show"))
         self.label_27.setText(_translate("MainWindow", "Choose data"))
         self.label_28.setText(_translate("MainWindow", "Running Project"))
@@ -2016,6 +2163,12 @@ class Ui_MainWindow(object):
         self.btRunningProjectRight.setText(_translate("MainWindow", ">>>"))
         self.btRunningProjectLeft.setText(_translate("MainWindow", "<<<"))
         self.btRunningProjectShowProject.setText(_translate("MainWindow", "Show"))
+        self.label_36.setText(_translate("MainWindow", "Repeat"))
+        self.btRunningProjectStop.setText(_translate("MainWindow", "Stop"))
+        self.btRunningProjectLoop.setText(_translate("MainWindow", "Loop"))
+        self.label_37.setText(_translate("MainWindow", "OR"))
+        self.label_38.setText(_translate("MainWindow", "Status"))
+        self.btRunningProjectStatus.setText(_translate("MainWindow", "$getStatus"))
         self.btChooseProjectBack.setText(_translate("MainWindow", "Back"))
         self.lbGetData_8.setText(_translate("MainWindow", "Choose your project"))
         self.lbGetData_6.setText(_translate("MainWindow", "Project list item"))
