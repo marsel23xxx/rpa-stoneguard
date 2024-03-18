@@ -3,6 +3,7 @@ import sys
 import pymysql
 import serial
 import time
+import threading
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
@@ -32,6 +33,11 @@ def koneksi():
 ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600, timeout=.1)
 ser.flush()
 
+currentX = 0
+currentY = 0
+currentZ = 0
+currentK = 0
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -47,7 +53,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.runningModel_2 = QStandardItemModel()
 
         self.kdProjectSignal = QtCore.pyqtSignal(str)
-
         self.defaultMenu()
         # Logout
         self.ui.btLogout.clicked.connect(self.setLogout)
@@ -123,6 +128,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.stacked_data = []
         self.timer = QTimer()
         self.is_process_running = False
+        self.is_process_paused = False
+        self.looping = False
+        self.loop_thread = None
+        self.last_paused_step = -1
         self.timer.timeout.connect(self.sendNextStep)
         self.current_step = 0
         self.ui.tbRunningProjectTabel_1.setModel(self.runningModel_1)
@@ -137,6 +146,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btRunningProjectLeft.clicked.connect(self.removeFromTable2)
         self.startSendingSteps()
         self.ui.btRunningProjectRun.clicked.connect(self.toggleSendingSteps)
+        self.ui.btRunningProjectStop.clicked.connect(self.actionSendeingSteps)
+        self.ui.btRunningProjectLoop.clicked.connect(self.toggleLoopingSteps)
 
 
         # Komponen bagian show project
@@ -363,7 +374,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def setIntegration(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.Integration_3)
         self.refreshIntegrationTable()
-        self.setIntegrationEmptyColumn()
+        self.setIntegrationEmptyColumn1()
 
     def setActivitySaved(self):
         a = QMessageBox.question(
@@ -374,7 +385,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QMessageBox.No,
         )
         if a == QMessageBox.Yes:
-            self.setIntegrationEmptyColumn()
+            self.setIntegrationEmptyColumn1()
             self.ui.stackedWidget.setCurrentWidget(self.ui.saveActivity_4)
 
     def setActivity(self):
@@ -1004,6 +1015,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
         sendSerial(0, 0, 0, 0)
 
+    def setIntegrationEmptyColumn1(self):
+        self.ui.txtIntegrationKet.setText("")
+        self.ui.txtIntegrationDelay.setText("0")
+        self.ui.txtIntegrationX.setText("0")
+        self.ui.txtIntegrationY.setText("0")
+        self.ui.txtIntegrationZ.setText("0")
+        self.ui.txtIntegrationK.setText("0")
+
+        x = self.ui.slIntegrationX.setValue(0)
+        y = self.ui.slIntegrationY.setValue(0)
+        z = self.ui.slIntegrationZ.setValue(0)
+        k = self.ui.slIntegrationK.setValue(0)
+
     # END Integration Menu ==================================================================================
 
     # START Open Project ====================================================================================
@@ -1344,7 +1368,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.runningModel_2.appendRow(items)
 
     def startSendingSteps(self):
-        self.current_step = 0
+        self.current_step = -1
         self.timer.start(2000)
 
     def highlightColumn(self, column_index, color):
@@ -1385,6 +1409,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 sendSerial(*data_row)
         else:
             self.stopSendingSteps()
+        
+        if self.current_step == row_count:
+            self.ui.btRunningProjectStatus.setText("Has Finished")
+            self.ui.btRunningProjectRun.setText("Run")
 
 
     def moveDataToNextColumn(self, data_row):
@@ -1393,19 +1421,85 @@ class MainWindow(QtWidgets.QMainWindow):
             item = QStandardItem(data_row[i])
             self.runningModel_2.setItem(self.current_step, next_column_index, item)
 
+
+    def actionSendeingSteps(self):
+        reply = QMessageBox.question(self, 'Caution', 
+                        "If you click this button, the process will be stopped. Do you agree?",
+                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.stopProcess()
+            self.resetColorRunningModel_2(self.current_step)
+
+
     def toggleSendingSteps(self):
-        if self.timer.isActive():
-            self.stopSendingSteps()
-        else:
-            self.startSendingSteps()
+        if self.ui.btRunningProjectRun.text() == "Run":
+            self.ui.btRunningProjectRun.setText("Pause")
+            self.startProcess()
+            self.ui.btRunningProjectStatus.setText("Has Running")
+        elif self.ui.btRunningProjectRun.text() == "Pause":
+            self.ui.btRunningProjectRun.setText("Resume")
+            self.pauseProcess()
+            self.ui.btRunningProjectStatus.setText("Has Paused")
+        elif self.ui.btRunningProjectRun.text() == "Resume":
+            self.ui.btRunningProjectRun.setText("Pause")
+            self.resumeProcess()
+            self.ui.btRunningProjectStatus.setText("Has Running")
+            if self.current_step < self.runningModel_2.rowCount():
+                self.highlightRow(self.current_step, QColor("yellow"))
+
 
     def startProcess(self):
         self.is_process_running = True
-        self.startSendingSteps() 
+        self.startSendingSteps()
+        self.ui.btRunningProjectStatus.setText("Has Running")
 
     def stopProcess(self):
         self.is_process_running = False
-        self.stopSendingSteps()  
+        self.stopSendingSteps()
+        self.ui.btRunningProjectStatus.setText("Not Running")
+        self.ui.btRunningProjectRun.setText("Run")  
+
+    def pauseProcess(self):
+        self.stopProcess()
+        self.is_process_paused = True
+        self.last_paused_step = self.current_step 
+
+    def resumeProcess(self):
+        self.is_process_paused = False
+        if self.last_paused_step != -1:  
+            self.current_step = self.last_paused_step 
+            self.startSendingStepsFromNext()  
+            self.ui.btRunningProjectStatus.setText("Has Running")
+            self.ui.btRunningProjectRun.setText("Pause")  
+
+    def startSendingStepsFromNext(self):
+        self.timer.start(2000)  
+        self.sendNextStep()
+
+    def toggleLoopingSteps(self):
+        if not self.looping:
+            self.startLooping()
+            self.ui.btRunningProjectRun.setText("Stop")
+        else:
+            self.stopLooping()
+            self.ui.btRunningProjectRun.setText("Run")
+
+    def loopSteps(self):
+        while self.looping:
+            for step in range(self.runningModel_2.rowCount()):
+                if not self.looping:  
+                    break
+                self.sendNextStep()
+                time.sleep(2)
+
+    def startLooping(self):
+        self.loop_thread = threading.Thread(target=self.loopSteps)
+        self.loop_thread.daemon = True  
+        self.loop_thread.start()
+        self.looping = True
+
+    def stopLooping(self):
+        self.looping = False
 
             
     # END Run Program ====================================================================================================
@@ -1694,16 +1788,16 @@ class MainWindow(QtWidgets.QMainWindow):
     # Bagian set up serial ===============================================================================================
 
     def releasedSlider(self):
-        global currentX
-        global currentY
-        global currentZ
-        global currentD
-        global currentK
+        global currentX, currentY, currentZ, currentK
         valueX = self.ui.slIntegrationX.value()
         valueY = self.ui.slIntegrationY.value()
         valueZ = self.ui.slIntegrationZ.value()
         valueK = self.ui.slIntegrationK.value()
-        sendSerial(valueX, valueY, valueK, valueZ)
+
+        if (valueX != currentX or valueY != currentY or valueZ != currentZ or valueK != currentK):
+            sendSerial(valueX, valueY, valueK, valueZ)
+            currentX, currentY, currentZ, currentK = valueX, valueY, valueZ, valueK
+
 
     def releasedText(self):
         valueX = int(self.ui.txtIntegrationX.text())

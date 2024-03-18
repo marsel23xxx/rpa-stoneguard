@@ -1,4 +1,43 @@
-    def refreshRunningProjectData_1(self):
+ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600, timeout=.1)
+ser.flush()
+
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.integrationModel = QStandardItemModel()
+        self.createProjectModel = QStandardItemModel()
+        self.saveActivityModel = QStandardItemModel()
+        self.openProjectModel = QStandardItemModel()
+        self.chooseProjectModel = QStandardItemModel()
+        self.chooseActivityModel = QStandardItemModel()
+        self.runningModel_1 = QStandardItemModel()
+        self.runningModel_2 = QStandardItemModel()
+
+        self.kdProjectSignal = QtCore.pyqtSignal(str)
+
+        self.clicked_times = 0
+        self.stacked_data = []
+        self.timer = QTimer()
+        self.is_process_running = False
+        self.timer.timeout.connect(self.sendNextStep)
+        self.current_step = 0
+        self.ui.tbRunningProjectTabel_1.setModel(self.runningModel_1)
+        self.ui.tbRunningProjectTabel_2.setModel(self.runningModel_2)
+        self.refreshRunningProjectData_1()
+        self.ui.btRunning.clicked.connect(self.setRunProject)
+        self.ui.btRunningProjectKembali.clicked.connect(self.setDashboard)
+        self.ui.btRunningProjectShowProject.clicked.connect(self.setRunShowProject)
+        self.ui.btRunningProjectShowActivity.clicked.connect(self.setRunShowActivity)
+        self.ui.tbRunningProjectTabel_1.clicked.connect(self.rowClicked)
+        self.ui.btRunningProjectRight.clicked.connect(self.moveToTable2)
+        self.ui.btRunningProjectLeft.clicked.connect(self.removeFromTable2)
+        self.startSendingSteps()
+        self.ui.btRunningProjectRun.clicked.connect(self.toggleSendingSteps)
+        self.ui.btRunningProjectStop.clicked.connect(self.stopProcess)
+
+def refreshRunningProjectData_1(self):
         d = self.ui.txtRunningProjectGetActivity.text()
         try:
             connection = koneksi()
@@ -115,6 +154,11 @@
                 if item is not None:
                     item.setBackground(QColor("white"))
 
+    def resetColorRunningModel_2(self, row_index):
+        for column_index in range(self.runningModel_2.columnCount()):
+            item = self.runningModel_2.item(row_index, column_index)
+            if item is not None:
+                item.setBackground(QColor("white"))
 
     def highlight_selected_row(self, row_index, color):
         for column_index in range(self.runningModel_1.columnCount()):
@@ -141,6 +185,71 @@
         items = [code, x, y, k, z, delay, ket, pr] + [QStandardItem('') for _ in range(0)]
         
         self.runningModel_2.appendRow(items)
+
+    def startSendingSteps(self):
+        self.current_step = 0
+        self.timer.start(2000)
+
+    def highlightColumn(self, column_index, color):
+        for row in range(self.runningModel_2.rowCount()):
+            item = self.runningModel_2.item(row, column_index)
+            if item is not None:
+                item.setBackground(QColor(color))
+
+    def highlightRow(self, row_index, color):
+        view = self.ui.tbRunningProjectTabel_2
+        for column_index in range(self.runningModel_2.columnCount()):
+            item = self.runningModel_2.item(row_index, column_index)
+            if item is not None:
+                item.setBackground(color)
+                view.viewport().update()  
+
+    def stopSendingSteps(self):
+        self.timer.stop()
+
+    def sendNextStep(self):
+        row_count = self.runningModel_2.rowCount()
+        if self.current_step < row_count:
+            if self.current_step >= 0:
+                self.resetColorRunningModel_2(self.current_step)
+
+            self.current_step += 1
+            if self.current_step < row_count:
+                self.highlightRow(self.current_step, QColor("yellow"))
+
+            if self.current_step < row_count:
+                data_row = []
+                for column in range(1, 5):
+                    item = self.runningModel_2.item(self.current_step, column)
+                    if item is not None and item.text():
+                        data_row.append(int(item.text()))
+                    else:
+                        data_row.append(0)
+                sendSerial(*data_row)
+        else:
+            self.stopSendingSteps()
+
+
+    def moveDataToNextColumn(self, data_row):
+        for i in range(len(data_row)):
+            next_column_index = (self.current_step + 1) % self.runningModel_2.columnCount()
+            item = QStandardItem(data_row[i])
+            self.runningModel_2.setItem(self.current_step, next_column_index, item)
+
+    def toggleSendingSteps(self):
+        if self.timer.isActive():
+            self.stopSendingSteps()
+        else:
+            self.startSendingSteps()
+
+    def startProcess(self):
+        self.is_process_running = True
+        self.startSendingSteps() 
+
+    def stopProcess(self):
+        self.is_process_running = False
+        self.stopSendingSteps()  
+
 
     def releasedSlider(self):
         global currentX
@@ -175,55 +284,6 @@
         for data_row in data_list:
             if len(data_row) == 4:
                 sendSerial(*data_row) 
-
-    
-    def startSendingSteps(self):
-        self.current_step = 0
-        self.timer.start(2000)
-
-
-    def highlightColumn(self, column_index, color):
-        for row in range(self.runningModel_2.rowCount()):
-            item = self.runningModel_2.item(row, column_index)
-            if item is not None:
-                item.setBackground(QColor(color))
-
-    
-    def startSendingSteps(self):
-        self.current_step = 0
-        self.timer.start(2000)
-
-    def stopSendingSteps(self):
-        self.timer.stop()
-
-
-    def sendNextStep(self):
-        row_count = self.runningModel_2.rowCount()
-        if self.current_step < row_count:
-            data_row = []
-            for column in range(1, 5):
-                item = self.runningModel_2.item(self.current_step, column)
-                if item is not None and item.text():
-                    data_row.append(int(item.text()))
-                else:
-                    data_row.append(0) 
-            sendSerial(*data_row)
-            self.current_step += 1
-        else:
-            self.stopSendingSteps()
-
-
-    def moveDataToNextColumn(self, data_row):
-        for i in range(len(data_row)):
-            next_column_index = (self.current_step + 1) % self.runningModel_2.columnCount()
-            item = QStandardItem(data_row[i])
-            self.runningModel_2.setItem(self.current_step, next_column_index, item)
-
-    def toggleSendingSteps(self):
-        if self.timer.isActive():
-            self.stopSendingSteps()
-        else:
-            self.startSendingSteps()
 
 def writeSerial(data):
     ser.write(bytes(data, 'utf-8'))
