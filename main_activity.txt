@@ -293,3 +293,33 @@ def sendSerial(x, y, k, z):
     data = "config:%d,%d,%d,%d;" % (x, y, k, z)
     writeSerial(data)
     print(data)
+
+
+
+    # def sendLoopStep(self):
+    #     row_count = self.runningModel_2.rowCount()
+    #     if self.current_step < row_count:
+    #         if self.current_step >= 0:
+    #             self.resetColorRunningModel_2(self.current_step)
+
+    #         self.current_step += 1
+    #         if self.current_step < row_count:
+    #             self.highlightRow(self.current_step, QColor("yellow"))
+
+    #         if self.current_step < row_count:
+    #             data_row = []
+    #             for column in range(1, 5):
+    #                 item = self.runningModel_2.item(self.current_step, column)
+    #                 if item is not None and item.text():
+    #                     data_row.append(int(item.text()))
+    #                 else:
+    #                     data_row.append(0)
+    #             sendSerial(*data_row)
+    #         time.sleep(2)
+    #     else:
+    #         self.current_step = -1
+    #     self.sendLoopStep() 
+
+    #     if self.current_step == 0:
+    #         self.ui.btRunningProjectStatus.setText("Has Restarted")
+    #         self.ui.btRunningProjectRun.setText("Pause")

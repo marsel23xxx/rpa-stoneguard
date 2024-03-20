@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.stackedWidget = QtWidgets.QStackedWidget(self.centralwidget)
-        self.stackedWidget.setGeometry(QtCore.QRect(10, 0, 1290, 691))
+        self.stackedWidget.setGeometry(QtCore.QRect(0, 0, 1290, 691))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -304,6 +304,9 @@ class Ui_MainWindow(object):
         self.txtCreateProjectCari.setObjectName("txtCreateProjectCari")
         self.lbCreateProjectKode = QtWidgets.QLabel(self.createProject_2)
         self.lbCreateProjectKode.setGeometry(QtCore.QRect(160, 140, 151, 17))
+        self.lbCreateProjectKode.setStyleSheet("QLabel {\n"
+"    font-size: 1px;\n"
+"}")
         self.lbCreateProjectKode.setObjectName("lbCreateProjectKode")
         self.label_51 = QtWidgets.QLabel(self.createProject_2)
         self.label_51.setGeometry(QtCore.QRect(20, 170, 131, 41))
@@ -424,20 +427,13 @@ class Ui_MainWindow(object):
         self.Integration_3 = QtWidgets.QWidget()
         self.Integration_3.setObjectName("Integration_3")
         self.label_5 = QtWidgets.QLabel(self.Integration_3)
-        self.label_5.setGeometry(QtCore.QRect(30, 640, 31, 31))
+        self.label_5.setGeometry(QtCore.QRect(30, 650, 31, 31))
         self.label_5.setStyleSheet("QLabel {\n"
 "    font-weight: bold;\n"
 "    color: black;\n"
 "    font-size: 30px;\n"
 "}")
         self.label_5.setObjectName("label_5")
-        self.txtIntegrationX = QtWidgets.QLineEdit(self.Integration_3)
-        self.txtIntegrationX.setGeometry(QtCore.QRect(20, 610, 51, 31))
-        self.txtIntegrationX.setStyleSheet("QLineEdit {\n"
-"    border-radius: 10px;\n"
-"    border: 3px solid black;\n"
-"}")
-        self.txtIntegrationX.setObjectName("txtIntegrationX")
         self.frame_2 = QtWidgets.QFrame(self.Integration_3)
         self.frame_2.setGeometry(QtCore.QRect(0, 0, 671, 111))
         self.frame_2.setStyleSheet("QFrame {\n"
@@ -534,9 +530,12 @@ class Ui_MainWindow(object):
         self.btIntegrationKembali.setObjectName("btIntegrationKembali")
         self.lbIntegrationGetCode = QtWidgets.QLabel(self.frame_2)
         self.lbIntegrationGetCode.setGeometry(QtCore.QRect(40, 80, 121, 17))
+        self.lbIntegrationGetCode.setStyleSheet("QLabel {\n"
+"    font-size: 1px;\n"
+"}")
         self.lbIntegrationGetCode.setObjectName("lbIntegrationGetCode")
         self.btintegrationSetData = QtWidgets.QPushButton(self.Integration_3)
-        self.btintegrationSetData.setGeometry(QtCore.QRect(360, 440, 301, 51))
+        self.btintegrationSetData.setGeometry(QtCore.QRect(360, 350, 301, 51))
         self.btintegrationSetData.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btintegrationSetData.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btintegrationSetData.setStyleSheet("QPushButton {\n"
@@ -577,13 +576,6 @@ class Ui_MainWindow(object):
         self.tbIntegrationTabel = QtWidgets.QTableView(self.Integration_3)
         self.tbIntegrationTabel.setGeometry(QtCore.QRect(680, 150, 591, 521))
         self.tbIntegrationTabel.setObjectName("tbIntegrationTabel")
-        self.txtIntegrationY = QtWidgets.QLineEdit(self.Integration_3)
-        self.txtIntegrationY.setGeometry(QtCore.QRect(110, 610, 51, 31))
-        self.txtIntegrationY.setStyleSheet("QLineEdit {\n"
-"    border-radius: 10px;\n"
-"    border: 3px solid black;\n"
-"}")
-        self.txtIntegrationY.setObjectName("txtIntegrationY")
         self.label_7 = QtWidgets.QLabel(self.Integration_3)
         self.label_7.setGeometry(QtCore.QRect(360, 240, 231, 20))
         self.label_7.setStyleSheet("QLabel {\n"
@@ -676,7 +668,7 @@ class Ui_MainWindow(object):
         self.slIntegrationY.setTickInterval(5)
         self.slIntegrationY.setObjectName("slIntegrationY")
         self.btIntegrationReset = QtWidgets.QPushButton(self.Integration_3)
-        self.btIntegrationReset.setGeometry(QtCore.QRect(360, 500, 301, 51))
+        self.btIntegrationReset.setGeometry(QtCore.QRect(360, 410, 301, 51))
         self.btIntegrationReset.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btIntegrationReset.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btIntegrationReset.setStyleSheet("QPushButton {\n"
@@ -714,52 +706,6 @@ class Ui_MainWindow(object):
         self.btIntegrationReset.setIconSize(QtCore.QSize(50, 100))
         self.btIntegrationReset.setFlat(False)
         self.btIntegrationReset.setObjectName("btIntegrationReset")
-        self.txtIntegrationK = QtWidgets.QLineEdit(self.Integration_3)
-        self.txtIntegrationK.setGeometry(QtCore.QRect(290, 610, 51, 31))
-        self.txtIntegrationK.setStyleSheet("QLineEdit {\n"
-"    border-radius: 10px;\n"
-"    border: 3px solid black;\n"
-"}")
-        self.txtIntegrationK.setObjectName("txtIntegrationK")
-        self.btIntegrationEdit = QtWidgets.QPushButton(self.Integration_3)
-        self.btIntegrationEdit.setGeometry(QtCore.QRect(360, 560, 301, 51))
-        self.btIntegrationEdit.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btIntegrationEdit.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.btIntegrationEdit.setStyleSheet("QPushButton {\n"
-"    border-radius: 20px;\n"
-"    background: red;\n"
-"    color: white;\n"
-"    font-weight: bold;\n"
-"    font-size: 22px;\n"
-"    border: 3px solid black;\n"
-"      text-align: center;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background: qradialgradient(\n"
-"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
-"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
-"        );\n"
-"    color: black;\n"
-"    border: 3px solid black;\n"
-"    }\n"
-"\n"
-"QPushButton:pressed {\n"
-"    border-style: inset;\n"
-"    background: qradialgradient(\n"
-"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
-"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
-"        );\n"
-"    }\n"
-"\n"
-"QPushButton::icon {\n"
-"    margin-bottom: 5px; \n"
-"}\n"
-"\n"
-"")
-        self.btIntegrationEdit.setIconSize(QtCore.QSize(50, 100))
-        self.btIntegrationEdit.setFlat(False)
-        self.btIntegrationEdit.setObjectName("btIntegrationEdit")
         self.slIntegrationK = QtWidgets.QSlider(self.Integration_3)
         self.slIntegrationK.setGeometry(QtCore.QRect(300, 230, 31, 381))
         self.slIntegrationK.setStyleSheet("QSlider::groove:vertical {\n"
@@ -784,34 +730,8 @@ class Ui_MainWindow(object):
         self.slIntegrationK.setTickPosition(QtWidgets.QSlider.TicksBothSides)
         self.slIntegrationK.setTickInterval(5)
         self.slIntegrationK.setObjectName("slIntegrationK")
-        self.txtIntegrationZ = QtWidgets.QLineEdit(self.Integration_3)
-        self.txtIntegrationZ.setGeometry(QtCore.QRect(200, 610, 51, 31))
-        self.txtIntegrationZ.setStyleSheet("QLineEdit {\n"
-"    border-radius: 10px;\n"
-"    border: 3px solid black;\n"
-"}")
-        self.txtIntegrationZ.setObjectName("txtIntegrationZ")
-        self.txtIntegrationDelay = QtWidgets.QLineEdit(self.Integration_3)
-        self.txtIntegrationDelay.setGeometry(QtCore.QRect(360, 370, 301, 51))
-        self.txtIntegrationDelay.setStyleSheet("QLineEdit {\n"
-"    border-radius: 10px;\n"
-"    border: 3px solid black;\n"
-"    font-style:italic;\n"
-"    font-size: 22px;\n"
-"}\n"
-"")
-        self.txtIntegrationDelay.setText("")
-        self.txtIntegrationDelay.setObjectName("txtIntegrationDelay")
-        self.label_55 = QtWidgets.QLabel(self.Integration_3)
-        self.label_55.setGeometry(QtCore.QRect(360, 340, 211, 20))
-        self.label_55.setStyleSheet("QLabel {\n"
-"    font-weight: bold;\n"
-"    color: black;\n"
-"    font-size: 22px;\n"
-"}")
-        self.label_55.setObjectName("label_55")
         self.btIntegrationHapus = QtWidgets.QPushButton(self.Integration_3)
-        self.btIntegrationHapus.setGeometry(QtCore.QRect(360, 620, 301, 51))
+        self.btIntegrationHapus.setGeometry(QtCore.QRect(360, 470, 301, 51))
         self.btIntegrationHapus.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btIntegrationHapus.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btIntegrationHapus.setStyleSheet("QPushButton {\n"
@@ -874,6 +794,12 @@ class Ui_MainWindow(object):
 "    font-size: 22px;\n"
 "}")
         self.txtIntegrationCari.setObjectName("txtIntegrationCari")
+        self.txtIntegrationDelay = QtWidgets.QLabel(self.frame_4)
+        self.txtIntegrationDelay.setGeometry(QtCore.QRect(450, 60, 81, 17))
+        self.txtIntegrationDelay.setStyleSheet("QLabel {\n"
+"    font-size: 1px;\n"
+"}")
+        self.txtIntegrationDelay.setObjectName("txtIntegrationDelay")
         self.label_11 = QtWidgets.QLabel(self.Integration_3)
         self.label_11.setGeometry(QtCore.QRect(890, 120, 181, 31))
         self.label_11.setStyleSheet("QLabel {\n"
@@ -904,7 +830,7 @@ class Ui_MainWindow(object):
         self.txtIntegrationCode.setPlaceholderText("")
         self.txtIntegrationCode.setObjectName("txtIntegrationCode")
         self.label_6 = QtWidgets.QLabel(self.Integration_3)
-        self.label_6.setGeometry(QtCore.QRect(120, 640, 31, 31))
+        self.label_6.setGeometry(QtCore.QRect(120, 650, 31, 31))
         self.label_6.setStyleSheet("QLabel {\n"
 "    font-weight: bold;\n"
 "    color: black;\n"
@@ -912,7 +838,7 @@ class Ui_MainWindow(object):
 "}")
         self.label_6.setObjectName("label_6")
         self.label_8 = QtWidgets.QLabel(self.Integration_3)
-        self.label_8.setGeometry(QtCore.QRect(210, 640, 31, 31))
+        self.label_8.setGeometry(QtCore.QRect(210, 650, 31, 31))
         self.label_8.setStyleSheet("QLabel {\n"
 "    font-weight: bold;\n"
 "    color: black;\n"
@@ -920,7 +846,7 @@ class Ui_MainWindow(object):
 "}")
         self.label_8.setObjectName("label_8")
         self.label_9 = QtWidgets.QLabel(self.Integration_3)
-        self.label_9.setGeometry(QtCore.QRect(300, 640, 31, 31))
+        self.label_9.setGeometry(QtCore.QRect(300, 650, 31, 31))
         self.label_9.setStyleSheet("QLabel {\n"
 "    font-weight: bold;\n"
 "    color: black;\n"
@@ -948,6 +874,194 @@ class Ui_MainWindow(object):
 "    font-size: 22px;\n"
 "}")
         self.label_15.setObjectName("label_15")
+        self.txtIntegrationX = QtWidgets.QDoubleSpinBox(self.Integration_3)
+        self.txtIntegrationX.setGeometry(QtCore.QRect(20, 610, 51, 41))
+        self.txtIntegrationX.setStyleSheet("QDoubleSpinBox {\n"
+"    background-color: #f0f0f0;\n"
+"    border: 2px solid black;\n"
+"    font-size: 12px;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {\n"
+"    background-color: #e0e0e0;\n"
+"    width: 12px;\n"
+"    height: 15px;\n"
+"    border: 2px solid black;\n"
+"    border-left-width: 2px;\n"
+"    border-right-width: 0px;\n"
+"    border-bottom-width: 2px;\n"
+"    border-top-width: 1px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {\n"
+"    background-color: #c0c0c0;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow:enabled, QDoubleSpinBox::down-arrow:enabled {\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow:disabled, QDoubleSpinBox::down-arrow:disabled {\n"
+"    color: #999;\n"
+"}\n"
+"\n"
+"\n"
+"QDoubleSpinBox::up-arrow {\n"
+"    subcontrol-position: top right;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::down-arrow {\n"
+"    subcontrol-position: bottom right;\n"
+"}\n"
+"")
+        self.txtIntegrationX.setMaximum(700.0)
+        self.txtIntegrationX.setObjectName("txtIntegrationX")
+        self.txtIntegrationY = QtWidgets.QDoubleSpinBox(self.Integration_3)
+        self.txtIntegrationY.setGeometry(QtCore.QRect(110, 610, 51, 41))
+        self.txtIntegrationY.setStyleSheet("QDoubleSpinBox {\n"
+"    background-color: #f0f0f0;\n"
+"    border: 2px solid black;\n"
+"    font-size: 12px;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {\n"
+"    background-color: #e0e0e0;\n"
+"    width: 12px;\n"
+"    height: 15px;\n"
+"    border: 2px solid black;\n"
+"    border-left-width: 2px;\n"
+"    border-right-width: 0px;\n"
+"    border-bottom-width: 2px;\n"
+"    border-top-width: 1px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {\n"
+"    background-color: #c0c0c0;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow:enabled, QDoubleSpinBox::down-arrow:enabled {\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow:disabled, QDoubleSpinBox::down-arrow:disabled {\n"
+"    color: #999;\n"
+"}\n"
+"\n"
+"\n"
+"QDoubleSpinBox::up-arrow {\n"
+"    subcontrol-position: top right;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::down-arrow {\n"
+"    subcontrol-position: bottom right;\n"
+"}\n"
+"")
+        self.txtIntegrationY.setMaximum(3500.0)
+        self.txtIntegrationY.setObjectName("txtIntegrationY")
+        self.txtIntegrationZ = QtWidgets.QDoubleSpinBox(self.Integration_3)
+        self.txtIntegrationZ.setGeometry(QtCore.QRect(200, 610, 51, 41))
+        self.txtIntegrationZ.setStyleSheet("QDoubleSpinBox {\n"
+"    background-color: #f0f0f0;\n"
+"    border: 2px solid black;\n"
+"    font-size: 12px;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {\n"
+"    background-color: #e0e0e0;\n"
+"    width: 12px;\n"
+"    height: 15px;\n"
+"    border: 2px solid black;\n"
+"    border-left-width: 2px;\n"
+"    border-right-width: 0px;\n"
+"    border-bottom-width: 2px;\n"
+"    border-top-width: 1px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {\n"
+"    background-color: #c0c0c0;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow:enabled, QDoubleSpinBox::down-arrow:enabled {\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow:disabled, QDoubleSpinBox::down-arrow:disabled {\n"
+"    color: #999;\n"
+"}\n"
+"\n"
+"\n"
+"QDoubleSpinBox::up-arrow {\n"
+"    subcontrol-position: top right;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::down-arrow {\n"
+"    subcontrol-position: bottom right;\n"
+"}\n"
+"")
+        self.txtIntegrationZ.setMaximum(80.0)
+        self.txtIntegrationZ.setObjectName("txtIntegrationZ")
+        self.txtIntegrationK = QtWidgets.QDoubleSpinBox(self.Integration_3)
+        self.txtIntegrationK.setGeometry(QtCore.QRect(290, 610, 51, 41))
+        self.txtIntegrationK.setStyleSheet("QDoubleSpinBox {\n"
+"    background-color: #f0f0f0;\n"
+"    border: 2px solid black;\n"
+"    font-size: 12px;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {\n"
+"    background-color: #e0e0e0;\n"
+"    width: 12px;\n"
+"    height: 15px;\n"
+"    border: 2px solid black;\n"
+"    border-left-width: 2px;\n"
+"    border-right-width: 0px;\n"
+"    border-bottom-width: 2px;\n"
+"    border-top-width: 1px;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {\n"
+"    background-color: #c0c0c0;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow:enabled, QDoubleSpinBox::down-arrow:enabled {\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::up-arrow:disabled, QDoubleSpinBox::down-arrow:disabled {\n"
+"    color: #999;\n"
+"}\n"
+"\n"
+"\n"
+"QDoubleSpinBox::up-arrow {\n"
+"    subcontrol-position: top right;\n"
+"}\n"
+"\n"
+"QDoubleSpinBox::down-arrow {\n"
+"    subcontrol-position: bottom right;\n"
+"}\n"
+"")
+        self.txtIntegrationK.setMaximum(850.0)
+        self.txtIntegrationK.setObjectName("txtIntegrationK")
         self.stackedWidget.addWidget(self.Integration_3)
         self.saveActivity_4 = QtWidgets.QWidget()
         self.saveActivity_4.setObjectName("saveActivity_4")
@@ -976,6 +1090,7 @@ class Ui_MainWindow(object):
         self.lbCreateAcvtivityGetProjectName.setObjectName("lbCreateAcvtivityGetProjectName")
         self.tbSaveActivityTabel = QtWidgets.QTableView(self.saveActivity_4)
         self.tbSaveActivityTabel.setGeometry(QtCore.QRect(470, 190, 811, 471))
+        self.tbSaveActivityTabel.setStyleSheet("")
         self.tbSaveActivityTabel.setObjectName("tbSaveActivityTabel")
         self.btSaveActivityDelete = QtWidgets.QPushButton(self.saveActivity_4)
         self.btSaveActivityDelete.setGeometry(QtCore.QRect(20, 600, 431, 51))
@@ -1171,6 +1286,9 @@ class Ui_MainWindow(object):
         self.txtSaveActivityCode.setObjectName("txtSaveActivityCode")
         self.lbSaveActivityGetCode = QtWidgets.QLabel(self.saveActivity_4)
         self.lbSaveActivityGetCode.setGeometry(QtCore.QRect(20, 120, 171, 17))
+        self.lbSaveActivityGetCode.setStyleSheet("QLabel {\n"
+"    font-size: 1px;\n"
+"}")
         self.lbSaveActivityGetCode.setObjectName("lbSaveActivityGetCode")
         self.btSaveActivityOpen = QtWidgets.QPushButton(self.saveActivity_4)
         self.btSaveActivityOpen.setGeometry(QtCore.QRect(1140, 130, 121, 51))
@@ -1219,9 +1337,7 @@ class Ui_MainWindow(object):
         self.txtOpenProjectGetData = QtWidgets.QLabel(self.openProject_5)
         self.txtOpenProjectGetData.setGeometry(QtCore.QRect(930, 210, 121, 31))
         self.txtOpenProjectGetData.setStyleSheet("QLabel {\n"
-"    font-size: 20px;\n"
-"    color: black;\n"
-"    font-weight: bold;\n"
+"    font-size: 1px;\n"
 "}")
         self.txtOpenProjectGetData.setObjectName("txtOpenProjectGetData")
         self.frame_3 = QtWidgets.QFrame(self.openProject_5)
@@ -1281,9 +1397,8 @@ class Ui_MainWindow(object):
         self.txtOpenProjectGetName = QtWidgets.QLabel(self.frame_3)
         self.txtOpenProjectGetName.setGeometry(QtCore.QRect(920, 40, 121, 31))
         self.txtOpenProjectGetName.setStyleSheet("QLabel {\n"
-"    font-size: 20px;\n"
+"    font-size: 1px;\n"
 "    color: black;\n"
-"    font-weight: bold;\n"
 "}")
         self.txtOpenProjectGetName.setObjectName("txtOpenProjectGetName")
         self.btOpenProjectBuka = QtWidgets.QPushButton(self.openProject_5)
@@ -1484,9 +1599,15 @@ class Ui_MainWindow(object):
         self.btRunningProjectKembali.setObjectName("btRunningProjectKembali")
         self.txtRunningProjectGetProject = QtWidgets.QLabel(self.frame_7)
         self.txtRunningProjectGetProject.setGeometry(QtCore.QRect(510, 30, 121, 17))
+        self.txtRunningProjectGetProject.setStyleSheet("QLabel {\n"
+"    font-size: 1px;\n"
+"}")
         self.txtRunningProjectGetProject.setObjectName("txtRunningProjectGetProject")
         self.txtRunningProjectGetActivity = QtWidgets.QLabel(self.frame_7)
         self.txtRunningProjectGetActivity.setGeometry(QtCore.QRect(510, 60, 151, 17))
+        self.txtRunningProjectGetActivity.setStyleSheet("QLabel {\n"
+"    font-size: 1px;\n"
+"}")
         self.txtRunningProjectGetActivity.setObjectName("txtRunningProjectGetActivity")
         self.btRunningProjectRun = QtWidgets.QPushButton(self.runProject_6)
         self.btRunningProjectRun.setGeometry(QtCore.QRect(1090, 210, 91, 51))
@@ -1712,7 +1833,7 @@ class Ui_MainWindow(object):
         self.btRunningProjectStop.setFlat(False)
         self.btRunningProjectStop.setObjectName("btRunningProjectStop")
         self.frame_10 = QtWidgets.QFrame(self.runProject_6)
-        self.frame_10.setGeometry(QtCore.QRect(800, 200, 241, 71))
+        self.frame_10.setGeometry(QtCore.QRect(800, 200, 271, 71))
         self.frame_10.setStyleSheet("QFrame {\n"
 "    background: rgb(173, 127, 168)rgb(204, 0, 0)\n"
 "}")
@@ -1720,14 +1841,14 @@ class Ui_MainWindow(object):
         self.frame_10.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_10.setObjectName("frame_10")
         self.spRunningProjectLoop = QtWidgets.QSpinBox(self.frame_10)
-        self.spRunningProjectLoop.setGeometry(QtCore.QRect(150, 10, 81, 51))
+        self.spRunningProjectLoop.setGeometry(QtCore.QRect(180, 10, 81, 51))
         self.spRunningProjectLoop.setStyleSheet("QSpinBox {\n"
 "    font-size: 20px;\n"
 "    font-weight: bold;\n"
 "}")
         self.spRunningProjectLoop.setObjectName("spRunningProjectLoop")
         self.btRunningProjectLoop = QtWidgets.QPushButton(self.frame_10)
-        self.btRunningProjectLoop.setGeometry(QtCore.QRect(10, 10, 81, 51))
+        self.btRunningProjectLoop.setGeometry(QtCore.QRect(10, 10, 121, 51))
         self.btRunningProjectLoop.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btRunningProjectLoop.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btRunningProjectLoop.setStyleSheet("QPushButton {\n"
@@ -1765,7 +1886,7 @@ class Ui_MainWindow(object):
         self.btRunningProjectLoop.setFlat(False)
         self.btRunningProjectLoop.setObjectName("btRunningProjectLoop")
         self.label_37 = QtWidgets.QLabel(self.frame_10)
-        self.label_37.setGeometry(QtCore.QRect(100, 10, 31, 51))
+        self.label_37.setGeometry(QtCore.QRect(140, 10, 31, 51))
         self.label_37.setStyleSheet("QLabel {\n"
 "    font-size: 22px;\n"
 "    font-weight: bold;\n"
@@ -1781,7 +1902,7 @@ class Ui_MainWindow(object):
         self.label_38.setObjectName("label_38")
         self.btRunningProjectStatus = QtWidgets.QPushButton(self.runProject_6)
         self.btRunningProjectStatus.setEnabled(False)
-        self.btRunningProjectStatus.setGeometry(QtCore.QRect(800, 140, 241, 51))
+        self.btRunningProjectStatus.setGeometry(QtCore.QRect(800, 140, 271, 51))
         self.btRunningProjectStatus.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btRunningProjectStatus.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btRunningProjectStatus.setStyleSheet("QPushButton {\n"
@@ -1957,8 +2078,7 @@ class Ui_MainWindow(object):
         self.lbChooseActivityGetCode = QtWidgets.QLabel(self.getActivity_8)
         self.lbChooseActivityGetCode.setGeometry(QtCore.QRect(960, 140, 181, 31))
         self.lbChooseActivityGetCode.setStyleSheet("QLabel {\n"
-"    font-size: 22px;\n"
-"    font-weight: bold;\n"
+"    font-size: 1px;\n"
 "}")
         self.lbChooseActivityGetCode.setObjectName("lbChooseActivityGetCode")
         self.frame_9 = QtWidgets.QFrame(self.getActivity_8)
@@ -2018,8 +2138,7 @@ class Ui_MainWindow(object):
         self.lbChooseActivityGetCodeProject = QtWidgets.QLabel(self.frame_9)
         self.lbChooseActivityGetCodeProject.setGeometry(QtCore.QRect(940, 50, 181, 31))
         self.lbChooseActivityGetCodeProject.setStyleSheet("QLabel {\n"
-"    font-size: 22px;\n"
-"    font-weight: bold;\n"
+"    font-size: 1px;\n"
 "}")
         self.lbChooseActivityGetCodeProject.setObjectName("lbChooseActivityGetCodeProject")
         self.btChooseActivityOpen = QtWidgets.QPushButton(self.getActivity_8)
@@ -2073,8 +2192,7 @@ class Ui_MainWindow(object):
         self.lbChooseActivityGetName = QtWidgets.QLabel(self.getActivity_8)
         self.lbChooseActivityGetName.setGeometry(QtCore.QRect(960, 170, 181, 31))
         self.lbChooseActivityGetName.setStyleSheet("QLabel {\n"
-"    font-size: 22px;\n"
-"    font-weight: bold;\n"
+"    font-size: 1px;\n"
 "}")
         self.lbChooseActivityGetName.setObjectName("lbChooseActivityGetName")
         self.txtChooseActivityCari = QtWidgets.QLineEdit(self.getActivity_8)
@@ -2092,7 +2210,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(5)
+        self.stackedWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -2122,11 +2240,9 @@ class Ui_MainWindow(object):
         self.label_7.setText(_translate("MainWindow", "Insert Description"))
         self.txtIntegrationKet.setPlaceholderText(_translate("MainWindow", "Please insert description**"))
         self.btIntegrationReset.setText(_translate("MainWindow", "Reset"))
-        self.btIntegrationEdit.setText(_translate("MainWindow", "Edit"))
-        self.txtIntegrationDelay.setPlaceholderText(_translate("MainWindow", "Insert delay if you needed"))
-        self.label_55.setText(_translate("MainWindow", "Insert Delay Process"))
         self.btIntegrationHapus.setText(_translate("MainWindow", "Delete"))
         self.label_10.setText(_translate("MainWindow", "Search Data"))
+        self.txtIntegrationDelay.setText(_translate("MainWindow", "hello"))
         self.label_11.setText(_translate("MainWindow", "Coordinats Table"))
         self.label_14.setText(_translate("MainWindow", "Coordinat Code"))
         self.label_6.setText(_translate("MainWindow", "Y"))

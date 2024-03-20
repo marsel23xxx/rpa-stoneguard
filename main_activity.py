@@ -5,7 +5,7 @@ import serial
 import time
 import threading
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QThread, pyqtSignal
 from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableView, QTableWidgetItem
 
@@ -38,7 +38,18 @@ currentY = 0
 currentZ = 0
 currentK = 0
 
-class MainWindow(QtWidgets.QMainWindow):
+class WorkerThread(QThread):
+    stepCompleted = pyqtSignal()
+
+    def __init__(self, parent=None):
+        super(WorkerThread, self).__init__(parent)
+
+    def run(self):
+        while True:
+            self.stepCompleted.emit() 
+
+class MainWindow(QtWidgets.QMainWindow, QThread):
+    finished = pyqtSignal()
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
@@ -51,7 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.chooseActivityModel = QStandardItemModel()
         self.runningModel_1 = QStandardItemModel()
         self.runningModel_2 = QStandardItemModel()
-
+        
         self.kdProjectSignal = QtCore.pyqtSignal(str)
         self.defaultMenu()
         # Logout
@@ -98,10 +109,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.txtIntegrationZ.editingFinished.connect(self.releasedText)
         self.ui.txtIntegrationK.editingFinished.connect(self.releasedText)
 
-        self.ui.txtIntegrationX.textChanged.connect(self.updateSliderX)
-        self.ui.txtIntegrationY.textChanged.connect(self.updateSliderY)
-        self.ui.txtIntegrationZ.textChanged.connect(self.updateSliderZ)
-        self.ui.txtIntegrationK.textChanged.connect(self.updateSliderK)
+        self.ui.txtIntegrationX.valueChanged.connect(self.updateSliderX)
+        self.ui.txtIntegrationY.valueChanged.connect(self.updateSliderY)
+        self.ui.txtIntegrationZ.valueChanged.connect(self.updateSliderZ)
+        self.ui.txtIntegrationK.valueChanged.connect(self.updateSliderK)
 
         self.ui.tbIntegrationTabel.setModel(self.integrationModel)
         self.ui.btintegrationSetData.clicked.connect(self.setCoordinates)
@@ -132,8 +143,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.looping = False
         self.loop_thread = None
         self.last_paused_step = -1
+        self.workerThread = WorkerThread()
+        self.workerThread.stepCompleted.connect(self.sendLoopStep)
         self.timer.timeout.connect(self.sendNextStep)
-        self.current_step = 0
+        self.current_step = -1
         self.ui.tbRunningProjectTabel_1.setModel(self.runningModel_1)
         self.ui.tbRunningProjectTabel_2.setModel(self.runningModel_2)
         self.refreshRunningProjectData_1()
@@ -147,8 +160,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.startSendingSteps()
         self.ui.btRunningProjectRun.clicked.connect(self.toggleSendingSteps)
         self.ui.btRunningProjectStop.clicked.connect(self.actionSendeingSteps)
-        self.ui.btRunningProjectLoop.clicked.connect(self.toggleLoopingSteps)
-
+        self.ui.btRunningProjectLoop.clicked.connect(self.toggleSendingLoopSteps)
+        
 
         # Komponen bagian show project
         self.ui.tbChooseProjectTabel.setModel(self.chooseProjectModel)
@@ -166,6 +179,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btChooseActivityOpen.clicked.connect(self.goToRunActivityGetProject)
         self.ui.btChooseActivityBack.clicked.connect(self.setRunProject)
 
+        # Testing 
+        # self.ui.btRunningProjectRun.clicked.connect(self.runLoopStep)
 
     def defaultMenu(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.dashboard_1)
@@ -374,7 +389,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def setIntegration(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.Integration_3)
         self.refreshIntegrationTable()
-        self.setIntegrationEmptyColumn1()
+        self.setIntegrationEmptyColumn()
 
     def setActivitySaved(self):
         a = QMessageBox.question(
@@ -691,17 +706,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # START Integration Menu================================================================================================
 
-    def updateLineEditX(self, value):
-        self.ui.txtIntegrationX.setText(str(value))
+    def updateLineEditX(self):
+        x = self.ui.slIntegrationX.value()
+        self.ui.txtIntegrationX.setValue(x)
 
-    def updateLineEditY(self, value):
-        self.ui.txtIntegrationY.setText(str(value))
+    def updateLineEditY(self):
+        y = self.ui.slIntegrationY.value()
+        self.ui.txtIntegrationY.setValue(y)
 
-    def updateLineEditZ(self, value):
-        self.ui.txtIntegrationZ.setText(str(value))
+    def updateLineEditZ(self):
+        z = self.ui.slIntegrationZ.value()
+        self.ui.txtIntegrationZ.setValue(z)
 
-    def updateLineEditK(self, value):
-        self.ui.txtIntegrationK.setText(str(value))
+    def updateLineEditK(self):
+        k = self.ui.slIntegrationK.value()
+        self.ui.txtIntegrationK.setValue(k)
 
     def updateSliderX(self, value):
         self.ui.slIntegrationX.setValue(int(value))
@@ -717,16 +736,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setCoordinates(self):
         a = self.ui.txtIntegrationCode.text()
-        b = self.ui.txtIntegrationX.text()
-        c = self.ui.txtIntegrationY.text()
-        d = self.ui.txtIntegrationZ.text()
-        e = self.ui.txtIntegrationK.text()
-        f = self.ui.txtIntegrationDelay.text()
+        b = self.ui.txtIntegrationX.value()
+        c = self.ui.txtIntegrationY.value()
+        d = self.ui.txtIntegrationZ.value()
+        e = self.ui.txtIntegrationK.value()
+        f = 0
         g = self.ui.txtIntegrationKet.text()
         h = self.ui.lbIntegrationGetCode.text()
 
-        if not b or not c or not d or not e or not g:
-            QMessageBox.warning(self, "Warning", "Please input your data.")
+        if not g:
+            QMessageBox.warning(self, "Warning", "Please input your description.")
             return
 
         try:
@@ -982,10 +1001,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.txtIntegrationKet.setText(getDelay)
             self.ui.txtIntegrationDelay.setText(getDesc)
 
-            self.ui.txtIntegrationX.setText(str(getX))
-            self.ui.txtIntegrationY.setText(str(getY))
-            self.ui.txtIntegrationZ.setText(str(getZ))
-            self.ui.txtIntegrationK.setText(str(getK))
+            self.ui.txtIntegrationX.setValue(getX)
+            self.ui.txtIntegrationY.setValue(getY)
+            self.ui.txtIntegrationZ.setValue(getZ)
+            self.ui.txtIntegrationK.setValue(getK)
 
             self.ui.slIntegrationX.setValue(getX)
             self.ui.slIntegrationY.setValue(getY)
@@ -1003,30 +1022,30 @@ class MainWindow(QtWidgets.QMainWindow):
     def setIntegrationEmptyColumn(self):
         self.ui.txtIntegrationKet.setText("")
         self.ui.txtIntegrationDelay.setText("0")
-        self.ui.txtIntegrationX.setText("0")
-        self.ui.txtIntegrationY.setText("0")
-        self.ui.txtIntegrationZ.setText("0")
-        self.ui.txtIntegrationK.setText("0")
+        self.ui.txtIntegrationX.setValue(0)
+        self.ui.txtIntegrationY.setValue(0)
+        self.ui.txtIntegrationZ.setValue(0)
+        self.ui.txtIntegrationK.setValue(0)
 
-        x = self.ui.slIntegrationX.setValue(0)
-        y = self.ui.slIntegrationY.setValue(0)
-        z = self.ui.slIntegrationZ.setValue(0)
-        k = self.ui.slIntegrationK.setValue(0)
+        self.ui.slIntegrationX.setValue(0)
+        self.ui.slIntegrationY.setValue(0)
+        self.ui.slIntegrationZ.setValue(0)
+        self.ui.slIntegrationK.setValue(0)
 
         sendSerial(0, 0, 0, 0)
 
     def setIntegrationEmptyColumn1(self):
         self.ui.txtIntegrationKet.setText("")
         self.ui.txtIntegrationDelay.setText("0")
-        self.ui.txtIntegrationX.setText("0")
-        self.ui.txtIntegrationY.setText("0")
-        self.ui.txtIntegrationZ.setText("0")
-        self.ui.txtIntegrationK.setText("0")
+        self.ui.txtIntegrationX.setValue(0)
+        self.ui.txtIntegrationY.setValue(0)
+        self.ui.txtIntegrationZ.setValue(0)
+        self.ui.txtIntegrationK.setValue(0)
 
-        x = self.ui.slIntegrationX.setValue(0)
-        y = self.ui.slIntegrationY.setValue(0)
-        z = self.ui.slIntegrationZ.setValue(0)
-        k = self.ui.slIntegrationK.setValue(0)
+        self.ui.slIntegrationX.setValue(0)
+        self.ui.slIntegrationY.setValue(0)
+        self.ui.slIntegrationZ.setValue(0)
+        self.ui.slIntegrationK.setValue(0)
 
     # END Integration Menu ==================================================================================
 
@@ -1043,7 +1062,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
                     self.openProjectModel.clear()
                     self.openProjectModel.setHorizontalHeaderLabels(
-                        ["Project Code", "Project Name", "Description"]
+                        ["P-Code", "Project Name", "Description"]
                     )
                     font = QtGui.QFont()
                     font.setPointSize(14)
@@ -1054,6 +1073,10 @@ class MainWindow(QtWidgets.QMainWindow):
                     font = header_view.font()
                     font.setPointSize(18)
                     header_view.setFont(font)
+
+                    self.ui.tbOpenProjectTabel.setColumnWidth(0, 100)
+                    self.ui.tbOpenProjectTabel.setColumnWidth(1, 400)
+                    self.ui.tbOpenProjectTabel.setColumnWidth(2, 800)
 
                     for i, row_data in enumerate(result):
                         a = QStandardItem(row_data["kd_project"])
@@ -1069,7 +1092,6 @@ class MainWindow(QtWidgets.QMainWindow):
                         c.setTextAlignment(QtCore.Qt.AlignCenter)
 
                         self.openProjectModel.appendRow([a, b, c])
-                        self.ui.tbOpenProjectTabel.resizeColumnsToContents()
                         self.ui.tbOpenProjectTabel.verticalHeader().setDefaultSectionSize(
                             50
                         )
@@ -1229,8 +1251,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     result = cursor.fetchall()
 
                     self.runningModel_1.clear()
-                    self.runningModel_1.setHorizontalHeaderLabels(
-                        ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                    self.runningModel_1.setHorizontalHeaderLabels(     
+                    ["Description", "X", "Y", "Z", "K", "Delay", "", "C-Code"]
                     )
                     font = QtGui.QFont()
                     font.setPointSize(14)
@@ -1241,25 +1263,25 @@ class MainWindow(QtWidgets.QMainWindow):
                     font.setPointSize(18)
                     header_view.setFont(font)
 
-                    self.ui.tbRunningProjectTabel_1.setColumnWidth(0, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(0, 500)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(1, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(2, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(3, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(4, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(5, 100)
-                    self.ui.tbRunningProjectTabel_1.setColumnWidth(6, 400)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(6, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(7, 100)
 
                     for row_data in result:
                         items = [
-                            QStandardItem(str(row_data["kd_kor"])),
+                            QStandardItem(str(row_data["keterangan"])),
                             QStandardItem(str(row_data["x"])),
                             QStandardItem(str(row_data["y"])),
                             QStandardItem(str(row_data["z"])),
                             QStandardItem(str(row_data["k"])),
                             QStandardItem(str(row_data["delay"])),
-                            QStandardItem(str(row_data["keterangan"])),
                             QStandardItem(str(row_data["kd_activity"])),
+                            QStandardItem(str(row_data["kd_kor"])),
                         ]
                         for item in items:
                             item.setFont(font)
@@ -1267,13 +1289,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
                         self.runningModel_1.appendRow(items)
 
-                    self.ui.tbRunningProjectTabel_1.resizeColumnsToContents()
                     self.ui.tbRunningProjectTabel_1.verticalHeader().setDefaultSectionSize(
                         50
                     )
 
                     self.runningModel_2.setHorizontalHeaderLabels(
-                    ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                    ["Description", "X", "Y", "Z", "K", "Delay", "", "C-Code"]
                     )
 
                     font_2 = QtGui.QFont()
@@ -1284,13 +1305,13 @@ class MainWindow(QtWidgets.QMainWindow):
                     font_2.setPointSize(18)
                     header_view_2.setFont(font_2)
 
-                    self.ui.tbRunningProjectTabel_2.setColumnWidth(0, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(0, 600)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(1, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(2, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(3, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(4, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(5, 100)
-                    self.ui.tbRunningProjectTabel_2.setColumnWidth(6, 400)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(6, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(7, 100)
 
         finally:
@@ -1306,9 +1327,9 @@ class MainWindow(QtWidgets.QMainWindow):
             item = self.runningModel_1.item(index.row(), column_index)
             selected_row_data.append(item.text())
 
-        if selected_row_data not in self.stacked_data:  # Periksa apakah data sudah ada sebelumnya
+        if selected_row_data not in self.stacked_data: 
             self.stacked_data.append(selected_row_data)
-            self.highlight_selected_row(index.row(), "lightblue")
+            self.highlight_selected_row(index.row(), "blue")
         else:
             print("zero")
 
@@ -1359,23 +1380,20 @@ class MainWindow(QtWidgets.QMainWindow):
         
         font_2 = QtGui.QFont()
         font_2.setPointSize(14)
-        for item in [code, x, y, z, k, delay, ket, pr]:
+        for item in [ket, x, y, z, k, delay, pr, code]:
             item.setFont(font_2)  
             item.setTextAlignment(QtCore.Qt.AlignCenter)
 
-        items = [code, x, y, k, z, delay, ket, pr] + [QStandardItem('') for _ in range(0)]
+        items = [code, x, y, k, z, delay, pr, ket] + [QStandardItem('') for _ in range(0)]
         
         self.runningModel_2.appendRow(items)
 
     def startSendingSteps(self):
         self.current_step = -1
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.sendNextStep)
         self.timer.start(2000)
 
-    def highlightColumn(self, column_index, color):
-        for row in range(self.runningModel_2.rowCount()):
-            item = self.runningModel_2.item(row, column_index)
-            if item is not None:
-                item.setBackground(QColor(color))
 
     def highlightRow(self, row_index, color):
         view = self.ui.tbRunningProjectTabel_2
@@ -1388,16 +1406,15 @@ class MainWindow(QtWidgets.QMainWindow):
     def stopSendingSteps(self):
         self.timer.stop()
 
-    def sendNextStep(self):
+
+    def sendLoopStep(self):
         row_count = self.runningModel_2.rowCount()
         if self.current_step < row_count:
             if self.current_step >= 0:
                 self.resetColorRunningModel_2(self.current_step)
-
             self.current_step += 1
             if self.current_step < row_count:
-                self.highlightRow(self.current_step, QColor("yellow"))
-
+                self.highlightRowLoop(self.current_step, QColor("yellow"))
             if self.current_step < row_count:
                 data_row = []
                 for column in range(1, 5):
@@ -1408,12 +1425,53 @@ class MainWindow(QtWidgets.QMainWindow):
                         data_row.append(0)
                 sendSerial(*data_row)
         else:
-            self.stopSendingSteps()
-        
+            self.timer.start()
+            self.current_step = -1
+
+    def sendNextStep(self):
+        row_count = self.runningModel_2.rowCount()
+        if self.current_step < row_count:
+            if self.current_step >= 0:
+                self.resetColorRunningModel_2(self.current_step)
+
+            self.current_step += 1
+            if self.current_step < row_count:
+                self.highlightRow(self.current_step, QColor("yellow"))
+
+            data_row = []
+            for column in range(1, 5):
+                item = self.runningModel_2.item(self.current_step, column)
+                if item is not None and item.text():
+                    data_row.append(int(item.text()))
+                else:
+                    data_row.append(0)
+            sendSerial(*data_row)
+        else:
+            self.stopSendingSteps()  
+
         if self.current_step == row_count:
             self.ui.btRunningProjectStatus.setText("Has Finished")
             self.ui.btRunningProjectRun.setText("Run")
+            self.timer.stop()  
 
+
+    def setupTimer(self):
+        self.current_step = -1
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.sendLoopStep)
+        self.timer.start(2000)  
+
+    def resetColorRunningModel_2(self, row):
+        for column in range(0, 8):
+            item = self.runningModel_2.item(row, column)
+            if item is not None:
+                item.setBackground(QColor("white"))
+
+    def highlightRowLoop(self, row, color):
+        for column in range(0, 8):
+            item = self.runningModel_2.item(row, column)
+            if item is not None:
+                item.setBackground(color)
 
     def moveDataToNextColumn(self, data_row):
         for i in range(len(data_row)):
@@ -1423,18 +1481,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def actionSendeingSteps(self):
+        self.pauseProcess()  
+        sendSerial(0,0,0,0)
         reply = QMessageBox.question(self, 'Caution', 
                         "If you click this button, the process will be stopped. Do you agree?",
                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
-            self.stopProcess()
+            self.pauseProcess()  
+            sendSerial(0,0,0,0)
+            self.ui.btRunningProjectStatus.setText("Has Stopped")
             self.resetColorRunningModel_2(self.current_step)
 
 
     def toggleSendingSteps(self):
         if self.ui.btRunningProjectRun.text() == "Run":
             self.ui.btRunningProjectRun.setText("Pause")
-            self.startProcess()
+            self.startSendingSteps()
             self.ui.btRunningProjectStatus.setText("Has Running")
         elif self.ui.btRunningProjectRun.text() == "Pause":
             self.ui.btRunningProjectRun.setText("Resume")
@@ -1447,59 +1509,21 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.current_step < self.runningModel_2.rowCount():
                 self.highlightRow(self.current_step, QColor("yellow"))
 
-
-    def startProcess(self):
-        self.is_process_running = True
-        self.startSendingSteps()
-        self.ui.btRunningProjectStatus.setText("Has Running")
-
-    def stopProcess(self):
-        self.is_process_running = False
-        self.stopSendingSteps()
-        self.ui.btRunningProjectStatus.setText("Not Running")
-        self.ui.btRunningProjectRun.setText("Run")  
+    def toggleSendingLoopSteps(self):
+        if self.ui.btRunningProjectLoop.text() == "Loop":
+            self.setupTimer()
+            self.ui.btRunningProjectStatus.setText("Has Looping")
+        elif self.ui.btRunningProjectStop.text() == "Stop":
+            self.actionSendeingSteps()
+            self.ui.btRunningProjectStatus.setText("Has Stopped")
+            if self.current_step < self.runningModel_2.rowCount():
+                self.highlightRow(self.current_step, QColor("yellow"))
 
     def pauseProcess(self):
-        self.stopProcess()
-        self.is_process_paused = True
-        self.last_paused_step = self.current_step 
+        self.timer.stop()
 
     def resumeProcess(self):
-        self.is_process_paused = False
-        if self.last_paused_step != -1:  
-            self.current_step = self.last_paused_step 
-            self.startSendingStepsFromNext()  
-            self.ui.btRunningProjectStatus.setText("Has Running")
-            self.ui.btRunningProjectRun.setText("Pause")  
-
-    def startSendingStepsFromNext(self):
-        self.timer.start(2000)  
-        self.sendNextStep()
-
-    def toggleLoopingSteps(self):
-        if not self.looping:
-            self.startLooping()
-            self.ui.btRunningProjectRun.setText("Stop")
-        else:
-            self.stopLooping()
-            self.ui.btRunningProjectRun.setText("Run")
-
-    def loopSteps(self):
-        while self.looping:
-            for step in range(self.runningModel_2.rowCount()):
-                if not self.looping:  
-                    break
-                self.sendNextStep()
-                time.sleep(2)
-
-    def startLooping(self):
-        self.loop_thread = threading.Thread(target=self.loopSteps)
-        self.loop_thread.daemon = True  
-        self.loop_thread.start()
-        self.looping = True
-
-    def stopLooping(self):
-        self.looping = False
+        self.timer.start() 
 
             
     # END Run Program ====================================================================================================
@@ -1800,10 +1824,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def releasedText(self):
-        valueX = int(self.ui.txtIntegrationX.text())
-        valueY = int(self.ui.txtIntegrationY.text())
-        valueZ = int(self.ui.txtIntegrationZ.text())
-        valueK = int(self.ui.txtIntegrationK.text())
+        valueX = self.ui.txtIntegrationX.value()
+        valueY = self.ui.txtIntegrationY.value()
+        valueZ = self.ui.txtIntegrationZ.value()
+        valueK = self.ui.txtIntegrationK.value()
         sendSerial(valueX, valueY, valueK, valueZ)
 
 
@@ -1830,6 +1854,7 @@ def sendSerial(x, y, k, z):
     writeSerial(data)
     print(data)
 
+    
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = MainWindow()

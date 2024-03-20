@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1287</width>
-    <height>700</height>
+    <height>763</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>0</y>
       <width>1290</width>
       <height>691</height>
@@ -522,6 +522,11 @@ QPushButton::icon {
         <height>17</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 1px;
+}</string>
+      </property>
       <property name="text">
        <string>$getCode</string>
       </property>
@@ -757,7 +762,7 @@ QPushButton::icon {
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>640</y>
+        <y>650</y>
         <width>31</width>
         <height>31</height>
        </rect>
@@ -774,22 +779,6 @@ QPushButton::icon {
       </property>
       <property name="margin">
        <number>5</number>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="txtIntegrationX">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>610</y>
-        <width>51</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLineEdit {
-	border-radius: 10px;
-	border: 3px solid black;
-}</string>
       </property>
      </widget>
      <widget class="QFrame" name="frame_2">
@@ -965,6 +954,11 @@ QPushButton::icon {
          <height>17</height>
         </rect>
        </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 1px;
+}</string>
+       </property>
        <property name="text">
         <string>$getCodeActivity</string>
        </property>
@@ -974,7 +968,7 @@ QPushButton::icon {
       <property name="geometry">
        <rect>
         <x>360</x>
-        <y>440</y>
+        <y>350</y>
         <width>301</width>
         <height>51</height>
        </rect>
@@ -1040,22 +1034,6 @@ QPushButton::icon {
         <width>591</width>
         <height>521</height>
        </rect>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="txtIntegrationY">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>610</y>
-        <width>51</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLineEdit {
-	border-radius: 10px;
-	border: 3px solid black;
-}</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_7">
@@ -1230,7 +1208,7 @@ QPushButton::icon {
       <property name="geometry">
        <rect>
         <x>360</x>
-        <y>500</y>
+        <y>410</y>
         <width>301</width>
         <height>51</height>
        </rect>
@@ -1288,84 +1266,6 @@ QPushButton::icon {
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QLineEdit" name="txtIntegrationK">
-      <property name="geometry">
-       <rect>
-        <x>290</x>
-        <y>610</y>
-        <width>51</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLineEdit {
-	border-radius: 10px;
-	border: 3px solid black;
-}</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btIntegrationEdit">
-      <property name="geometry">
-       <rect>
-        <x>360</x>
-        <y>560</y>
-        <width>301</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="cursor">
-       <cursorShape>PointingHandCursor</cursorShape>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QPushButton {
-	border-radius: 20px;
-	background: red;
-	color: white;
-	font-weight: bold;
-	font-size: 22px;
-	border: 3px solid black;
-  	text-align: center;
-}
-
-QPushButton:hover {
-    background: qradialgradient(
-        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
-        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
-        );
-	color: black;
-	border: 3px solid black;
-    }
-
-QPushButton:pressed {
-    border-style: inset;
-    background: qradialgradient(
-        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
-        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
-        );
-    }
-
-QPushButton::icon {
-    margin-bottom: 5px; 
-}
-
-</string>
-      </property>
-      <property name="text">
-       <string>Edit</string>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>50</width>
-        <height>100</height>
-       </size>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
-      </property>
-     </widget>
      <widget class="QSlider" name="slIntegrationK">
       <property name="geometry">
        <rect>
@@ -1407,72 +1307,11 @@ QPushButton::icon {
        <number>5</number>
       </property>
      </widget>
-     <widget class="QLineEdit" name="txtIntegrationZ">
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>610</y>
-        <width>51</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLineEdit {
-	border-radius: 10px;
-	border: 3px solid black;
-}</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="txtIntegrationDelay">
-      <property name="geometry">
-       <rect>
-        <x>360</x>
-        <y>370</y>
-        <width>301</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLineEdit {
-	border-radius: 10px;
-	border: 3px solid black;
-	font-style:italic;
-	font-size: 22px;
-}
-</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="placeholderText">
-       <string>Insert delay if you needed</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_55">
-      <property name="geometry">
-       <rect>
-        <x>360</x>
-        <y>340</y>
-        <width>211</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel {
-	font-weight: bold;
-	color: black;
-	font-size: 22px;
-}</string>
-      </property>
-      <property name="text">
-       <string>Insert Delay Process</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="btIntegrationHapus">
       <property name="geometry">
        <rect>
         <x>360</x>
-        <y>620</y>
+        <y>470</y>
         <width>301</width>
         <height>51</height>
        </rect>
@@ -1588,6 +1427,24 @@ QPushButton::icon {
 }</string>
        </property>
       </widget>
+      <widget class="QLabel" name="txtIntegrationDelay">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>60</y>
+         <width>81</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 1px;
+}</string>
+       </property>
+       <property name="text">
+        <string>hello</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QLabel" name="label_11">
       <property name="geometry">
@@ -1661,7 +1518,7 @@ QPushButton::icon {
       <property name="geometry">
        <rect>
         <x>120</x>
-        <y>640</y>
+        <y>650</y>
         <width>31</width>
         <height>31</height>
        </rect>
@@ -1684,7 +1541,7 @@ QPushButton::icon {
       <property name="geometry">
        <rect>
         <x>210</x>
-        <y>640</y>
+        <y>650</y>
         <width>31</width>
         <height>31</height>
        </rect>
@@ -1707,7 +1564,7 @@ QPushButton::icon {
       <property name="geometry">
        <rect>
         <x>300</x>
-        <y>640</y>
+        <y>650</y>
         <width>31</width>
         <height>31</height>
        </rect>
@@ -1772,6 +1629,238 @@ QPushButton::icon {
       </property>
       <property name="text">
        <string>Activity Name</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="txtIntegrationX">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>610</y>
+        <width>51</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QDoubleSpinBox {
+    background-color: #f0f0f0;
+    border: 2px solid black;
+    font-size: 12px;
+	border-radius: 5px;
+}
+
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+    background-color: #e0e0e0;
+    width: 12px;
+    height: 15px;
+    border: 2px solid black;
+    border-left-width: 2px;
+	border-right-width: 0px;
+	border-bottom-width: 2px;
+	border-top-width: 1px;
+}
+
+QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: #c0c0c0;
+}
+
+QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {
+    color: black;
+}
+
+QDoubleSpinBox::up-arrow:enabled, QDoubleSpinBox::down-arrow:enabled {
+    color: black;
+}
+
+QDoubleSpinBox::up-arrow:disabled, QDoubleSpinBox::down-arrow:disabled {
+    color: #999;
+}
+
+
+QDoubleSpinBox::up-arrow {
+    subcontrol-position: top right;
+}
+
+QDoubleSpinBox::down-arrow {
+    subcontrol-position: bottom right;
+}
+</string>
+      </property>
+      <property name="maximum">
+       <double>700.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="txtIntegrationY">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>610</y>
+        <width>51</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QDoubleSpinBox {
+    background-color: #f0f0f0;
+    border: 2px solid black;
+    font-size: 12px;
+	border-radius: 5px;
+}
+
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+    background-color: #e0e0e0;
+    width: 12px;
+    height: 15px;
+    border: 2px solid black;
+    border-left-width: 2px;
+	border-right-width: 0px;
+	border-bottom-width: 2px;
+	border-top-width: 1px;
+}
+
+QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: #c0c0c0;
+}
+
+QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {
+    color: black;
+}
+
+QDoubleSpinBox::up-arrow:enabled, QDoubleSpinBox::down-arrow:enabled {
+    color: black;
+}
+
+QDoubleSpinBox::up-arrow:disabled, QDoubleSpinBox::down-arrow:disabled {
+    color: #999;
+}
+
+
+QDoubleSpinBox::up-arrow {
+    subcontrol-position: top right;
+}
+
+QDoubleSpinBox::down-arrow {
+    subcontrol-position: bottom right;
+}
+</string>
+      </property>
+      <property name="maximum">
+       <double>3500.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="txtIntegrationZ">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>610</y>
+        <width>51</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QDoubleSpinBox {
+    background-color: #f0f0f0;
+    border: 2px solid black;
+    font-size: 12px;
+	border-radius: 5px;
+}
+
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+    background-color: #e0e0e0;
+    width: 12px;
+    height: 15px;
+    border: 2px solid black;
+    border-left-width: 2px;
+	border-right-width: 0px;
+	border-bottom-width: 2px;
+	border-top-width: 1px;
+}
+
+QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: #c0c0c0;
+}
+
+QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {
+    color: black;
+}
+
+QDoubleSpinBox::up-arrow:enabled, QDoubleSpinBox::down-arrow:enabled {
+    color: black;
+}
+
+QDoubleSpinBox::up-arrow:disabled, QDoubleSpinBox::down-arrow:disabled {
+    color: #999;
+}
+
+
+QDoubleSpinBox::up-arrow {
+    subcontrol-position: top right;
+}
+
+QDoubleSpinBox::down-arrow {
+    subcontrol-position: bottom right;
+}
+</string>
+      </property>
+      <property name="maximum">
+       <double>80.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="txtIntegrationK">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>610</y>
+        <width>51</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QDoubleSpinBox {
+    background-color: #f0f0f0;
+    border: 2px solid black;
+    font-size: 12px;
+	border-radius: 5px;
+}
+
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+    background-color: #e0e0e0;
+    width: 12px;
+    height: 15px;
+    border: 2px solid black;
+    border-left-width: 2px;
+	border-right-width: 0px;
+	border-bottom-width: 2px;
+	border-top-width: 1px;
+}
+
+QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: #c0c0c0;
+}
+
+QDoubleSpinBox::up-arrow, QDoubleSpinBox::down-arrow {
+    color: black;
+}
+
+QDoubleSpinBox::up-arrow:enabled, QDoubleSpinBox::down-arrow:enabled {
+    color: black;
+}
+
+QDoubleSpinBox::up-arrow:disabled, QDoubleSpinBox::down-arrow:disabled {
+    color: #999;
+}
+
+
+QDoubleSpinBox::up-arrow {
+    subcontrol-position: top right;
+}
+
+QDoubleSpinBox::down-arrow {
+    subcontrol-position: bottom right;
+}
+</string>
+      </property>
+      <property name="maximum">
+       <double>850.000000000000000</double>
       </property>
      </widget>
     </widget>
@@ -1844,6 +1933,9 @@ QPushButton::icon {
         <width>811</width>
         <height>471</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
      </widget>
      <widget class="QPushButton" name="btSaveActivityDelete">
@@ -2227,6 +2319,11 @@ QPushButton::icon {
         <height>17</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 1px;
+}</string>
+      </property>
       <property name="text">
        <string>$getProjectsCode</string>
       </property>
@@ -2315,9 +2412,7 @@ QPushButton::icon {
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	font-size: 20px;
-	color: black;
-	font-weight: bold;
+	font-size: 1px;
 }</string>
       </property>
       <property name="text">
@@ -2436,9 +2531,8 @@ QPushButton::icon {
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel {
-	font-size: 20px;
+	font-size: 1px;
 	color: black;
-	font-weight: bold;
 }</string>
        </property>
        <property name="text">
@@ -2806,6 +2900,11 @@ QPushButton::icon {
          <height>17</height>
         </rect>
        </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 1px;
+}</string>
+       </property>
        <property name="text">
         <string>$getDataProject</string>
        </property>
@@ -2818,6 +2917,11 @@ QPushButton::icon {
          <width>151</width>
          <height>17</height>
         </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 1px;
+}</string>
        </property>
        <property name="text">
         <string>$getDataActivity</string>
@@ -3616,7 +3720,7 @@ QPushButton::icon {
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	font-size: 22px;
+	font-size: 1px;
 	font-weight: bold;
 }</string>
       </property>
@@ -3671,7 +3775,7 @@ QPushButton::icon {
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	font-size: 22px;
+	font-size: 1px;
 	font-weight: bold;
 }</string>
       </property>
@@ -3692,8 +3796,7 @@ QPushButton::icon {
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	font-size: 22px;
-	font-weight: bold;
+	font-size: 1px;
 }</string>
       </property>
       <property name="text">
@@ -3812,8 +3915,7 @@ QPushButton::icon {
        </property>
        <property name="styleSheet">
         <string notr="true">QLabel {
-	font-size: 22px;
-	font-weight: bold;
+	font-size: 1px;
 }</string>
        </property>
        <property name="text">
@@ -3922,8 +4024,7 @@ QPushButton::icon {
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	font-size: 22px;
-	font-weight: bold;
+	font-size: 1px;
 }</string>
       </property>
       <property name="text">
