@@ -22,7 +22,7 @@ def koneksi():
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor,
 
-            # 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
+            # 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
 
         )
         return connection
@@ -62,6 +62,8 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.chooseActivityModel = QStandardItemModel()
         self.runningModel_1 = QStandardItemModel()
         self.runningModel_2 = QStandardItemModel()
+        self.font = QtGui.QFont()
+        self.font.setPointSize(14)
         
         self.kdProjectSignal = QtCore.pyqtSignal(str)
         self.defaultMenu()
@@ -147,6 +149,8 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.workerThread.stepCompleted.connect(self.sendLoopStep)
         self.timer.timeout.connect(self.sendNextStep)
         self.current_step = -1
+        self.previous_z = None
+        self.previous_data_row = None
         self.ui.tbRunningProjectTabel_1.setModel(self.runningModel_1)
         self.ui.tbRunningProjectTabel_2.setModel(self.runningModel_2)
         self.refreshRunningProjectData_1()
@@ -1403,11 +1407,13 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                 item.setBackground(color)
                 view.viewport().update()  
 
+
     def stopSendingSteps(self):
         self.timer.stop()
 
 
     def sendLoopStep(self):
+        self.handleDuplicateCoordinates()
         row_count = self.runningModel_2.rowCount()
         if self.current_step < row_count:
             if self.current_step >= 0:
@@ -1417,16 +1423,89 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                 self.highlightRowLoop(self.current_step, QColor("yellow"))
             if self.current_step < row_count:
                 data_row = []
-                for column in range(1, 5):
+                for column in range(1, 6):  
                     item = self.runningModel_2.item(self.current_step, column)
                     if item is not None and item.text():
                         data_row.append(int(item.text()))
                     else:
                         data_row.append(0)
-                sendSerial(*data_row)
+
+                if (self.previous_data_row is not None and 
+                    self.previous_data_row[:4] == data_row[:4]):
+                    if self.previous_data_row[3] != 0:  
+                        data_row[3] = 0  
+                        sendSerial(*data_row[:4])
+                        self.previous_data_row = data_row[:]
+                        return  
+
+                sendSerial(*data_row[:4])  
+                self.previous_data_row = data_row[:]  
         else:
-            self.timer.start()
-            self.current_step = -1
+            self.current_step = -1  
+            self.setupTimer()  
+        
+
+    def handleDuplicateCoordinates(self):
+        row_count = self.runningModel_2.rowCount()
+        columns_count = self.runningModel_2.columnCount()
+
+        current_row = 0
+        while current_row < row_count - 1:
+            current_data = []
+            next_data = []
+
+            # Ambil data dari dua baris berturut-turut
+            for column in range(min(columns_count, 8)):  # Pertimbangkan kolom pertama hingga keempat saja
+                current_item = self.runningModel_2.item(current_row, column)
+                if current_item:
+                    current_data.append(current_item.text())
+                else:
+                    current_data.append("")
+
+                next_item = self.runningModel_2.item(current_row + 1, column)
+                if next_item:
+                    next_data.append(next_item.text())
+                else:
+                    next_data.append("")
+
+            print("Current Data:", current_data)
+            print("Next Data:", next_data)
+
+            if current_data[:8] == next_data[:8]:
+                # Memeriksa apakah data telah disalin sebelumnya
+                if not self.dataCopied(current_row + 1):
+                    print("Inserting row at:", current_row + 1)
+                    # Menambahkan baris baru di antara dua baris yang sama
+                    self.runningModel_2.insertRow(current_row + 1)
+
+                    # Menyalin data dari baris pertama ke dalam baris kedua
+                    for column in range(columns_count):
+                        current_item = QStandardItem(current_data[column])
+                        self.runningModel_2.setItem(current_row + 1, column, current_item)
+
+                    # Memperbarui jumlah baris dalam model
+                    row_count += 1
+
+            current_row += 1
+            
+
+    def dataCopied(self, row):
+        columns_count = min(self.runningModel_2.columnCount(), 8)
+
+        # Ambil data dari baris yang akan diperiksa
+        current_data = []
+        for column in range(columns_count):
+            item = self.runningModel_2.item(row, column)
+            if item and item.text():
+                current_data.append(item.text())
+
+        # Memeriksa apakah data di baris tersebut sama dengan data di kolom pertama hingga keempat
+        if len(current_data) == columns_count:
+            for column in range(columns_count):
+                if current_data[column] != self.runningModel_2.item(row - 1, column).text():
+                    return False
+            return True
+        return False
 
     def sendNextStep(self):
         row_count = self.runningModel_2.rowCount()
@@ -1459,7 +1538,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.current_step = -1
         self.timer = QTimer()
         self.timer.timeout.connect(self.sendLoopStep)
-        self.timer.start(2000)  
+        self.timer.start(2000)   
 
     def resetColorRunningModel_2(self, row):
         for column in range(0, 8):
@@ -1506,6 +1585,10 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.ui.btRunningProjectRun.setText("Pause")
             self.resumeProcess()
             self.ui.btRunningProjectStatus.setText("Has Running")
+        elif self.ui.btRunningProjectStop.text() == "Stop":
+            self.ui.btRunningProjectRun.setText("Run")
+            self.actionSendeingSteps()
+            self.ui.btRunningProjectStatus.setText("Has Stopped")
             if self.current_step < self.runningModel_2.rowCount():
                 self.highlightRow(self.current_step, QColor("yellow"))
 
