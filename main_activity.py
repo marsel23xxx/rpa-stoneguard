@@ -22,8 +22,6 @@ def koneksi():
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor,
 
-            # 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
-
         )
         return connection
     except pymysql.err.OperationalError as e:
