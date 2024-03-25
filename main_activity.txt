@@ -37,7 +37,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btRunningProjectRun.clicked.connect(self.toggleSendingSteps)
         self.ui.btRunningProjectStop.clicked.connect(self.stopProcess)
 
-def refreshRunningProjectData_1(self):
+def setRunProgramEmptyColumn(self):
+        self.ui.txtOpenProjectGetData.setText("")
+        self.ui.txtOpenProjectGetName.setText("")
+
+    def refreshRunningProjectData_1(self):
         d = self.ui.txtRunningProjectGetActivity.text()
         try:
             connection = koneksi()
@@ -48,8 +52,8 @@ def refreshRunningProjectData_1(self):
                     result = cursor.fetchall()
 
                     self.runningModel_1.clear()
-                    self.runningModel_1.setHorizontalHeaderLabels(
-                        ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                    self.runningModel_1.setHorizontalHeaderLabels(     
+                    ["Description", "X", "Y", "Z", "K", "Delay", "", "C-Code"]
                     )
                     font = QtGui.QFont()
                     font.setPointSize(14)
@@ -60,25 +64,25 @@ def refreshRunningProjectData_1(self):
                     font.setPointSize(18)
                     header_view.setFont(font)
 
-                    self.ui.tbRunningProjectTabel_1.setColumnWidth(0, 100)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(0, 500)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(1, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(2, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(3, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(4, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(5, 100)
-                    self.ui.tbRunningProjectTabel_1.setColumnWidth(6, 400)
+                    self.ui.tbRunningProjectTabel_1.setColumnWidth(6, 100)
                     self.ui.tbRunningProjectTabel_1.setColumnWidth(7, 100)
 
                     for row_data in result:
                         items = [
-                            QStandardItem(str(row_data["kd_kor"])),
+                            QStandardItem(str(row_data["keterangan"])),
                             QStandardItem(str(row_data["x"])),
                             QStandardItem(str(row_data["y"])),
                             QStandardItem(str(row_data["z"])),
                             QStandardItem(str(row_data["k"])),
                             QStandardItem(str(row_data["delay"])),
-                            QStandardItem(str(row_data["keterangan"])),
                             QStandardItem(str(row_data["kd_activity"])),
+                            QStandardItem(str(row_data["kd_kor"])),
                         ]
                         for item in items:
                             item.setFont(font)
@@ -86,13 +90,12 @@ def refreshRunningProjectData_1(self):
 
                         self.runningModel_1.appendRow(items)
 
-                    self.ui.tbRunningProjectTabel_1.resizeColumnsToContents()
                     self.ui.tbRunningProjectTabel_1.verticalHeader().setDefaultSectionSize(
                         50
                     )
 
                     self.runningModel_2.setHorizontalHeaderLabels(
-                    ["C-Code", "X", "Y", "Z", "K", "Delay", "Description", ""]
+                    ["Description", "X", "Y", "K", "Z", "Delay", "", "C-Code"]
                     )
 
                     font_2 = QtGui.QFont()
@@ -103,13 +106,13 @@ def refreshRunningProjectData_1(self):
                     font_2.setPointSize(18)
                     header_view_2.setFont(font_2)
 
-                    self.ui.tbRunningProjectTabel_2.setColumnWidth(0, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(0, 600)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(1, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(2, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(3, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(4, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(5, 100)
-                    self.ui.tbRunningProjectTabel_2.setColumnWidth(6, 400)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(6, 100)
                     self.ui.tbRunningProjectTabel_2.setColumnWidth(7, 100)
 
         finally:
@@ -125,9 +128,9 @@ def refreshRunningProjectData_1(self):
             item = self.runningModel_1.item(index.row(), column_index)
             selected_row_data.append(item.text())
 
-        if selected_row_data not in self.stacked_data:  # Periksa apakah data sudah ada sebelumnya
+        if selected_row_data not in self.stacked_data: 
             self.stacked_data.append(selected_row_data)
-            self.highlight_selected_row(index.row(), "lightblue")
+            self.highlight_selected_row(index.row(), "blue")
         else:
             print("zero")
 
@@ -178,23 +181,20 @@ def refreshRunningProjectData_1(self):
         
         font_2 = QtGui.QFont()
         font_2.setPointSize(14)
-        for item in [code, x, y, z, k, delay, ket, pr]:
+        for item in [ket, x, y, z, k, delay, pr, code]:
             item.setFont(font_2)  
             item.setTextAlignment(QtCore.Qt.AlignCenter)
 
-        items = [code, x, y, k, z, delay, ket, pr] + [QStandardItem('') for _ in range(0)]
+        items = [code, x, y, k, z, delay, pr, ket] + [QStandardItem('') for _ in range(0)]
         
         self.runningModel_2.appendRow(items)
 
     def startSendingSteps(self):
-        self.current_step = 0
+        self.current_step = -1
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.sendNextStep)
         self.timer.start(2000)
 
-    def highlightColumn(self, column_index, color):
-        for row in range(self.runningModel_2.rowCount()):
-            item = self.runningModel_2.item(row, column_index)
-            if item is not None:
-                item.setBackground(QColor(color))
 
     def highlightRow(self, row_index, color):
         view = self.ui.tbRunningProjectTabel_2
@@ -204,8 +204,105 @@ def refreshRunningProjectData_1(self):
                 item.setBackground(color)
                 view.viewport().update()  
 
+
     def stopSendingSteps(self):
         self.timer.stop()
+
+
+    def sendLoopStep(self):
+        self.handleDuplicateCoordinates()
+        row_count = self.runningModel_2.rowCount()
+        if self.current_step < row_count:
+            if self.current_step >= 0:
+                self.resetColorRunningModel_2(self.current_step)
+            self.current_step += 1
+            if self.current_step < row_count:
+                self.highlightRowLoop(self.current_step, QColor("yellow"))
+            if self.current_step < row_count:
+                data_row = []
+                for column in range(1, 6):  
+                    item = self.runningModel_2.item(self.current_step, column)
+                    if item is not None and item.text():
+                        data_row.append(int(item.text()))
+                    else:
+                        data_row.append(0)
+
+                if (self.previous_data_row is not None and 
+                    self.previous_data_row[:4] == data_row[:4]):
+                    if self.previous_data_row[3] != 0:  
+                        data_row[3] = 0  
+                        sendSerial(*data_row[:4])
+                        self.previous_data_row = data_row[:]
+                        return  
+
+                sendSerial(*data_row[:4])  
+                self.previous_data_row = data_row[:]  
+        else:
+            self.current_step = -1  
+            self.setupTimer()  
+        
+
+    def handleDuplicateCoordinates(self):
+        row_count = self.runningModel_2.rowCount()
+        columns_count = self.runningModel_2.columnCount()
+
+        current_row = 0
+        while current_row < row_count - 1:
+            current_data = []
+            next_data = []
+
+            # Ambil data dari dua baris berturut-turut
+            for column in range(min(columns_count, 8)):  # Pertimbangkan kolom pertama hingga keempat saja
+                current_item = self.runningModel_2.item(current_row, column)
+                if current_item:
+                    current_data.append(current_item.text())
+                else:
+                    current_data.append("")
+
+                next_item = self.runningModel_2.item(current_row + 1, column)
+                if next_item:
+                    next_data.append(next_item.text())
+                else:
+                    next_data.append("")
+
+            print("Current Data:", current_data)
+            print("Next Data:", next_data)
+
+            if current_data[:8] == next_data[:8]:
+                # Memeriksa apakah data telah disalin sebelumnya
+                if not self.dataCopied(current_row + 1):
+                    print("Inserting row at:", current_row + 1)
+                    # Menambahkan baris baru di antara dua baris yang sama
+                    self.runningModel_2.insertRow(current_row + 1)
+
+                    # Menyalin data dari baris pertama ke dalam baris kedua
+                    for column in range(columns_count):
+                        current_item = QStandardItem(current_data[column])
+                        self.runningModel_2.setItem(current_row + 1, column, current_item)
+
+                    # Memperbarui jumlah baris dalam model
+                    row_count += 1
+
+            current_row += 1
+            
+
+    def dataCopied(self, row):
+        columns_count = min(self.runningModel_2.columnCount(), 8)
+
+        # Ambil data dari baris yang akan diperiksa
+        current_data = []
+        for column in range(columns_count):
+            item = self.runningModel_2.item(row, column)
+            if item and item.text():
+                current_data.append(item.text())
+
+        # Memeriksa apakah data di baris tersebut sama dengan data di kolom pertama hingga keempat
+        if len(current_data) == columns_count:
+            for column in range(columns_count):
+                if current_data[column] != self.runningModel_2.item(row - 1, column).text():
+                    return False
+            return True
+        return False
 
     def sendNextStep(self):
         row_count = self.runningModel_2.rowCount()
@@ -217,18 +314,42 @@ def refreshRunningProjectData_1(self):
             if self.current_step < row_count:
                 self.highlightRow(self.current_step, QColor("yellow"))
 
-            if self.current_step < row_count:
-                data_row = []
-                for column in range(1, 5):
-                    item = self.runningModel_2.item(self.current_step, column)
-                    if item is not None and item.text():
-                        data_row.append(int(item.text()))
-                    else:
-                        data_row.append(0)
-                sendSerial(*data_row)
+            data_row = []
+            for column in range(1, 5):
+                item = self.runningModel_2.item(self.current_step, column)
+                if item is not None and item.text():
+                    data_row.append(int(item.text()))
+                else:
+                    data_row.append(0)
+            sendSerial(*data_row)
         else:
-            self.stopSendingSteps()
+            self.stopSendingSteps()  
 
+        if self.current_step == row_count-1:
+            self.ui.btRunningProjectStatus.setText("Has Finished")
+            self.ui.btRunningProjectRun.setText("Run")
+            self.resetColorRunningModel_2(self.current_step)
+            self.timer.stop()
+            sendSerial(0,0,0,0)  
+
+
+    def setupTimer(self):
+        self.current_step = -1
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.sendLoopStep)
+        self.timer.start(2000)   
+
+    def resetColorRunningModel_2(self, row):
+        for column in range(0, 8):
+            item = self.runningModel_2.item(row, column)
+            if item is not None:
+                item.setBackground(QColor("white"))
+
+    def highlightRowLoop(self, row, color):
+        for column in range(0, 8):
+            item = self.runningModel_2.item(row, column)
+            if item is not None:
+                item.setBackground(color)
 
     def moveDataToNextColumn(self, data_row):
         for i in range(len(data_row)):
@@ -236,20 +357,57 @@ def refreshRunningProjectData_1(self):
             item = QStandardItem(data_row[i])
             self.runningModel_2.setItem(self.current_step, next_column_index, item)
 
+
+    def actionSendeingSteps(self):
+        self.pauseProcess()  
+        sendSerial(0,0,0,0)
+        reply = QMessageBox.question(self, 'Caution', 
+                        "If you click this button, the process will be stopped. Do you agree?",
+                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.pauseProcess()  
+            sendSerial(0,0,0,0)
+            self.ui.btRunningProjectStatus.setText("Has Stopped")
+            self.resetColorRunningModel_2(self.current_step)
+
+
     def toggleSendingSteps(self):
-        if self.timer.isActive():
-            self.stopSendingSteps()
-        else:
+        if self.ui.btRunningProjectRun.text() == "Run":
+            self.ui.btRunningProjectRun.setText("Pause")
             self.startSendingSteps()
+            self.ui.btRunningProjectStatus.setText("Has Running")
+        elif self.ui.btRunningProjectRun.text() == "Pause":
+            self.ui.btRunningProjectRun.setText("Resume")
+            self.pauseProcess()
+            self.ui.btRunningProjectStatus.setText("Has Paused")
+        elif self.ui.btRunningProjectRun.text() == "Resume":
+            self.ui.btRunningProjectRun.setText("Pause")
+            self.resumeProcess()
+            self.ui.btRunningProjectStatus.setText("Has Running")
+        elif self.ui.btRunningProjectStop.text() == "Stop":
+            self.ui.btRunningProjectRun.setText("Run")
+            self.actionSendeingSteps()
+            self.ui.btRunningProjectStatus.setText("Has Stopped")
+            if self.current_step < self.runningModel_2.rowCount():
+                self.highlightRow(self.current_step, QColor("yellow"))
 
-    def startProcess(self):
-        self.is_process_running = True
-        self.startSendingSteps() 
+    def toggleSendingLoopSteps(self):
+        if self.ui.btRunningProjectLoop.text() == "Loop":
+            self.setupTimer()
+            self.ui.btRunningProjectStatus.setText("Has Looping")
+        elif self.ui.btRunningProjectStop.text() == "Stop":
+            self.actionSendeingSteps()
+            self.ui.btRunningProjectStatus.setText("Has Stopped")
+            if self.current_step < self.runningModel_2.rowCount():
+                self.highlightRow(self.current_step, QColor("yellow"))
 
-    def stopProcess(self):
-        self.is_process_running = False
-        self.stopSendingSteps()  
+    def pauseProcess(self):
+        self.timer.stop()
 
+    def resumeProcess(self):
+        self.timer.start() 
+
+    
 
     def releasedSlider(self):
         global currentX

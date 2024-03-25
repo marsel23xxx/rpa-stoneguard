@@ -35,6 +35,7 @@ currentX = 0
 currentY = 0
 currentZ = 0
 currentK = 0
+delay = 0
 
 class WorkerThread(QThread):
     stepCompleted = pyqtSignal()
@@ -163,6 +164,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.btRunningProjectRun.clicked.connect(self.toggleSendingSteps)
         self.ui.btRunningProjectStop.clicked.connect(self.actionSendeingSteps)
         self.ui.btRunningProjectLoop.clicked.connect(self.toggleSendingLoopSteps)
+        self.ui.btRunningProjectStatus.setText("Not Starting")
         
 
         # Komponen bagian show project
@@ -996,12 +998,12 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             getY = int(self.integrationModel.index(getRow, 2).data())
             getZ = int(self.integrationModel.index(getRow, 3).data())
             getK = int(self.integrationModel.index(getRow, 4).data())
-            getDesc = self.integrationModel.index(getRow, 5).data()
-            getDelay = self.integrationModel.index(getRow, 6).data()
+            getDelay = int(self.integrationModel.index(getRow, 5).data())
+            getDesc = self.integrationModel.index(getRow, 6).data()
 
             self.ui.txtIntegrationCode.setText(getCode)
-            self.ui.txtIntegrationKet.setText(getDelay)
-            self.ui.txtIntegrationDelay.setText(getDesc)
+            self.ui.txtIntegrationKet.setText(getDesc)
+            self.ui.txtIntegrationDelay.setNum(getDelay)
 
             self.ui.txtIntegrationX.setValue(getX)
             self.ui.txtIntegrationY.setValue(getY)
@@ -1013,7 +1015,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.ui.slIntegrationZ.setValue(getZ)
             self.ui.slIntegrationK.setValue(getK)
 
-            sendSerial(getX, getY, getK, getZ)
+            sendSerial(getX, getY, getK, getZ, getDelay)
 
     def keyReleaseEventIntegration(self, event):
         if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
@@ -1034,7 +1036,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.slIntegrationZ.setValue(0)
         self.ui.slIntegrationK.setValue(0)
 
-        sendSerial(0, 0, 0, 0)
+        sendSerial(0, 0, 0, 0, 0)
 
     def setIntegrationEmptyColumn1(self):
         self.ui.txtIntegrationKet.setText("")
@@ -1296,7 +1298,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     )
 
                     self.runningModel_2.setHorizontalHeaderLabels(
-                    ["Description", "X", "Y", "Z", "K", "Delay", "", "C-Code"]
+                    ["Description", "X", "Y", "K", "Z", "Delay", "", "C-Code"]
                     )
 
                     font_2 = QtGui.QFont()
@@ -1428,19 +1430,23 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     else:
                         data_row.append(0)
 
+                delay = data_row[4]  # Mendapatkan nilai delay dari kolom ke-5
+                if delay > 0:  # Memastikan delay hanya diterapkan jika nilainya lebih dari 0
+                    time.sleep(delay)
+                    
                 if (self.previous_data_row is not None and 
-                    self.previous_data_row[:4] == data_row[:4]):
+                    self.previous_data_row[:5] == data_row[:5]):
                     if self.previous_data_row[3] != 0:  
                         data_row[3] = 0  
-                        sendSerial(*data_row[:4])
+                        sendSerial(*data_row[:5])
                         self.previous_data_row = data_row[:]
                         return  
 
-                sendSerial(*data_row[:4])  
+                sendSerial(*data_row[:5])  
                 self.previous_data_row = data_row[:]  
         else:
             self.current_step = -1  
-            self.setupTimer()  
+            self.setupTimer() 
         
 
     def handleDuplicateCoordinates(self):
@@ -1466,8 +1472,8 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                 else:
                     next_data.append("")
 
-            print("Current Data:", current_data)
-            print("Next Data:", next_data)
+            # print("CD:", current_data)
+            # print("ND:", next_data)
 
             if current_data[:8] == next_data[:8]:
                 # Memeriksa apakah data telah disalin sebelumnya
@@ -1516,7 +1522,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                 self.highlightRow(self.current_step, QColor("yellow"))
 
             data_row = []
-            for column in range(1, 5):
+            for column in range(1, 6):
                 item = self.runningModel_2.item(self.current_step, column)
                 if item is not None and item.text():
                     data_row.append(int(item.text()))
@@ -1526,10 +1532,13 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         else:
             self.stopSendingSteps()  
 
-        if self.current_step == row_count:
+        if self.current_step == row_count-1:
             self.ui.btRunningProjectStatus.setText("Has Finished")
             self.ui.btRunningProjectRun.setText("Run")
-            self.timer.stop()  
+            self.resetColorRunningModel_2(self.current_step)
+            self.timer.stop()
+            sendSerial(0,0,0,0,0)  
+            sendSerial(0,0,0,0,0)  
 
 
     def setupTimer(self):
@@ -1559,13 +1568,13 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def actionSendeingSteps(self):
         self.pauseProcess()  
-        sendSerial(0,0,0,0)
+        sendSerial(0,0,0,0,0)
         reply = QMessageBox.question(self, 'Caution', 
                         "If you click this button, the process will be stopped. Do you agree?",
                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
             self.pauseProcess()  
-            sendSerial(0,0,0,0)
+            sendSerial(0,0,0,0,0)
             self.ui.btRunningProjectStatus.setText("Has Stopped")
             self.resetColorRunningModel_2(self.current_step)
 
@@ -1606,6 +1615,13 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
     def resumeProcess(self):
         self.timer.start() 
 
+    def executeDelay(delay):
+        time.sleep(delay * 1000)
+
+    def sendWithDelay(data_row):
+        x, y, k, z, delay = map(int, data_row[1:6])  
+        sendSerial(x, y, k, z, delay) 
+          
             
     # END Run Program ====================================================================================================
 
@@ -1893,23 +1909,24 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
     # Bagian set up serial ===============================================================================================
 
     def releasedSlider(self):
-        global currentX, currentY, currentZ, currentK
+        global currentX, currentY, currentZ, currentK, delay
         valueX = self.ui.slIntegrationX.value()
         valueY = self.ui.slIntegrationY.value()
         valueZ = self.ui.slIntegrationZ.value()
         valueK = self.ui.slIntegrationK.value()
 
         if (valueX != currentX or valueY != currentY or valueZ != currentZ or valueK != currentK):
-            sendSerial(valueX, valueY, valueK, valueZ)
-            currentX, currentY, currentZ, currentK = valueX, valueY, valueZ, valueK
+            sendSerial(valueX, valueY, valueK, valueZ, delay)
+            currentX, currentY, currentZ, currentK, delay = valueX, valueY, valueZ, valueK, delay
 
 
     def releasedText(self):
+        global delay
         valueX = self.ui.txtIntegrationX.value()
         valueY = self.ui.txtIntegrationY.value()
         valueZ = self.ui.txtIntegrationZ.value()
         valueK = self.ui.txtIntegrationK.value()
-        sendSerial(valueX, valueY, valueK, valueZ)
+        sendSerial(valueX, valueY, valueK, valueZ, delay)
 
 
     def sendDataSerial(self):
@@ -1923,15 +1940,15 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             data_list.append(data_row)
 
         for data_row in data_list:
-            if len(data_row) == 4:
+            if len(data_row) == 5:
                 sendSerial(*data_row) 
 
 def writeSerial(data):
     ser.write(bytes(data, 'utf-8'))
     time.sleep(0.05)
 
-def sendSerial(x, y, k, z):
-    data = "config:%d,%d,%d,%d;" % (x, y, k, z)
+def sendSerial(x, y, k, z, delay):
+    data = "config:%d,%d,%d,%d,%d;" % (x, y, k, z, delay)
     writeSerial(data)
     print(data)
 
