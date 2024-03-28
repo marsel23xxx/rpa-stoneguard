@@ -1403,114 +1403,84 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         view = self.ui.tbRunningProjectTabel_2
         for column_index in range(self.runningModel_2.columnCount()):
             item = self.runningModel_2.item(row_index, column_index)
+            
             if item is not None:
+                # self.timer.start(delay)  
                 item.setBackground(color)
                 view.viewport().update()  
-
+ 
 
     def stopSendingSteps(self):
         self.timer.stop()
+        sendSerial(0,0,0,0,0)
+
+
+    # def sendLoopStep(self):
+    #     self.handleDuplicateCoordinates()
+        
+    #     row_count = self.runningModel_2.rowCount()
+    #     delay = int(self.runningModel_2.data(self.runningModel_2.index(0, 5)))
+        
+    #     if self.current_step < row_count:
+    #         if self.current_step >= 0:
+    #             self.resetColorRunningModel_2(self.current_step)
+
+    #         self.current_step += 1
+    #         if self.current_step < row_count and delay > 0:
+    #             self.timer.start(delay)
+    #             self.highlightRow(self.current_step, QColor("yellow"))
+            
+    #         elif delay == 0:
+    #             self.timer.start(2000)
+    #             self.highlightRow(self.current_step, QColor("yellow"))
+            
+
+    #         data_row = []
+    #         for column in range(1, 6):
+    #             item = self.runningModel_2.item(self.current_step, column)
+    #             if item is not None and item.text():
+    #                 data_row.append(int(item.text()))
+    #             else:
+    #                 data_row.append(0)
+    #         sendSerial(*data_row)
+    #     else:
+    #         self.current_step = -1  
+    #         self.setupTimer()
 
 
     def sendLoopStep(self):
         self.handleDuplicateCoordinates()
+        
         row_count = self.runningModel_2.rowCount()
+        delay = int(self.runningModel_2.data(self.runningModel_2.index(0, 5)))
+        
         if self.current_step < row_count:
             if self.current_step >= 0:
                 self.resetColorRunningModel_2(self.current_step)
+
             self.current_step += 1
-            if self.current_step < row_count:
-                self.highlightRowLoop(self.current_step, QColor("yellow"))
-            if self.current_step < row_count:
-                data_row = []
-                for column in range(1, 6):  
-                    item = self.runningModel_2.item(self.current_step, column)
-                    if item is not None and item.text():
-                        data_row.append(int(item.text()))
-                    else:
-                        data_row.append(0)
+            
+            if delay > 1:
+                self.timer.start(delay)
+            else:
+                self.timer.start(2000)
 
-                delay = data_row[4]  # Mendapatkan nilai delay dari kolom ke-5
-                if delay > 0:  # Memastikan delay hanya diterapkan jika nilainya lebih dari 0
-                    time.sleep(delay)
-                    
-                if (self.previous_data_row is not None and 
-                    self.previous_data_row[:5] == data_row[:5]):
-                    if self.previous_data_row[3] != 0:  
-                        data_row[3] = 0  
-                        sendSerial(*data_row[:5])
-                        self.previous_data_row = data_row[:]
-                        return  
-
-                sendSerial(*data_row[:5])  
-                self.previous_data_row = data_row[:]  
+            if self.current_step < row_count:
+                self.highlightRow(self.current_step, QColor("yellow"))
+                
+            data_row = []
+            for column in range(1, 6):
+                item = self.runningModel_2.item(self.current_step, column)
+                if item is not None and item.text():
+                    data_row.append(int(item.text()))
+                else:
+                    data_row.append(0)
+            sendSerial(*data_row)
         else:
             self.current_step = -1  
-            self.setupTimer() 
+            self.setupTimer()
+
         
-
-    def handleDuplicateCoordinates(self):
-        row_count = self.runningModel_2.rowCount()
-        columns_count = self.runningModel_2.columnCount()
-
-        current_row = 0
-        while current_row < row_count - 1:
-            current_data = []
-            next_data = []
-
-            # Ambil data dari dua baris berturut-turut
-            for column in range(min(columns_count, 8)):  # Pertimbangkan kolom pertama hingga keempat saja
-                current_item = self.runningModel_2.item(current_row, column)
-                if current_item:
-                    current_data.append(current_item.text())
-                else:
-                    current_data.append("")
-
-                next_item = self.runningModel_2.item(current_row + 1, column)
-                if next_item:
-                    next_data.append(next_item.text())
-                else:
-                    next_data.append("")
-
-            # print("CD:", current_data)
-            # print("ND:", next_data)
-
-            if current_data[:8] == next_data[:8]:
-                # Memeriksa apakah data telah disalin sebelumnya
-                if not self.dataCopied(current_row + 1):
-                    print("Inserting row at:", current_row + 1)
-                    # Menambahkan baris baru di antara dua baris yang sama
-                    self.runningModel_2.insertRow(current_row + 1)
-
-                    # Menyalin data dari baris pertama ke dalam baris kedua
-                    for column in range(columns_count):
-                        current_item = QStandardItem(current_data[column])
-                        self.runningModel_2.setItem(current_row + 1, column, current_item)
-
-                    # Memperbarui jumlah baris dalam model
-                    row_count += 1
-
-            current_row += 1
-            
-
-    def dataCopied(self, row):
-        columns_count = min(self.runningModel_2.columnCount(), 8)
-
-        # Ambil data dari baris yang akan diperiksa
-        current_data = []
-        for column in range(columns_count):
-            item = self.runningModel_2.item(row, column)
-            if item and item.text():
-                current_data.append(item.text())
-
-        # Memeriksa apakah data di baris tersebut sama dengan data di kolom pertama hingga keempat
-        if len(current_data) == columns_count:
-            for column in range(columns_count):
-                if current_data[column] != self.runningModel_2.item(row - 1, column).text():
-                    return False
-            return True
-        return False
-
     def sendNextStep(self):
         row_count = self.runningModel_2.rowCount()
         if self.current_step < row_count:
@@ -1537,9 +1507,64 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.ui.btRunningProjectRun.setText("Run")
             self.resetColorRunningModel_2(self.current_step)
             self.timer.stop()
-            sendSerial(0,0,0,0,0)  
-            sendSerial(0,0,0,0,0)  
+            sendSerial(0,0,0,0,0) 
 
+
+    def handleDuplicateCoordinates(self):
+        row_count = self.runningModel_2.rowCount()
+        columns_count = self.runningModel_2.columnCount()
+
+        current_row = 0
+        while current_row < row_count - 1:
+            current_data = []
+            next_data = []
+
+            for column in range(min(columns_count, 8)):  
+                current_item = self.runningModel_2.item(current_row, column)
+                if current_item:
+                    current_data.append(current_item.text())
+                else:
+                    current_data.append("")
+
+                next_item = self.runningModel_2.item(current_row + 1, column)
+                if next_item:
+                    next_data.append(next_item.text())
+                else:
+                    next_data.append("")
+
+            # print("CD:", current_data)
+            # print("ND:", next_data)
+
+            if current_data[:8] == next_data[:8]:
+                if not self.dataCopied(current_row + 1):
+                    print("Inserting row at:", current_row + 1)
+                    self.runningModel_2.insertRow(current_row + 1)
+
+                    for column in range(columns_count):
+                        current_item = QStandardItem(current_data[column])
+                        self.runningModel_2.setItem(current_row + 1, column, current_item)
+
+                    row_count += 1
+
+            current_row += 1
+            
+
+    def dataCopied(self, row):
+        columns_count = min(self.runningModel_2.columnCount(), 8)
+
+        current_data = []
+        for column in range(columns_count):
+            item = self.runningModel_2.item(row, column)
+            if item and item.text():
+                current_data.append(item.text())
+
+        if len(current_data) == columns_count:
+            for column in range(columns_count):
+                if current_data[column] != self.runningModel_2.item(row - 1, column).text():
+                    return False
+            return True
+        return False
+ 
 
     def setupTimer(self):
         self.current_step = -1
@@ -1643,6 +1668,10 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     font = QtGui.QFont()
                     font.setPointSize(14)
 
+                    self.ui.tbChooseProjectTabel.setColumnWidth(0, 100)
+                    self.ui.tbChooseProjectTabel.setColumnWidth(1, 400)
+                    self.ui.tbChooseProjectTabel.setColumnWidth(2, 700)
+
                     header_view = self.ui.tbChooseProjectTabel.horizontalHeader()
 
                     header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
@@ -1664,7 +1693,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                         c.setTextAlignment(QtCore.Qt.AlignCenter)
 
                         self.chooseProjectModel.appendRow([a, b, c])
-                        self.ui.tbChooseProjectTabel.resizeColumnsToContents()
                         self.ui.tbChooseProjectTabel.verticalHeader().setDefaultSectionSize(
                             50
                         )
@@ -1694,6 +1722,10 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     font = QtGui.QFont()
                     font.setPointSize(14)
 
+                    self.ui.tbChooseProjectTabel.setColumnWidth(0, 100)
+                    self.ui.tbChooseProjectTabel.setColumnWidth(1, 400)
+                    self.ui.tbChooseProjectTabel.setColumnWidth(2, 700)
+                    
                     header_view = self.ui.tbChooseProjectTabel.horizontalHeader()
 
                     header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
@@ -1715,7 +1747,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                         c.setTextAlignment(QtCore.Qt.AlignCenter)
 
                         self.chooseProjectModel.appendRow([a, b, c])
-                        self.ui.tbChooseProjectTabel.resizeColumnsToContents()
                         self.ui.tbChooseProjectTabel.verticalHeader().setDefaultSectionSize(
                             50
                         )
@@ -1841,7 +1872,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
                         self.ui.tbChooseActivityTabel.setColumnWidth(0, 100)
                         self.ui.tbChooseActivityTabel.setColumnWidth(1, 400)
-                        self.ui.tbChooseActivityTabel.setColumnWidth(2, 500)
+                        self.ui.tbChooseActivityTabel.setColumnWidth(2, 700)
                         self.ui.tbChooseActivityTabel.setColumnWidth(3, 1)
 
                         for i, row_data in enumerate(result):

@@ -37,7 +37,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btRunningProjectRun.clicked.connect(self.toggleSendingSteps)
         self.ui.btRunningProjectStop.clicked.connect(self.stopProcess)
 
-def setRunProgramEmptyColumn(self):
+
+    def setRunProgramEmptyColumn(self):
         self.ui.txtOpenProjectGetData.setText("")
         self.ui.txtOpenProjectGetName.setText("")
 
@@ -228,14 +229,14 @@ def setRunProgramEmptyColumn(self):
                         data_row.append(0)
 
                 if (self.previous_data_row is not None and 
-                    self.previous_data_row[:4] == data_row[:4]):
+                    self.previous_data_row[:5] == data_row[:5]):
                     if self.previous_data_row[3] != 0:  
                         data_row[3] = 0  
-                        sendSerial(*data_row[:4])
+                        sendSerial(*data_row[:5])
                         self.previous_data_row = data_row[:]
                         return  
 
-                sendSerial(*data_row[:4])  
+                sendSerial(*data_row[:5])  
                 self.previous_data_row = data_row[:]  
         else:
             self.current_step = -1  
@@ -315,7 +316,7 @@ def setRunProgramEmptyColumn(self):
                 self.highlightRow(self.current_step, QColor("yellow"))
 
             data_row = []
-            for column in range(1, 5):
+            for column in range(1, 6):
                 item = self.runningModel_2.item(self.current_step, column)
                 if item is not None and item.text():
                     data_row.append(int(item.text()))
@@ -330,7 +331,8 @@ def setRunProgramEmptyColumn(self):
             self.ui.btRunningProjectRun.setText("Run")
             self.resetColorRunningModel_2(self.current_step)
             self.timer.stop()
-            sendSerial(0,0,0,0)  
+            sendSerial(0,0,0,0,0)  
+            sendSerial(0,0,0,0,0)  
 
 
     def setupTimer(self):
@@ -360,13 +362,13 @@ def setRunProgramEmptyColumn(self):
 
     def actionSendeingSteps(self):
         self.pauseProcess()  
-        sendSerial(0,0,0,0)
+        sendSerial(0,0,0,0,0)
         reply = QMessageBox.question(self, 'Caution', 
                         "If you click this button, the process will be stopped. Do you agree?",
                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
             self.pauseProcess()  
-            sendSerial(0,0,0,0)
+            sendSerial(0,0,0,0,0)
             self.ui.btRunningProjectStatus.setText("Has Stopped")
             self.resetColorRunningModel_2(self.current_step)
 
@@ -407,7 +409,12 @@ def setRunProgramEmptyColumn(self):
     def resumeProcess(self):
         self.timer.start() 
 
-    
+    def executeDelay(delay):
+        time.sleep(delay * 1000)
+
+    def sendWithDelay(data_row):
+        x, y, k, z, delay = map(int, data_row[1:6])  
+        sendSerial(x, y, k, z, delay)     
 
     def releasedSlider(self):
         global currentX
@@ -481,3 +488,43 @@ def sendSerial(x, y, k, z):
     #     if self.current_step == 0:
     #         self.ui.btRunningProjectStatus.setText("Has Restarted")
     #         self.ui.btRunningProjectRun.setText("Pause")
+
+
+    def highlightRow(self, row_index, color, delay):
+        view = self.ui.tbRunningProjectTabel_2
+        for column_index in range(self.runningModel_2.columnCount()):
+            item = self.runningModel_2.item(row_index, column_index)
+            
+            if item is not None:
+                self.timer.start(delay)
+                item.setBackground(color)
+                view.viewport().update()  
+                
+
+    def sendLoopStep(self):
+        self.handleDuplicateCoordinates()
+        
+        row_count = self.runningModel_2.rowCount()
+        delay = int(self.runningModel_2.data(self.runningModel_2.index(0, 5)))
+        yoa = self.timer.start(delay)
+
+        if self.current_step < row_count:
+            if self.current_step >= 0:
+                self.resetColorRunningModel_2(self.current_step)
+
+            self.current_step += 1
+            if self.current_step < row_count:
+                self.timer.start(delay)
+                self.highlightRow(self.current_step, QColor("yellow"), yoa)
+
+            data_row = []
+            for column in range(1, 6):
+                item = self.runningModel_2.item(self.current_step, column)
+                if item is not None and item.text():
+                    data_row.append(int(item.text()))
+                else:
+                    data_row.append(0)
+            sendSerial(*data_row)
+        else:
+            self.current_step = -1  
+            self.setupTimer() 
