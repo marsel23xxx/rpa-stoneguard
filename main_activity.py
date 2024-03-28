@@ -159,6 +159,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.btRunningProjectShowActivity.clicked.connect(self.setRunShowActivity)
         self.ui.tbRunningProjectTabel_1.clicked.connect(self.rowClicked)
         self.ui.btRunningProjectRight.clicked.connect(self.moveToTable2)
+        self.ui.btRunningProjectSameData.clicked.connect(self.addTestData)
         self.ui.btRunningProjectLeft.clicked.connect(self.removeFromTable2)
         self.startSendingSteps()
         self.ui.btRunningProjectRun.clicked.connect(self.toggleSendingSteps)
@@ -1392,6 +1393,33 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         
         self.runningModel_2.appendRow(items)
 
+    def handleSameCoordinates(self, row_data):
+        code = QStandardItem(row_data[0])  
+        x = QStandardItem(row_data[1])  
+        y = QStandardItem(row_data[2])  
+        z = QStandardItem(row_data[3])  
+        k = QStandardItem(row_data[4])  
+        delay = QStandardItem(row_data[5])  
+        ket = QStandardItem(row_data[6])  
+        pr = QStandardItem(row_data[7]) 
+
+        font_2 = QtGui.QFont()
+        font_2.setPointSize(14)
+        for item in [ket, x, y, z, k, delay, pr, code]:
+            item.setFont(font_2)  
+            item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+        items = [code, x, y, k, z, delay, pr, ket] + [QStandardItem('') for _ in range(1)]
+        self.runningModel_2.appendRow(items)
+
+        for item, value in zip(items, row_data):
+            item.setData(value, QtCore.Qt.DisplayRole)
+
+
+    def addTestData(self):
+        data = ["Handling", "300", "300", "850", "0", "0", "C0000", "R0001"]
+        self.handleSameCoordinates(data)
+
     def startSendingSteps(self):
         self.current_step = -1
         self.timer = QTimer()
@@ -1449,10 +1477,10 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
 
     def sendLoopStep(self):
-        self.handleDuplicateCoordinates()
+        # self.handleDuplicateCoordinates()
         
         row_count = self.runningModel_2.rowCount()
-        delay = int(self.runningModel_2.data(self.runningModel_2.index(0, 5)))
+        delas = int(self.runningModel_2.data(self.runningModel_2.index(0, 5)))
         
         if self.current_step < row_count:
             if self.current_step >= 0:
@@ -1460,26 +1488,37 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
             self.current_step += 1
             
-            if delay > 1:
-                self.timer.start(delay)
+            if delas > 0:
+                self.timer.singleShot(delas)   
+                if self.current_step < row_count:
+                    self.highlightRow(self.current_step, QColor("yellow"))   
+                    data_row = []
+                    for column in range(1, 6):
+                        item = self.runningModel_2.item(self.current_step, column)
+                        if item is not None and item.text():
+                            data_row.append(int(item.text()))
+                        else:
+                            data_row.append(0)
+                    sendSerial(*data_row)
             else:
                 self.timer.start(2000)
-
-            if self.current_step < row_count:
-                self.highlightRow(self.current_step, QColor("yellow"))
+                if self.current_step < row_count:
+                    self.highlightRow(self.current_step, QColor("yellow"))   
+                    data_row = []
+                    for column in range(1, 6):
+                        item = self.runningModel_2.item(self.current_step, column)
+                        if item is not None and item.text():
+                            data_row.append(int(item.text()))
+                        else:
+                            data_row.append(0)
+                    sendSerial(*data_row)
                 
-            data_row = []
-            for column in range(1, 6):
-                item = self.runningModel_2.item(self.current_step, column)
-                if item is not None and item.text():
-                    data_row.append(int(item.text()))
-                else:
-                    data_row.append(0)
-            sendSerial(*data_row)
         else:
             self.current_step = -1  
             self.setupTimer()
 
+    def executeNextStep(self):
+        self.sendLoopStep()
         
     def sendNextStep(self):
         row_count = self.runningModel_2.rowCount()
@@ -1641,7 +1680,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.timer.start() 
 
     def executeDelay(delay):
-        time.sleep(delay * 1000)
+        time.sleep(delay)
 
     def sendWithDelay(data_row):
         x, y, k, z, delay = map(int, data_row[1:6])  
@@ -1839,7 +1878,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                 connection.close()
 
     def searchChooseActivity(self, cariData):
-        getCode = self.ui.lbChooseActivityGetCode.text()
+        getCode = self.ui.lbChooseActivityGetCodeProject.text()
         cariData = self.ui.txtChooseActivityCari.text()
 
         if cariData.strip():
@@ -1905,7 +1944,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def keyReleaseEventShowActivity(self, event):
         if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
-            self.searchDataShowActivity(event)
+            self.searchChooseActivity(event)
         else:
             super().keyReleaseEvent(event)
 

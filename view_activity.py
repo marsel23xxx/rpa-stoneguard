@@ -1955,11 +1955,11 @@ class Ui_MainWindow(object):
 "   color: white;\n"
 "}")
         self.label_39.setObjectName("label_39")
-        self.btRunningProjectShowActivity_2 = QtWidgets.QPushButton(self.runProject_6)
-        self.btRunningProjectShowActivity_2.setGeometry(QtCore.QRect(580, 560, 131, 51))
-        self.btRunningProjectShowActivity_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btRunningProjectShowActivity_2.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.btRunningProjectShowActivity_2.setStyleSheet("QPushButton {\n"
+        self.btRunningProjectSameData = QtWidgets.QPushButton(self.runProject_6)
+        self.btRunningProjectSameData.setGeometry(QtCore.QRect(580, 560, 131, 51))
+        self.btRunningProjectSameData.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btRunningProjectSameData.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btRunningProjectSameData.setStyleSheet("QPushButton {\n"
 "    border-radius: 20px;\n"
 "    background: red;\n"
 "    color: white;\n"
@@ -1990,9 +1990,9 @@ class Ui_MainWindow(object):
 "    margin-bottom: 5px; \n"
 "}\n"
 "")
-        self.btRunningProjectShowActivity_2.setIconSize(QtCore.QSize(50, 50))
-        self.btRunningProjectShowActivity_2.setFlat(False)
-        self.btRunningProjectShowActivity_2.setObjectName("btRunningProjectShowActivity_2")
+        self.btRunningProjectSameData.setIconSize(QtCore.QSize(50, 50))
+        self.btRunningProjectSameData.setFlat(False)
+        self.btRunningProjectSameData.setObjectName("btRunningProjectSameData")
         self.stackedWidget.addWidget(self.runProject_6)
         self.getProject_7 = QtWidgets.QWidget()
         self.getProject_7.setObjectName("getProject_7")
@@ -2341,7 +2341,7 @@ class Ui_MainWindow(object):
         self.btRunningProjectRight.setText(_translate("MainWindow", ">>>"))
         self.btRunningProjectLeft.setText(_translate("MainWindow", "<<<"))
         self.label_39.setText(_translate("MainWindow", "Move Data"))
-        self.btRunningProjectShowActivity_2.setText(_translate("MainWindow", "Same Data"))
+        self.btRunningProjectSameData.setText(_translate("MainWindow", "Same Data"))
         self.btChooseProjectBack.setText(_translate("MainWindow", "Back"))
         self.lbGetData_8.setText(_translate("MainWindow", "Choose your project"))
         self.lbGetData_6.setText(_translate("MainWindow", "Project list item"))

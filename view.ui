@@ -3557,7 +3557,7 @@ QPushButton::icon {
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="btRunningProjectShowActivity_2">
+     <widget class="QPushButton" name="btRunningProjectSameData">
       <property name="geometry">
        <rect>
         <x>580</x>
