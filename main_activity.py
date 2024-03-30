@@ -1417,7 +1417,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
 
     def addTestData(self):
-        data = ["Handling", "300", "300", "850", "0", "0", "C0000", "R0001"]
+        data = ["Handling", "300", "2800", "850", "0", "0", "C0000", "R0001"]
         self.handleSameCoordinates(data)
 
     def startSendingSteps(self):
@@ -1432,8 +1432,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         for column_index in range(self.runningModel_2.columnCount()):
             item = self.runningModel_2.item(row_index, column_index)
             
-            if item is not None:
-                # self.timer.start(delay)  
+            if item is not None:  
                 item.setBackground(color)
                 view.viewport().update()  
  
@@ -1477,48 +1476,35 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
 
     def sendLoopStep(self):
-        # self.handleDuplicateCoordinates()
-        
-        row_count = self.runningModel_2.rowCount()
-        delas = int(self.runningModel_2.data(self.runningModel_2.index(0, 5)))
-        
-        if self.current_step < row_count:
+        row_count = self.runningModel_2.rowCount() 
+        delay = int(self.runningModel_2.data(self.runningModel_2.index(0, 5))) 
+        if self.current_step < row_count: 
             if self.current_step >= 0:
-                self.resetColorRunningModel_2(self.current_step)
+                self.resetColorRunningModel_2(self.current_step) 
 
-            self.current_step += 1
-            
-            if delas > 0:
-                self.timer.singleShot(delas)   
-                if self.current_step < row_count:
-                    self.highlightRow(self.current_step, QColor("yellow"))   
-                    data_row = []
-                    for column in range(1, 6):
-                        item = self.runningModel_2.item(self.current_step, column)
-                        if item is not None and item.text():
-                            data_row.append(int(item.text()))
-                        else:
-                            data_row.append(0)
-                    sendSerial(*data_row)
-            else:
-                self.timer.start(2000)
-                if self.current_step < row_count:
-                    self.highlightRow(self.current_step, QColor("yellow"))   
-                    data_row = []
-                    for column in range(1, 6):
-                        item = self.runningModel_2.item(self.current_step, column)
-                        if item is not None and item.text():
-                            data_row.append(int(item.text()))
-                        else:
-                            data_row.append(0)
-                    sendSerial(*data_row)
-                
-        else:
-            self.current_step = -1  
-            self.setupTimer()
+            self.current_step += 1 
 
-    def executeNextStep(self):
-        self.sendLoopStep()
+            if delay > 0: 
+                self.timer.start(delay) 
+            else: 
+                self.timer.start(2000) 
+
+            if self.current_step < row_count: 
+                self.highlightRow(self.current_step, QColor("yellow"))
+                data_row = []
+                for column in range(1, 6):
+                    item = self.runningModel_2.item(self.current_step, column) 
+                    if item is not None and item.text():
+                        data_row.append(int(item.text())) 
+                    else: 
+                        data_row.append(0) 
+                sendSerial(*data_row) 
+            sendSerial(300, 2500, 850, 0, 0)    
+        else:             
+            self.current_step = -1
+            self.setupTimer() 
+
+
         
     def sendNextStep(self):
         row_count = self.runningModel_2.rowCount()

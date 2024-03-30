@@ -1764,15 +1764,8 @@ class Ui_MainWindow(object):
         self.frame_10.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_10.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_10.setObjectName("frame_10")
-        self.spRunningProjectLoop = QtWidgets.QSpinBox(self.frame_10)
-        self.spRunningProjectLoop.setGeometry(QtCore.QRect(180, 10, 81, 51))
-        self.spRunningProjectLoop.setStyleSheet("QSpinBox {\n"
-"    font-size: 20px;\n"
-"    font-weight: bold;\n"
-"}")
-        self.spRunningProjectLoop.setObjectName("spRunningProjectLoop")
         self.btRunningProjectLoop = QtWidgets.QPushButton(self.frame_10)
-        self.btRunningProjectLoop.setGeometry(QtCore.QRect(10, 10, 121, 51))
+        self.btRunningProjectLoop.setGeometry(QtCore.QRect(10, 10, 251, 51))
         self.btRunningProjectLoop.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btRunningProjectLoop.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btRunningProjectLoop.setStyleSheet("QPushButton {\n"
@@ -1809,14 +1802,6 @@ class Ui_MainWindow(object):
         self.btRunningProjectLoop.setIconSize(QtCore.QSize(50, 50))
         self.btRunningProjectLoop.setFlat(False)
         self.btRunningProjectLoop.setObjectName("btRunningProjectLoop")
-        self.label_37 = QtWidgets.QLabel(self.frame_10)
-        self.label_37.setGeometry(QtCore.QRect(140, 10, 31, 51))
-        self.label_37.setStyleSheet("QLabel {\n"
-"    font-size: 22px;\n"
-"    font-weight: bold;\n"
-"   color: white;\n"
-"}")
-        self.label_37.setObjectName("label_37")
         self.label_38 = QtWidgets.QLabel(self.runProject_6)
         self.label_38.setGeometry(QtCore.QRect(720, 140, 81, 51))
         self.label_38.setStyleSheet("QLabel {\n"
@@ -2335,7 +2320,6 @@ class Ui_MainWindow(object):
         self.label_36.setText(_translate("MainWindow", "Repeat"))
         self.btRunningProjectStop.setText(_translate("MainWindow", "Stop"))
         self.btRunningProjectLoop.setText(_translate("MainWindow", "Loop"))
-        self.label_37.setText(_translate("MainWindow", "OR"))
         self.label_38.setText(_translate("MainWindow", "Status"))
         self.btRunningProjectStatus.setText(_translate("MainWindow", "$getStatus"))
         self.btRunningProjectRight.setText(_translate("MainWindow", ">>>"))
