@@ -65,6 +65,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.font.setPointSize(14)
         
         self.kdProjectSignal = QtCore.pyqtSignal(str)
+        self.toCenter()
         self.defaultMenu()
         # Logout
         self.ui.btLogout.clicked.connect(self.setLogout)
@@ -189,6 +190,12 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def defaultMenu(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.dashboard_1)
+
+    def toCenter(self):
+        screenGeometry = QApplication.desktop().screenGeometry()
+        x = (screenGeometry.width() - self.width()) / 2
+        y = (screenGeometry.height() - self.height()) / 2
+        self.move(x, y)
 
     # Start Create Project==========================================================================================================
 
@@ -1477,18 +1484,21 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def sendLoopStep(self):
         row_count = self.runningModel_2.rowCount() 
-        delay = int(self.runningModel_2.data(self.runningModel_2.index(0, 5))) 
+        
         if self.current_step < row_count: 
             if self.current_step >= 0:
                 self.resetColorRunningModel_2(self.current_step) 
 
             self.current_step += 1 
+            delay = int(self.runningModel_2.data(self.runningModel_2.index(self.current_step, 5))) 
 
+            # delay = int(self.runningModel_2.index(self.current_step, 5).data())
+            
             if delay > 0: 
                 self.timer.start(delay) 
             else: 
                 self.timer.start(2000) 
-
+            
             if self.current_step < row_count: 
                 self.highlightRow(self.current_step, QColor("yellow"))
                 data_row = []
@@ -2008,9 +2018,11 @@ def sendSerial(x, y, k, z, delay):
     writeSerial(data)
     print(data)
 
+
     
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = MainWindow()
-    mainWindow.showMaximized()
+    # mainWindow.resize(800, 600)
+    mainWindow.show()
     sys.exit(app.exec_())
