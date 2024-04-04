@@ -3,11 +3,12 @@ import sys
 import pymysql
 import serial
 import time
-import threading
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, QtSql
 from PyQt5.QtCore import QTimer, QThread, pyqtSignal
 from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableView, QTableWidgetItem
+from PyQt5.QtSql import QSqlQuery
+
 
 from view_activity import Ui_MainWindow
 
@@ -61,6 +62,8 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.chooseActivityModel = QStandardItemModel()
         self.runningModel_1 = QStandardItemModel()
         self.runningModel_2 = QStandardItemModel()
+        self.saveProgressModel = QStandardItemModel()
+
         self.font = QtGui.QFont()
         self.font.setPointSize(14)
         
@@ -167,7 +170,15 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.btRunningProjectStop.clicked.connect(self.actionSendeingSteps)
         self.ui.btRunningProjectLoop.clicked.connect(self.toggleSendingLoopSteps)
         self.ui.btRunningProjectStatus.setText("Not Starting")
-        
+        self.ui.btRunningProjectSimpan.clicked.connect(self.setSaveProgress)
+
+        # Komponen bagian Save Progress
+        self.ui.btSaveProgressSimpan.clicked.connect(self.sendSaveProgress)
+        self.ui.tbSaveProgressTabel.setModel(self.saveProgressModel)
+        self.refreshSaveProgressTable()
+        self.getSaveProgressCode()
+
+        # readSerial()
 
         # Komponen bagian show project
         self.ui.tbChooseProjectTabel.setModel(self.chooseProjectModel)
@@ -435,6 +446,17 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.refreshChooseActivityTable()
         self.refreshRunningProjectData_1()
         self.ui.stackedWidget.setCurrentWidget(self.ui.getActivity_8)
+
+    def setSaveProgress(self):
+        a = QMessageBox.question(
+            self,
+            "Save Confirmation",
+            "Are You Sure You will go to next page ?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if a == QMessageBox.Yes:
+            self.ui.stackedWidget.setCurrentWidget(self.ui.SaveProgress_9)
 
     # START Activity Menu=====================================================================================================
 
@@ -1492,7 +1514,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.current_step += 1 
             delay = int(self.runningModel_2.data(self.runningModel_2.index(self.current_step, 5))) 
 
-            # delay = int(self.runningModel_2.index(self.current_step, 5).data())
             
             if delay > 0: 
                 self.timer.start(delay) 
@@ -1675,14 +1696,46 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
     def resumeProcess(self):
         self.timer.start() 
 
-    def executeDelay(delay):
-        time.sleep(delay)
+    def saveRunning(self):
+        kd_run = self.ui.lb_kd_run.text()  # Mengambil nilai dari label kd_run
+        try:
+            connection = koneksi()
+            if connection:
+                connection.open()  # Buka koneksi ke database
+                with connection.cursor() as cursor:
+                    for row in range(self.runningModel_2.rowCount()):
+                        description = self.runningModel_2.index(row, 0).data()
+                        x = self.runningModel_2.index(row, 1).data()
+                        y = self.runningModel_2.index(row, 2).data()
+                        k = self.runningModel_2.index(row, 3).data()
+                        z = self.runningModel_2.index(row, 4).data()
+                        delay = self.runningModel_2.index(row, 5).data()
+                        act_code = self.runningModel_2.index(row, 6).data()
+                        c_code = self.runningModel_2.index(row, 7).data()
 
-    def sendWithDelay(data_row):
-        x, y, k, z, delay = map(int, data_row[1:6])  
-        sendSerial(x, y, k, z, delay) 
-          
-            
+                        query = QSqlQuery()
+                        query.prepare("INSERT INTO run_kor (keterangan, x, y, k, z, delay, kd_cor, kd_act, kd_run) "
+                                    "VALUES (:keterangan, :x, :y, :k, :z, :delay, :kd_cor, :kd_act, :kd_run)")
+                        query.bindValue(':keterangan', description)
+                        query.bindValue(':x', x)
+                        query.bindValue(':y', y)
+                        query.bindValue(':k', k)
+                        query.bindValue(':z', z)
+                        query.bindValue(':delay', delay)
+                        query.bindValue(':kd_cor', act_code)
+                        query.bindValue(':kd_act', c_code)
+                        query.bindValue(':kd_run', kd_run)  # Menggunakan kd_run yang sudah diambil sebelumnya
+
+                        if not query.exec_():
+                            print("Error inserting data:", query.lastError().text())
+                            return
+
+                    print("Data inserted successfully.")
+
+        finally:
+            if connection and connection.isOpen():
+                connection.close()  # Tutup koneksi jik
+
     # END Run Program ====================================================================================================
 
     # START Choose Project ===============================================================================================
@@ -1972,6 +2025,201 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     # END Choose Activity ================================================================================================
 
+
+    # Start Save Progress ==========================================================================================================
+
+    def getSaveProgressCode(self):
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT MAX(kd_run) FROM running"
+                    cursor.execute(sql)
+                    result = cursor.fetchone()
+
+                    if result["MAX(kd_run)"]:
+                        latest_code = result["MAX(kd_run)"]
+                        kode_int = int(latest_code[1:]) + 1
+                        new_kode = f"R{kode_int:04d}"
+                    else:
+                        new_kode = "R0001"
+
+                    self.ui.lb_kd_run.setText(new_kode)
+                    return new_kode
+        finally:
+            if connection:
+                connection.close()
+
+    def insertSaveProgress(self):
+        a = self.ui.lb_kd_run.text()
+        b = self.ui.txtSaveProgressName.text()
+        c = self.ui.txtSaveProgressKet.toPlainText()
+
+        if not a:
+            QMessageBox.warning(self, "Warning", "Please input your daata.")
+            return
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM running WHERE nama_run=%s"
+                    cursor.execute(sql, (b,))
+                    result = cursor.fetchone()
+                    if result:
+                        QMessageBox.warning(
+                            self,
+                            "Warning",
+                            f"The progress Name '{b}' already exists.",
+                        )
+                        return
+
+                    sql = "INSERT INTO running (kd_run, nama_run, keterangan) VALUES (%s, %s, %s)"
+                    cursor.execute(sql, (a, b, c))
+                    connection.commit()
+
+                    QMessageBox.information(
+                        self, "Sukses", "The Running progress has been successfully saved."
+                    )
+
+                    self.goToRunProjectGetProject
+                    self.refreshSaveProgressTable()
+                    self.setEmptyColumnSaveProgress()
+                    self.getSaveProgressCode()
+
+        finally:
+            if connection:
+                connection.close()
+
+    def refreshSaveProgressTable(self):
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM running"
+                    cursor.execute(sql)
+                    result = cursor.fetchall()
+
+                    self.saveProgressModel.clear()
+                    self.saveProgressModel.setHorizontalHeaderLabels(
+                        ["Progress Code", "Progress Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbSaveProgressTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbSaveProgressTabel.setColumnWidth(0, 200)
+                    self.ui.tbSaveProgressTabel.setColumnWidth(1, 400)
+                    self.ui.tbSaveProgressTabel.setColumnWidth(2, 700)       
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_run"])
+                        b = QStandardItem(row_data["nama_run"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.saveProgressModel.appendRow([a, b, c])
+                        self.ui.tbSaveProgressTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def searchSaveProgress(self, cariData):
+        cariData = self.ui.txtSaveProgressCari.text()
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM running WHERE nama_run LIKE %s OR kd_run LIKE %s"
+                    cursor.execute(
+                        sql,
+                        ("%" + cariData + "%", "%" + cariData + "%"),
+                    )
+                    result = cursor.fetchall()
+
+                    self.saveProgressModel.clear()
+                    self.saveProgressModel.setHorizontalHeaderLabels(
+                        ["Progress Code", "Progress Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbSaveProgressTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbSaveProgressTabel.setColumnWidth(0, 200)
+                    self.ui.tbSaveProgressTabel.setColumnWidth(1, 400)
+                    self.ui.tbSaveProgressTabel.setColumnWidth(2, 700)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_run"])
+                        b = QStandardItem(row_data["nama_run"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.saveProgressModel.appendRow([a, b, c])
+                        self.ui.tbSaveProgressTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def keyReleaseEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
+            self.searchSaveProgress(event)
+        else:
+            super().keyReleaseEvent(event)
+
+    def setEmptyColumnSaveProgress(self):
+        self.ui.txtSaveProgressName.setText("")
+        self.ui.txtSaveProgressKet.setText("")
+        self.ui.txtSaveProgressCari.setText("")
+
+    def sendSaveProgress(self):
+        self.insertSaveProgress()
+        a = QMessageBox.question(
+            self,
+            "Save Confirmation",
+            "Are You Sure want to save your progress ?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if a == QMessageBox.Yes:
+            self.saveRunning()
+            self.ui.stackedWidget.setCurrentWidget(self.ui.runProject_6)
+
+    # END Save Progress ==================================================================================================
+
     # Bagian set up serial ===============================================================================================
 
     def releasedSlider(self):
@@ -2018,7 +2266,24 @@ def sendSerial(x, y, k, z, delay):
     writeSerial(data)
     print(data)
 
+def readSerial():
+    while True:
+        if ser.in_waiting > 0:
+            received_data = ser.readline()
+            print(received_data)
+            parse_received_data(received_data)
 
+def parse_received_data(data):
+    data_parts = data.split(',')
+    if len(data_parts) >= 5:
+        # Ambil data koordinat x, y, k, z, dan delay
+        x = int(data_parts[0].split(':')[1])
+        y = int(data_parts[1])
+        k = int(data_parts[2])
+        z = int(data_parts[3])
+        delay = int(data_parts[4].split(';')[0])
+
+        print(x, y, k, z, delay)
     
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

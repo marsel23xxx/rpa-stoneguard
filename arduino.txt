@@ -1,0 +1,208 @@
+// moveStep:700,3500,850,180,3000;
+// moveStep:500,3000,800,50,0;
+
+#include <Servo.h>
+Servo myservo;
+
+#define CLOCKWISE  0
+#define OTHERWISE  1
+
+#define active     0
+#define nonactive  1
+int kecStepX    = 600;
+int kecStepY    = 200;
+int kecStepK    = 500;
+// x,y,kartu
+int pos[3];
+int toCoor[3];
+int maxCoor[3]  = {700, 3500, 850};
+int minCoor[3]  = {0, 0, 0};
+
+int batasSer[2] = {0, 180};
+
+int pinOther[2] = {8, 10};
+
+// A0 = 54
+// y1,x,y2,z(k)
+int pinEn[4]    = {38, 56, 24, 30};
+int pinDir[4]   = {55, 61, 28, 34};
+int pinClk[4]   = {54, 60, 26, 36};
+// limit terpakai [1]
+int limitX[2]   = {14, 15};
+int limitY[2]   = { 3,  2}; // pin Serial3
+int limitK[2]   = {18, 19}; // pin Serial1
+
+int pinServo    = 11;
+
+void enStep(int kondisi) {
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(pinEn[i], kondisi);
+  }
+}
+
+void jalanStepper(int stepper, int stepnya, int arah) {
+  digitalWrite(pinDir[stepper], arah);
+  if (stepper == 0) digitalWrite(pinDir[2], arah);
+
+  digitalWrite(pinClk[stepper], 1);
+  if (stepper == 0) digitalWrite(pinClk[2], 1);
+  delayMicroseconds(stepnya);
+
+  digitalWrite(pinClk[stepper], 0);
+  if (stepper == 0) digitalWrite(pinClk[2], 0);
+  delayMicroseconds(stepnya);
+}
+
+void homeK() {
+  enStep(active);
+  int a = digitalRead(limitK[1]);
+  while (a == 1) {
+    a = digitalRead(limitK[1]);
+    jalanStepper(3, kecStepK, OTHERWISE);
+  }
+  pos[2] = minCoor[2];
+  enStep(nonactive);
+}
+
+void homeXYZ() {
+  enStep(active);
+  myservo.write(batasSer[1]);
+  int a = digitalRead(limitX[1]);
+  int b = digitalRead(limitY[1]);
+  while (a == 1 or b == 1) {
+    a = digitalRead(limitX[1]);
+    b = digitalRead(limitY[1]);
+    if (a == 1) {
+      jalanStepper(1, kecStepX, OTHERWISE);
+    }
+    if (b == 1) {
+      jalanStepper(0, kecStepX, CLOCKWISE);
+    }
+  }
+  pos[0] = minCoor[0];
+  pos[1] = minCoor[1];
+  enStep(nonactive);
+}
+
+void moveStep(int x, int y, int k, int z, long jedaKartu, int mode) {
+  int z_ = map(z,0,180,180,0);
+  if(x <= maxCoor[0] and y <= maxCoor[1] and k <= maxCoor[2]){
+    Serial.println("execute start");
+    myservo.write(batasSer[1]);
+    int loopx = abs(x-pos[0]);
+    int loopy = abs(y-pos[1]);
+    int lamaLoopxy = abs(loopx) - abs(loopy);
+    int lamaLoopk  = abs(k-pos[2]);
+    
+    if(lamaLoopxy < 0){
+      lamaLoopxy = abs(y-pos[1]);
+    }else {
+      lamaLoopxy = abs(x-pos[0]);
+    }
+  
+    enStep(active);
+    for(int i = 0; i < lamaLoopk; i++){
+      if(k-pos[2] > 0){
+        jalanStepper(3, kecStepK, CLOCKWISE);
+        pos[2]++;
+      }else if(k-pos[2] < 0){
+        jalanStepper(3, kecStepK, OTHERWISE);
+        pos[2]--;
+      }
+    }
+    
+    delay(jedaKartu);
+    
+    for(int i = 0; i < lamaLoopxy; i++){
+      // kesalahan // ini untuk y
+      if(x-pos[0] > 0){
+        jalanStepper(1, kecStepX, CLOCKWISE);
+        pos[0]++;
+        kecStepY = 150;
+      }else if(x-pos[0] < 0){
+        jalanStepper(1, kecStepX, OTHERWISE);
+        pos[0]--;
+        kecStepY = 150;
+      }else{
+        kecStepY = 200;
+      }
+  
+      // kesalahan // ini untuk x
+      if(y-pos[1] > 0){
+        jalanStepper(0, kecStepY, OTHERWISE);
+        pos[1]++;
+      }else if(y-pos[1] < 0){
+        jalanStepper(0, kecStepY, CLOCKWISE);
+        pos[1]--;
+      }
+    }
+    
+    enStep(nonactive);
+    pos[0] = x;
+    pos[1] = y;
+    pos[2] = k;
+    myservo.write(z_);
+    if(mode == 1){
+      delay(500);
+      myservo.write(batasSer[1]);
+    }
+    Serial.println("execute end");
+  }else{
+    Serial.println("execute abort: x or y or card over step");
+  }
+}
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println("arduino setup start");
+  for (int i = 0; i < 4; i++) {
+    pinMode(pinEn[i],    OUTPUT);
+    pinMode(pinDir[i],   OUTPUT);
+    pinMode(pinClk[i],   OUTPUT);
+    if (i < 2)pinMode(limitX[i],    INPUT_PULLUP);
+    if (i < 2)pinMode(limitY[i],    INPUT_PULLUP);
+    if (i < 2)pinMode(limitK[i],    INPUT_PULLUP);
+    if (i < 2)pinMode(pinOther[i],  OUTPUT);
+  }
+  myservo.attach(pinServo);
+  digitalWrite(pinOther[0], 1);
+  homeXYZ();
+  homeK();
+  enStep(nonactive);
+  Serial.println("arduino setup done");
+}
+
+void loop() {
+  String dataPy0 = "";
+  while (Serial.available()) {
+    dataPy0 = Serial.readStringUntil('\n');
+    int     div0    = dataPy0.indexOf(':');
+    int     div1    = dataPy0.indexOf(',');
+    String  data1   = dataPy0.substring(div0 + 1, div1);
+    String  dataPy1 = dataPy0.substring(div1 + 1, dataPy0.length());
+    int     div2    = dataPy1.indexOf(',');
+    String  data2   = dataPy1.substring(0, div2);
+    String  dataPy2 = dataPy1.substring(div2 + 1, dataPy1.length());
+    int     div3    = dataPy2.indexOf(',');
+    String  data3   = dataPy2.substring(0, div3);
+    String  dataPy3 = dataPy2.substring(div3 + 1, dataPy2.length());
+    int     div4    = dataPy3.indexOf(',');
+    String  data4   = dataPy3.substring(0, div4);
+    String  dataPy4 = dataPy3.substring(div4 + 1, dataPy3.length());
+    int     div5    = dataPy4.indexOf(';');
+    String  data5   = dataPy4.substring(0, div5);
+    String  dataPy5 = dataPy4.substring(div5 + 1, dataPy4.length());
+    if (dataPy0.startsWith("moveStep:") == 1 and dataPy0.endsWith(";") == 1 and div5 != 0) {
+      moveStep(data1.toInt(),data2.toInt(),data3.toInt(),data4.toInt(),data5.toInt(),1);
+    } else if (dataPy0.startsWith("config:") == 1 and dataPy0.endsWith(";") == 1 and div5 != 0) {
+      moveStep(data1.toInt(),data2.toInt(),data3.toInt(),data4.toInt(),data5.toInt(),0);
+    } else if (dataPy0.startsWith("home") and dataPy0.endsWith(";") == 1) {
+      Serial.println("home start");
+      homeXYZ();
+      homeK();
+      Serial.println("home done");
+    } else {
+      Serial.println("wrong format");
+    }
+  }
+}

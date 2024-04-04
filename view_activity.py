@@ -638,7 +638,7 @@ class Ui_MainWindow(object):
 "        margin: -15px -10px;\n"
 "        border-radius: 15px;\n"
 "    }")
-        self.slIntegrationZ.setMaximum(80)
+        self.slIntegrationZ.setMaximum(90)
         self.slIntegrationZ.setOrientation(QtCore.Qt.Vertical)
         self.slIntegrationZ.setTickPosition(QtWidgets.QSlider.TicksBothSides)
         self.slIntegrationZ.setTickInterval(5)
@@ -1013,7 +1013,7 @@ class Ui_MainWindow(object):
 "    subcontrol-position: bottom right;\n"
 "}\n"
 "")
-        self.txtIntegrationZ.setMaximum(80.0)
+        self.txtIntegrationZ.setMaximum(90.0)
         self.txtIntegrationZ.setObjectName("txtIntegrationZ")
         self.txtIntegrationK = QtWidgets.QDoubleSpinBox(self.Integration_3)
         self.txtIntegrationK.setGeometry(QtCore.QRect(290, 610, 51, 41))
@@ -1560,7 +1560,7 @@ class Ui_MainWindow(object):
 "}")
         self.label_28.setObjectName("label_28")
         self.btRunningProjectKembali = QtWidgets.QPushButton(self.frame_7)
-        self.btRunningProjectKembali.setGeometry(QtCore.QRect(1160, 30, 101, 51))
+        self.btRunningProjectKembali.setGeometry(QtCore.QRect(1050, 30, 101, 51))
         self.btRunningProjectKembali.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btRunningProjectKembali.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btRunningProjectKembali.setStyleSheet("QPushButton {\n"
@@ -1609,11 +1609,11 @@ class Ui_MainWindow(object):
 "    font-size: 1px;\n"
 "}")
         self.txtRunningProjectGetActivity.setObjectName("txtRunningProjectGetActivity")
-        self.btRunningProjectRun = QtWidgets.QPushButton(self.runProject_6)
-        self.btRunningProjectRun.setGeometry(QtCore.QRect(1090, 210, 91, 51))
-        self.btRunningProjectRun.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btRunningProjectRun.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.btRunningProjectRun.setStyleSheet("QPushButton {\n"
+        self.btRunningProjectSimpan = QtWidgets.QPushButton(self.frame_7)
+        self.btRunningProjectSimpan.setGeometry(QtCore.QRect(1160, 30, 101, 51))
+        self.btRunningProjectSimpan.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btRunningProjectSimpan.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btRunningProjectSimpan.setStyleSheet("QPushButton {\n"
 "    border-radius: 20px;\n"
 "    background: red;\n"
 "    color: white;\n"
@@ -1644,9 +1644,9 @@ class Ui_MainWindow(object):
 "    margin-bottom: 5px; \n"
 "}\n"
 "")
-        self.btRunningProjectRun.setIconSize(QtCore.QSize(50, 50))
-        self.btRunningProjectRun.setFlat(False)
-        self.btRunningProjectRun.setObjectName("btRunningProjectRun")
+        self.btRunningProjectSimpan.setIconSize(QtCore.QSize(50, 50))
+        self.btRunningProjectSimpan.setFlat(False)
+        self.btRunningProjectSimpan.setObjectName("btRunningProjectSimpan")
         self.tbRunningProjectTabel_2 = QtWidgets.QTableView(self.runProject_6)
         self.tbRunningProjectTabel_2.setGeometry(QtCore.QRect(720, 280, 561, 431))
         self.tbRunningProjectTabel_2.setObjectName("tbRunningProjectTabel_2")
@@ -1718,46 +1718,8 @@ class Ui_MainWindow(object):
 "    font-weight: bold;\n"
 "}")
         self.label_36.setObjectName("label_36")
-        self.btRunningProjectStop = QtWidgets.QPushButton(self.runProject_6)
-        self.btRunningProjectStop.setGeometry(QtCore.QRect(1190, 210, 91, 51))
-        self.btRunningProjectStop.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btRunningProjectStop.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.btRunningProjectStop.setStyleSheet("QPushButton {\n"
-"    border-radius: 20px;\n"
-"    background: red;\n"
-"    color: white;\n"
-"    font-weight: bold;\n"
-"    font-size: 20px;\n"
-"    border: 3px solid black;\n"
-"      text-align: center;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background: qradialgradient(\n"
-"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
-"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
-"        );\n"
-"    color: black;\n"
-"    border: 3px solid black;\n"
-"    }\n"
-"\n"
-"QPushButton:pressed {\n"
-"    border-style: inset;\n"
-"    background: qradialgradient(\n"
-"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
-"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
-"        );\n"
-"    }\n"
-"\n"
-"QPushButton::icon {\n"
-"    margin-bottom: 5px; \n"
-"}\n"
-"")
-        self.btRunningProjectStop.setIconSize(QtCore.QSize(50, 50))
-        self.btRunningProjectStop.setFlat(False)
-        self.btRunningProjectStop.setObjectName("btRunningProjectStop")
         self.frame_10 = QtWidgets.QFrame(self.runProject_6)
-        self.frame_10.setGeometry(QtCore.QRect(800, 200, 271, 71))
+        self.frame_10.setGeometry(QtCore.QRect(800, 200, 311, 71))
         self.frame_10.setStyleSheet("QFrame {\n"
 "    background: rgb(173, 127, 168)rgb(204, 0, 0)\n"
 "}")
@@ -1765,7 +1727,7 @@ class Ui_MainWindow(object):
         self.frame_10.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_10.setObjectName("frame_10")
         self.btRunningProjectLoop = QtWidgets.QPushButton(self.frame_10)
-        self.btRunningProjectLoop.setGeometry(QtCore.QRect(10, 10, 251, 51))
+        self.btRunningProjectLoop.setGeometry(QtCore.QRect(10, 10, 91, 51))
         self.btRunningProjectLoop.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btRunningProjectLoop.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btRunningProjectLoop.setStyleSheet("QPushButton {\n"
@@ -1802,6 +1764,82 @@ class Ui_MainWindow(object):
         self.btRunningProjectLoop.setIconSize(QtCore.QSize(50, 50))
         self.btRunningProjectLoop.setFlat(False)
         self.btRunningProjectLoop.setObjectName("btRunningProjectLoop")
+        self.btRunningProjectRun = QtWidgets.QPushButton(self.frame_10)
+        self.btRunningProjectRun.setGeometry(QtCore.QRect(110, 10, 91, 51))
+        self.btRunningProjectRun.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btRunningProjectRun.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btRunningProjectRun.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btRunningProjectRun.setIconSize(QtCore.QSize(50, 50))
+        self.btRunningProjectRun.setFlat(False)
+        self.btRunningProjectRun.setObjectName("btRunningProjectRun")
+        self.btRunningProjectStop = QtWidgets.QPushButton(self.frame_10)
+        self.btRunningProjectStop.setGeometry(QtCore.QRect(210, 10, 91, 51))
+        self.btRunningProjectStop.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btRunningProjectStop.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btRunningProjectStop.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btRunningProjectStop.setIconSize(QtCore.QSize(50, 50))
+        self.btRunningProjectStop.setFlat(False)
+        self.btRunningProjectStop.setObjectName("btRunningProjectStop")
         self.label_38 = QtWidgets.QLabel(self.runProject_6)
         self.label_38.setGeometry(QtCore.QRect(720, 140, 81, 51))
         self.label_38.setStyleSheet("QLabel {\n"
@@ -1811,7 +1849,7 @@ class Ui_MainWindow(object):
         self.label_38.setObjectName("label_38")
         self.btRunningProjectStatus = QtWidgets.QPushButton(self.runProject_6)
         self.btRunningProjectStatus.setEnabled(False)
-        self.btRunningProjectStatus.setGeometry(QtCore.QRect(800, 140, 271, 51))
+        self.btRunningProjectStatus.setGeometry(QtCore.QRect(800, 140, 311, 51))
         self.btRunningProjectStatus.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btRunningProjectStatus.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btRunningProjectStatus.setStyleSheet("QPushButton {\n"
@@ -1978,6 +2016,50 @@ class Ui_MainWindow(object):
         self.btRunningProjectSameData.setIconSize(QtCore.QSize(50, 50))
         self.btRunningProjectSameData.setFlat(False)
         self.btRunningProjectSameData.setObjectName("btRunningProjectSameData")
+        self.btRunningProjectOpen = QtWidgets.QPushButton(self.runProject_6)
+        self.btRunningProjectOpen.setGeometry(QtCore.QRect(1120, 210, 161, 51))
+        self.btRunningProjectOpen.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btRunningProjectOpen.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btRunningProjectOpen.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btRunningProjectOpen.setIconSize(QtCore.QSize(50, 50))
+        self.btRunningProjectOpen.setFlat(False)
+        self.btRunningProjectOpen.setObjectName("btRunningProjectOpen")
+        self.lb_kd_run = QtWidgets.QLabel(self.runProject_6)
+        self.lb_kd_run.setGeometry(QtCore.QRect(1130, 150, 141, 20))
+        self.lb_kd_run.setObjectName("lb_kd_run")
+        self.lb_kd_runkor = QtWidgets.QLabel(self.runProject_6)
+        self.lb_kd_runkor.setGeometry(QtCore.QRect(1130, 170, 141, 20))
+        self.lb_kd_runkor.setObjectName("lb_kd_runkor")
         self.stackedWidget.addWidget(self.runProject_6)
         self.getProject_7 = QtWidgets.QWidget()
         self.getProject_7.setObjectName("getProject_7")
@@ -2244,6 +2326,356 @@ class Ui_MainWindow(object):
 "}")
         self.txtChooseActivityCari.setObjectName("txtChooseActivityCari")
         self.stackedWidget.addWidget(self.getActivity_8)
+        self.SaveProgress_9 = QtWidgets.QWidget()
+        self.SaveProgress_9.setObjectName("SaveProgress_9")
+        self.btSaveProgressCari = QtWidgets.QPushButton(self.SaveProgress_9)
+        self.btSaveProgressCari.setGeometry(QtCore.QRect(940, 160, 91, 51))
+        self.btSaveProgressCari.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btSaveProgressCari.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btSaveProgressCari.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btSaveProgressCari.setIconSize(QtCore.QSize(50, 50))
+        self.btSaveProgressCari.setFlat(False)
+        self.btSaveProgressCari.setObjectName("btSaveProgressCari")
+        self.label_55 = QtWidgets.QLabel(self.SaveProgress_9)
+        self.label_55.setGeometry(QtCore.QRect(470, 170, 121, 41))
+        self.label_55.setStyleSheet("QLabel {\n"
+"    font-size: 20px;\n"
+"    font-weight: bold;\n"
+"}")
+        self.label_55.setObjectName("label_55")
+        self.lbSaveProgressKode = QtWidgets.QLabel(self.SaveProgress_9)
+        self.lbSaveProgressKode.setGeometry(QtCore.QRect(180, 140, 151, 17))
+        self.lbSaveProgressKode.setStyleSheet("QLabel {\n"
+"    font-size: 1px;\n"
+"}")
+        self.lbSaveProgressKode.setObjectName("lbSaveProgressKode")
+        self.txtSaveProgressKet = QtWidgets.QTextEdit(self.SaveProgress_9)
+        self.txtSaveProgressKet.setGeometry(QtCore.QRect(180, 230, 271, 331))
+        self.txtSaveProgressKet.setStyleSheet("QTextEdit {\n"
+"    border-radius: 10px;\n"
+"    border: 3px solid black;\n"
+"    font-size: 20px;\n"
+"}")
+        self.txtSaveProgressKet.setObjectName("txtSaveProgressKet")
+        self.frame_15 = QtWidgets.QFrame(self.SaveProgress_9)
+        self.frame_15.setGeometry(QtCore.QRect(0, 0, 1291, 111))
+        self.frame_15.setStyleSheet("QFrame {\n"
+"    background-color: rgb(204, 0, 0);\n"
+"    color: white;\n"
+"}")
+        self.frame_15.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_15.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_15.setObjectName("frame_15")
+        self.label_56 = QtWidgets.QLabel(self.frame_15)
+        self.label_56.setGeometry(QtCore.QRect(20, 40, 301, 31))
+        self.label_56.setStyleSheet("QLabel {\n"
+"    font-size: 30px;\n"
+"    font-weight: bold;\n"
+"}")
+        self.label_56.setObjectName("label_56")
+        self.btSaveProgressKembali = QtWidgets.QPushButton(self.frame_15)
+        self.btSaveProgressKembali.setGeometry(QtCore.QRect(1170, 50, 91, 41))
+        self.btSaveProgressKembali.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btSaveProgressKembali.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btSaveProgressKembali.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btSaveProgressKembali.setIconSize(QtCore.QSize(50, 50))
+        self.btSaveProgressKembali.setFlat(False)
+        self.btSaveProgressKembali.setObjectName("btSaveProgressKembali")
+        self.btSaveProgressSimpan = QtWidgets.QPushButton(self.SaveProgress_9)
+        self.btSaveProgressSimpan.setGeometry(QtCore.QRect(180, 570, 271, 51))
+        self.btSaveProgressSimpan.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btSaveProgressSimpan.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btSaveProgressSimpan.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btSaveProgressSimpan.setIconSize(QtCore.QSize(50, 50))
+        self.btSaveProgressSimpan.setFlat(False)
+        self.btSaveProgressSimpan.setObjectName("btSaveProgressSimpan")
+        self.tbSaveProgressTabel = QtWidgets.QTableView(self.SaveProgress_9)
+        self.tbSaveProgressTabel.setGeometry(QtCore.QRect(470, 220, 811, 431))
+        self.tbSaveProgressTabel.setObjectName("tbSaveProgressTabel")
+        self.label_57 = QtWidgets.QLabel(self.SaveProgress_9)
+        self.label_57.setGeometry(QtCore.QRect(20, 220, 121, 41))
+        self.label_57.setStyleSheet("QLabel {\n"
+"    font-size: 20px;\n"
+"    font-weight: bold;\n"
+"}")
+        self.label_57.setObjectName("label_57")
+        self.label_58 = QtWidgets.QLabel(self.SaveProgress_9)
+        self.label_58.setGeometry(QtCore.QRect(20, 170, 151, 41))
+        self.label_58.setStyleSheet("QLabel {\n"
+"    font-size: 20px;\n"
+"    font-weight: bold;\n"
+"}")
+        self.label_58.setObjectName("label_58")
+        self.txtSaveProgressName = QtWidgets.QLineEdit(self.SaveProgress_9)
+        self.txtSaveProgressName.setGeometry(QtCore.QRect(180, 170, 271, 51))
+        self.txtSaveProgressName.setStyleSheet("QLineEdit {\n"
+"    border-radius: 10px;\n"
+"    border: 3px solid black;\n"
+"    font-size: 20px\n"
+"}")
+        self.txtSaveProgressName.setObjectName("txtSaveProgressName")
+        self.txtSaveProgressCari = QtWidgets.QLineEdit(self.SaveProgress_9)
+        self.txtSaveProgressCari.setGeometry(QtCore.QRect(600, 160, 331, 51))
+        self.txtSaveProgressCari.setStyleSheet("QLineEdit {\n"
+"    border-radius: 10px;\n"
+"    border: 3px solid black;\n"
+"    font-size: 20px;\n"
+"}")
+        self.txtSaveProgressCari.setObjectName("txtSaveProgressCari")
+        self.lbSaveProgressKor = QtWidgets.QLabel(self.SaveProgress_9)
+        self.lbSaveProgressKor.setGeometry(QtCore.QRect(180, 120, 151, 17))
+        self.lbSaveProgressKor.setStyleSheet("QLabel {\n"
+"    font-size: 1px;\n"
+"}")
+        self.lbSaveProgressKor.setObjectName("lbSaveProgressKor")
+        self.stackedWidget.addWidget(self.SaveProgress_9)
+        self.OpenProgress_10 = QtWidgets.QWidget()
+        self.OpenProgress_10.setObjectName("OpenProgress_10")
+        self.tbOpenProgressTabel = QtWidgets.QTableView(self.OpenProgress_10)
+        self.tbOpenProgressTabel.setGeometry(QtCore.QRect(20, 220, 1261, 471))
+        self.tbOpenProgressTabel.setObjectName("tbOpenProgressTabel")
+        self.btOpenProgressOpen = QtWidgets.QPushButton(self.OpenProgress_10)
+        self.btOpenProgressOpen.setGeometry(QtCore.QRect(1160, 160, 111, 51))
+        self.btOpenProgressOpen.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btOpenProgressOpen.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btOpenProgressOpen.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btOpenProgressOpen.setIconSize(QtCore.QSize(50, 50))
+        self.btOpenProgressOpen.setFlat(False)
+        self.btOpenProgressOpen.setObjectName("btOpenProgressOpen")
+        self.frame_16 = QtWidgets.QFrame(self.OpenProgress_10)
+        self.frame_16.setGeometry(QtCore.QRect(0, 0, 1291, 111))
+        self.frame_16.setStyleSheet("QFrame {\n"
+"    background-color: rgb(204, 0, 0);\n"
+"    color: white;\n"
+"}")
+        self.frame_16.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_16.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_16.setObjectName("frame_16")
+        self.label_62 = QtWidgets.QLabel(self.frame_16)
+        self.label_62.setGeometry(QtCore.QRect(20, 40, 301, 31))
+        self.label_62.setStyleSheet("QLabel {\n"
+"    font-size: 30px;\n"
+"    font-weight: bold;\n"
+"}")
+        self.label_62.setObjectName("label_62")
+        self.btOpenProgressKembali = QtWidgets.QPushButton(self.frame_16)
+        self.btOpenProgressKembali.setGeometry(QtCore.QRect(1170, 40, 91, 51))
+        self.btOpenProgressKembali.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btOpenProgressKembali.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btOpenProgressKembali.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btOpenProgressKembali.setIconSize(QtCore.QSize(50, 50))
+        self.btOpenProgressKembali.setFlat(False)
+        self.btOpenProgressKembali.setObjectName("btOpenProgressKembali")
+        self.label_60 = QtWidgets.QLabel(self.OpenProgress_10)
+        self.label_60.setGeometry(QtCore.QRect(20, 170, 121, 41))
+        self.label_60.setStyleSheet("QLabel {\n"
+"    font-size: 20px;\n"
+"    font-weight: bold;\n"
+"}")
+        self.label_60.setObjectName("label_60")
+        self.btOpenProgressCari = QtWidgets.QPushButton(self.OpenProgress_10)
+        self.btOpenProgressCari.setGeometry(QtCore.QRect(490, 160, 91, 51))
+        self.btOpenProgressCari.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btOpenProgressCari.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.btOpenProgressCari.setStyleSheet("QPushButton {\n"
+"    border-radius: 20px;\n"
+"    background: red;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+"    font-size: 20px;\n"
+"    border: 3px solid black;\n"
+"      text-align: center;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(\n"
+"        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+"        );\n"
+"    color: black;\n"
+"    border: 3px solid black;\n"
+"    }\n"
+"\n"
+"QPushButton:pressed {\n"
+"    border-style: inset;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"        radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+"        );\n"
+"    }\n"
+"\n"
+"QPushButton::icon {\n"
+"    margin-bottom: 5px; \n"
+"}\n"
+"")
+        self.btOpenProgressCari.setIconSize(QtCore.QSize(50, 50))
+        self.btOpenProgressCari.setFlat(False)
+        self.btOpenProgressCari.setObjectName("btOpenProgressCari")
+        self.lbOpenProgressKode = QtWidgets.QLabel(self.OpenProgress_10)
+        self.lbOpenProgressKode.setGeometry(QtCore.QRect(160, 140, 151, 17))
+        self.lbOpenProgressKode.setStyleSheet("QLabel {\n"
+"    font-size: 1px;\n"
+"}")
+        self.lbOpenProgressKode.setObjectName("lbOpenProgressKode")
+        self.txtOpenProgressCari = QtWidgets.QLineEdit(self.OpenProgress_10)
+        self.txtOpenProgressCari.setGeometry(QtCore.QRect(150, 160, 331, 51))
+        self.txtOpenProgressCari.setStyleSheet("QLineEdit {\n"
+"    border-radius: 10px;\n"
+"    border: 3px solid black;\n"
+"    font-size: 20px;\n"
+"}")
+        self.txtOpenProgressCari.setObjectName("txtOpenProgressCari")
+        self.stackedWidget.addWidget(self.OpenProgress_10)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -2314,18 +2746,22 @@ class Ui_MainWindow(object):
         self.btRunningProjectKembali.setText(_translate("MainWindow", "Back"))
         self.txtRunningProjectGetProject.setText(_translate("MainWindow", "$getDataProject"))
         self.txtRunningProjectGetActivity.setText(_translate("MainWindow", "$getDataActivity"))
-        self.btRunningProjectRun.setText(_translate("MainWindow", "Run"))
+        self.btRunningProjectSimpan.setText(_translate("MainWindow", "Save"))
         self.label_33.setText(_translate("MainWindow", "Project"))
         self.btRunningProjectShowProject.setText(_translate("MainWindow", "Show"))
-        self.label_36.setText(_translate("MainWindow", "Repeat"))
-        self.btRunningProjectStop.setText(_translate("MainWindow", "Stop"))
+        self.label_36.setText(_translate("MainWindow", "Action"))
         self.btRunningProjectLoop.setText(_translate("MainWindow", "Loop"))
+        self.btRunningProjectRun.setText(_translate("MainWindow", "Run"))
+        self.btRunningProjectStop.setText(_translate("MainWindow", "Stop"))
         self.label_38.setText(_translate("MainWindow", "Status"))
         self.btRunningProjectStatus.setText(_translate("MainWindow", "$getStatus"))
         self.btRunningProjectRight.setText(_translate("MainWindow", ">>>"))
         self.btRunningProjectLeft.setText(_translate("MainWindow", "<<<"))
         self.label_39.setText(_translate("MainWindow", "Move Data"))
         self.btRunningProjectSameData.setText(_translate("MainWindow", "Same Data"))
+        self.btRunningProjectOpen.setText(_translate("MainWindow", "Open Progress"))
+        self.lb_kd_run.setText(_translate("MainWindow", "$getData"))
+        self.lb_kd_runkor.setText(_translate("MainWindow", "$getData"))
         self.btChooseProjectBack.setText(_translate("MainWindow", "Back"))
         self.lbGetData_8.setText(_translate("MainWindow", "Choose your project"))
         self.lbGetData_6.setText(_translate("MainWindow", "Project list item"))
@@ -2340,6 +2776,21 @@ class Ui_MainWindow(object):
         self.btChooseActivityOpen.setText(_translate("MainWindow", "Open"))
         self.label_35.setText(_translate("MainWindow", "Search Data"))
         self.lbChooseActivityGetName.setText(_translate("MainWindow", "$getName"))
+        self.btSaveProgressCari.setText(_translate("MainWindow", "Search"))
+        self.label_55.setText(_translate("MainWindow", "Search Data"))
+        self.lbSaveProgressKode.setText(_translate("MainWindow", "$getCode"))
+        self.label_56.setText(_translate("MainWindow", "Save Your Progress"))
+        self.btSaveProgressKembali.setText(_translate("MainWindow", "Back"))
+        self.btSaveProgressSimpan.setText(_translate("MainWindow", "Save"))
+        self.label_57.setText(_translate("MainWindow", "Description"))
+        self.label_58.setText(_translate("MainWindow", "Progress Name"))
+        self.lbSaveProgressKor.setText(_translate("MainWindow", "$getCode"))
+        self.btOpenProgressOpen.setText(_translate("MainWindow", "Open"))
+        self.label_62.setText(_translate("MainWindow", "Open Your Progress"))
+        self.btOpenProgressKembali.setText(_translate("MainWindow", "Back"))
+        self.label_60.setText(_translate("MainWindow", "Search Data"))
+        self.btOpenProgressCari.setText(_translate("MainWindow", "Search"))
+        self.lbOpenProgressKode.setText(_translate("MainWindow", "$getCode"))
 
 
 if __name__ == "__main__":

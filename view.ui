@@ -30,7 +30,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>8</number>
     </property>
     <widget class="QWidget" name="dashboard_1">
      <widget class="QPushButton" name="btToGetStarted">
@@ -1151,7 +1151,7 @@ QPushButton::icon {
     }</string>
       </property>
       <property name="maximum">
-       <number>80</number>
+       <number>90</number>
       </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -1802,7 +1802,7 @@ QDoubleSpinBox::down-arrow {
 </string>
       </property>
       <property name="maximum">
-       <double>80.000000000000000</double>
+       <double>90.000000000000000</double>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="txtIntegrationK">
@@ -2833,7 +2833,7 @@ QPushButton::icon {
       <widget class="QPushButton" name="btRunningProjectKembali">
        <property name="geometry">
         <rect>
-         <x>1160</x>
+         <x>1050</x>
          <y>30</y>
          <width>101</width>
          <height>51</height>
@@ -2927,24 +2927,23 @@ QPushButton::icon {
         <string>$getDataActivity</string>
        </property>
       </widget>
-     </widget>
-     <widget class="QPushButton" name="btRunningProjectRun">
-      <property name="geometry">
-       <rect>
-        <x>1090</x>
-        <y>210</y>
-        <width>91</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="cursor">
-       <cursorShape>PointingHandCursor</cursorShape>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QPushButton {
+      <widget class="QPushButton" name="btRunningProjectSimpan">
+       <property name="geometry">
+        <rect>
+         <x>1160</x>
+         <y>30</y>
+         <width>101</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
 	border-radius: 20px;
 	background: red;
 	color: white;
@@ -2975,19 +2974,20 @@ QPushButton::icon {
     margin-bottom: 5px; 
 }
 </string>
-      </property>
-      <property name="text">
-       <string>Run</string>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>50</width>
-        <height>50</height>
-       </size>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
-      </property>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
      </widget>
      <widget class="QTableView" name="tbRunningProjectTabel_2">
       <property name="geometry">
@@ -3129,68 +3129,7 @@ QPushButton::icon {
 }</string>
       </property>
       <property name="text">
-       <string>Repeat</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btRunningProjectStop">
-      <property name="geometry">
-       <rect>
-        <x>1190</x>
-        <y>210</y>
-        <width>91</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="cursor">
-       <cursorShape>PointingHandCursor</cursorShape>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QPushButton {
-	border-radius: 20px;
-	background: red;
-	color: white;
-	font-weight: bold;
-	font-size: 20px;
-	border: 3px solid black;
-  	text-align: center;
-}
-
-QPushButton:hover {
-    background: qradialgradient(
-        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
-        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
-        );
-	color: black;
-	border: 3px solid black;
-    }
-
-QPushButton:pressed {
-    border-style: inset;
-    background: qradialgradient(
-        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
-        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
-        );
-    }
-
-QPushButton::icon {
-    margin-bottom: 5px; 
-}
-</string>
-      </property>
-      <property name="text">
-       <string>Stop</string>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>50</width>
-        <height>50</height>
-       </size>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
+       <string>Action</string>
       </property>
      </widget>
      <widget class="QFrame" name="frame_10">
@@ -3198,7 +3137,7 @@ QPushButton::icon {
        <rect>
         <x>800</x>
         <y>200</y>
-        <width>271</width>
+        <width>311</width>
         <height>71</height>
        </rect>
       </property>
@@ -3218,7 +3157,7 @@ QPushButton::icon {
         <rect>
          <x>10</x>
          <y>10</y>
-         <width>251</width>
+         <width>91</width>
          <height>51</height>
         </rect>
        </property>
@@ -3274,6 +3213,128 @@ QPushButton::icon {
         <bool>false</bool>
        </property>
       </widget>
+      <widget class="QPushButton" name="btRunningProjectRun">
+       <property name="geometry">
+        <rect>
+         <x>110</x>
+         <y>10</y>
+         <width>91</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Run</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btRunningProjectStop">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>10</y>
+         <width>91</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Stop</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
      </widget>
      <widget class="QLabel" name="label_38">
       <property name="geometry">
@@ -3302,7 +3363,7 @@ QPushButton::icon {
        <rect>
         <x>800</x>
         <y>140</y>
-        <width>271</width>
+        <width>311</width>
         <height>51</height>
        </rect>
       </property>
@@ -3580,6 +3641,93 @@ QPushButton::icon {
       </property>
       <property name="flat">
        <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btRunningProjectOpen">
+      <property name="geometry">
+       <rect>
+        <x>1120</x>
+        <y>210</y>
+        <width>161</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Open Progress</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lb_kd_run">
+      <property name="geometry">
+       <rect>
+        <x>1130</x>
+        <y>150</y>
+        <width>141</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>$getData</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lb_kd_runkor">
+      <property name="geometry">
+       <rect>
+        <x>1130</x>
+        <y>170</y>
+        <width>141</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>$getData</string>
       </property>
      </widget>
     </widget>
@@ -4104,6 +4252,676 @@ QPushButton::icon {
         <x>160</x>
         <y>160</y>
         <width>301</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+	font-size: 20px;
+}</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="SaveProgress_9">
+     <widget class="QPushButton" name="btSaveProgressCari">
+      <property name="geometry">
+       <rect>
+        <x>940</x>
+        <y>160</y>
+        <width>91</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Search</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_55">
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>170</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 20px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Search Data</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbSaveProgressKode">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>140</y>
+        <width>151</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 1px;
+}</string>
+      </property>
+      <property name="text">
+       <string>$getCode</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="txtSaveProgressKet">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>230</y>
+        <width>271</width>
+        <height>331</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QTextEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+	font-size: 20px;
+}</string>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame_15">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1291</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+	background-color: rgb(204, 0, 0);
+	color: white;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_56">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 30px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="text">
+        <string>Save Your Progress</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btSaveProgressKembali">
+       <property name="geometry">
+        <rect>
+         <x>1170</x>
+         <y>50</y>
+         <width>91</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Back</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="btSaveProgressSimpan">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>570</y>
+        <width>271</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Save</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QTableView" name="tbSaveProgressTabel">
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>220</y>
+        <width>811</width>
+        <height>431</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_57">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>220</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 20px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Description</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_58">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>170</y>
+        <width>151</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 20px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Progress Name</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtSaveProgressName">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>170</y>
+        <width>271</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+	font-size: 20px
+}</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtSaveProgressCari">
+      <property name="geometry">
+       <rect>
+        <x>600</x>
+        <y>160</y>
+        <width>331</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+	border-radius: 10px;
+	border: 3px solid black;
+	font-size: 20px;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbSaveProgressKor">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>120</y>
+        <width>151</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 1px;
+}</string>
+      </property>
+      <property name="text">
+       <string>$getCode</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="OpenProgress_10">
+     <widget class="QTableView" name="tbOpenProgressTabel">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>220</y>
+        <width>1261</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btOpenProgressOpen">
+      <property name="geometry">
+       <rect>
+        <x>1160</x>
+        <y>160</y>
+        <width>111</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Open</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame_16">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1291</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame {
+	background-color: rgb(204, 0, 0);
+	color: white;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_62">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font-size: 30px;
+	font-weight: bold;
+}</string>
+       </property>
+       <property name="text">
+        <string>Open Your Progress</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btOpenProgressKembali">
+       <property name="geometry">
+        <rect>
+         <x>1170</x>
+         <y>40</y>
+         <width>91</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Back</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QLabel" name="label_60">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>170</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 20px;
+	font-weight: bold;
+}</string>
+      </property>
+      <property name="text">
+       <string>Search Data</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btOpenProgressCari">
+      <property name="geometry">
+       <rect>
+        <x>490</x>
+        <y>160</y>
+        <width>91</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+	border-radius: 20px;
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+	border: 3px solid black;
+  	text-align: center;
+}
+
+QPushButton:hover {
+    background: qradialgradient(
+        cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,
+        radius: 1.35, stop: 0 #fff, stop: 1 #bbb
+        );
+	color: black;
+	border: 3px solid black;
+    }
+
+QPushButton:pressed {
+    border-style: inset;
+    background: qradialgradient(
+        cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,
+        radius: 1.35, stop: 0 #fff, stop: 1 #ddd
+        );
+    }
+
+QPushButton::icon {
+    margin-bottom: 5px; 
+}
+</string>
+      </property>
+      <property name="text">
+       <string>Search</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbOpenProgressKode">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>140</y>
+        <width>151</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel {
+	font-size: 1px;
+}</string>
+      </property>
+      <property name="text">
+       <string>$getCode</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtOpenProgressCari">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>160</y>
+        <width>331</width>
         <height>51</height>
        </rect>
       </property>
