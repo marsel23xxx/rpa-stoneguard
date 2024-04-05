@@ -30,7 +30,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>8</number>
+     <number>9</number>
     </property>
     <widget class="QWidget" name="dashboard_1">
      <widget class="QPushButton" name="btToGetStarted">
@@ -4356,7 +4356,7 @@ QPushButton::icon {
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	font-size: 1px;
+	font-size: 12px;
 }</string>
       </property>
       <property name="text">
@@ -4636,7 +4636,7 @@ QPushButton::icon {
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	font-size: 1px;
+	font-size: 12px;
 }</string>
       </property>
       <property name="text">
@@ -4902,14 +4902,14 @@ QPushButton::icon {
       <property name="geometry">
        <rect>
         <x>160</x>
-        <y>140</y>
+        <y>130</y>
         <width>151</width>
         <height>17</height>
        </rect>
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel {
-	font-size: 1px;
+	font-size: 10px;
 }</string>
       </property>
       <property name="text">

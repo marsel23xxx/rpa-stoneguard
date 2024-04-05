@@ -2376,7 +2376,7 @@ class Ui_MainWindow(object):
         self.lbSaveProgressKode = QtWidgets.QLabel(self.SaveProgress_9)
         self.lbSaveProgressKode.setGeometry(QtCore.QRect(180, 140, 151, 17))
         self.lbSaveProgressKode.setStyleSheet("QLabel {\n"
-"    font-size: 1px;\n"
+"    font-size: 12px;\n"
 "}")
         self.lbSaveProgressKode.setObjectName("lbSaveProgressKode")
         self.txtSaveProgressKet = QtWidgets.QTextEdit(self.SaveProgress_9)
@@ -2515,7 +2515,7 @@ class Ui_MainWindow(object):
         self.lbSaveProgressKor = QtWidgets.QLabel(self.SaveProgress_9)
         self.lbSaveProgressKor.setGeometry(QtCore.QRect(180, 120, 151, 17))
         self.lbSaveProgressKor.setStyleSheet("QLabel {\n"
-"    font-size: 1px;\n"
+"    font-size: 12px;\n"
 "}")
         self.lbSaveProgressKor.setObjectName("lbSaveProgressKor")
         self.stackedWidget.addWidget(self.SaveProgress_9)
@@ -2662,9 +2662,9 @@ class Ui_MainWindow(object):
         self.btOpenProgressCari.setFlat(False)
         self.btOpenProgressCari.setObjectName("btOpenProgressCari")
         self.lbOpenProgressKode = QtWidgets.QLabel(self.OpenProgress_10)
-        self.lbOpenProgressKode.setGeometry(QtCore.QRect(160, 140, 151, 17))
+        self.lbOpenProgressKode.setGeometry(QtCore.QRect(160, 130, 151, 17))
         self.lbOpenProgressKode.setStyleSheet("QLabel {\n"
-"    font-size: 1px;\n"
+"    font-size: 10px;\n"
 "}")
         self.lbOpenProgressKode.setObjectName("lbOpenProgressKode")
         self.txtOpenProgressCari = QtWidgets.QLineEdit(self.OpenProgress_10)
@@ -2682,7 +2682,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(5)
+        self.stackedWidget.setCurrentIndex(9)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

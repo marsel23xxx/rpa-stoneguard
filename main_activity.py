@@ -63,6 +63,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.runningModel_1 = QStandardItemModel()
         self.runningModel_2 = QStandardItemModel()
         self.saveProgressModel = QStandardItemModel()
+        self.openProgressModel = QStandardItemModel()
 
         self.font = QtGui.QFont()
         self.font.setPointSize(14)
@@ -177,6 +178,19 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.tbSaveProgressTabel.setModel(self.saveProgressModel)
         self.refreshSaveProgressTable()
         self.getSaveProgressCode()
+        self.getSaveRunningCode()
+        self.ui.btSaveProgressKembali.clicked.connect(self.setRunProject)
+
+        # Komponen bagian Open Progress
+        self.ui.btRunningProjectOpen.clicked.connect(self.setOpenProgress)
+        self.ui.tbOpenProgressTabel.setModel(self.openProgressModel)
+        self.refreshOpenProgressTable()
+        self.getSaveProgressCode()
+        # self.getSaveRunningCode()
+        self.setupOpenProgressTable()
+        self.ui.btOpenProgressKembali.clicked.connect(self.setRunProject)
+        self.ui.btOpenProgressOpen.clicked.connect(self.goToRunOpenProjectGetProject)
+
 
         # readSerial()
 
@@ -436,6 +450,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def setRunProject(self):
         self.refreshRunningProjectData_1()
+        self.refreshRunKoordinat()
         self.ui.stackedWidget.setCurrentWidget(self.ui.runProject_6)
 
     def setRunShowProject(self):
@@ -457,6 +472,17 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         )
         if a == QMessageBox.Yes:
             self.ui.stackedWidget.setCurrentWidget(self.ui.SaveProgress_9)
+    
+    def setOpenProgress(self):
+        a = QMessageBox.question(
+            self,
+            "Open Confirmation",
+            "Are You Sure You want To Open Your Progress",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if a == QMessageBox.Yes:
+            self.ui.stackedWidget.setCurrentWidget(self.ui.OpenProgress_10)
 
     # START Activity Menu=====================================================================================================
 
@@ -1696,14 +1722,42 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
     def resumeProcess(self):
         self.timer.start() 
 
-    def saveRunning(self):
-        kd_run = self.ui.lb_kd_run.text()  # Mengambil nilai dari label kd_run
+    def getSaveRunningCode(self):
         try:
             connection = koneksi()
             if connection:
-                connection.open()  # Buka koneksi ke database
                 with connection.cursor() as cursor:
-                    for row in range(self.runningModel_2.rowCount()):
+                    sql = "SELECT MAX(kd_runkor) FROM run_kor"
+                    cursor.execute(sql)
+                    result = cursor.fetchone()
+
+                    if result["MAX(kd_runkor)"]:
+                        latest_code = result["MAX(kd_runkor)"]
+                        kode_int = int(latest_code[2:]) + 1
+                        new_kode = f"KR{kode_int:05d}"
+                    else:
+                        new_kode = "KR00001"
+
+                    self.ui.lb_kd_runkor.setText(new_kode)
+                    return new_kode
+        finally:
+            if connection:
+                connection.close()
+
+
+    def saveRunning(self):
+        kd_run = self.ui.lb_kd_run.text()
+        
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    rowCount = self.runningModel_2.rowCount()  
+                    for row in range(rowCount):
+                        sql_max_kd_kor = "SELECT MAX(kd_runkor) FROM run_kor"
+                        cursor.execute(sql_max_kd_kor)
+                        result = cursor.fetchone()
+
                         description = self.runningModel_2.index(row, 0).data()
                         x = self.runningModel_2.index(row, 1).data()
                         y = self.runningModel_2.index(row, 2).data()
@@ -1713,28 +1767,26 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                         act_code = self.runningModel_2.index(row, 6).data()
                         c_code = self.runningModel_2.index(row, 7).data()
 
-                        query = QSqlQuery()
-                        query.prepare("INSERT INTO run_kor (keterangan, x, y, k, z, delay, kd_cor, kd_act, kd_run) "
-                                    "VALUES (:keterangan, :x, :y, :k, :z, :delay, :kd_cor, :kd_act, :kd_run)")
-                        query.bindValue(':keterangan', description)
-                        query.bindValue(':x', x)
-                        query.bindValue(':y', y)
-                        query.bindValue(':k', k)
-                        query.bindValue(':z', z)
-                        query.bindValue(':delay', delay)
-                        query.bindValue(':kd_cor', act_code)
-                        query.bindValue(':kd_act', c_code)
-                        query.bindValue(':kd_run', kd_run)  # Menggunakan kd_run yang sudah diambil sebelumnya
+                        if result["MAX(kd_runkor)"]:
+                            latest_code = result["MAX(kd_runkor)"]
+                            kode_int = int(latest_code[2:]) + 1
+                            new_kode = f"KR{kode_int:05d}"
+                        else:
+                            new_kode = "KR00001"
 
-                        if not query.exec_():
-                            print("Error inserting data:", query.lastError().text())
-                            return
+                        # print(c_code)
+                        # print(new_kode)
 
+                        sql = "INSERT INTO run_kor (keterangan, x, y, k, z, delay, kd_cor, kd_act, kd_runkor, kd_run) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                        cursor.execute(sql, (description, x, y, k, z, delay, act_code, c_code, new_kode, kd_run))
+                        
+                    connection.commit()
                     print("Data inserted successfully.")
-
+                    
         finally:
-            if connection and connection.isOpen():
-                connection.close()  # Tutup koneksi jik
+            if connection:
+                connection.close()
+
 
     # END Run Program ====================================================================================================
 
@@ -2022,7 +2074,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.refreshRunningProjectData_1()
             self.refreshChooseActivityTable()
 
-
     # END Choose Activity ================================================================================================
 
 
@@ -2078,14 +2129,16 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     cursor.execute(sql, (a, b, c))
                     connection.commit()
 
-                    QMessageBox.information(
-                        self, "Sukses", "The Running progress has been successfully saved."
-                    )
+                    # QMessageBox.information(
+                    #     self, "Sukses", "The Running progress has been successfully saved."
+                    # )
 
-                    self.goToRunProjectGetProject
+                    # self.goToRunProjectGetProject
+                    self.saveRunning()
                     self.refreshSaveProgressTable()
                     self.setEmptyColumnSaveProgress()
                     self.getSaveProgressCode()
+                    self.getSaveRunningCode()
 
         finally:
             if connection:
@@ -2205,8 +2258,15 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.txtSaveProgressKet.setText("")
         self.ui.txtSaveProgressCari.setText("")
 
-    def sendSaveProgress(self):
-        self.insertSaveProgress()
+    # def goToRunningProgram(self):
+    #     a = self.ui.lb_kd_run.text()
+    #     b = self.ui.lb_kd_runkor.text()
+    #     if a:
+    #         self.ui.lbSaveProgressKode.setText(a)
+    #         self.ui.lbSaveProgressKor.setText(b)
+    #         self.r()
+
+    def sendSaveProgress(self):        
         a = QMessageBox.question(
             self,
             "Save Confirmation",
@@ -2215,11 +2275,204 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             QMessageBox.No,
         )
         if a == QMessageBox.Yes:
-            self.saveRunning()
+            self.insertSaveProgress()
             self.ui.stackedWidget.setCurrentWidget(self.ui.runProject_6)
 
     # END Save Progress ==================================================================================================
 
+
+    # START Choose Progress ==============================================================================================
+
+    def refreshOpenProgressTable(self):
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM running"
+                    cursor.execute(sql)
+                    result = cursor.fetchall()
+
+                    self.openProgressModel.clear()
+                    self.openProgressModel.setHorizontalHeaderLabels(
+                        ["Progress Code", "Progress Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbOpenProgressTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbOpenProgressTabel.setColumnWidth(0, 200)
+                    self.ui.tbOpenProgressTabel.setColumnWidth(1, 400)
+                    self.ui.tbOpenProgressTabel.setColumnWidth(2, 700)       
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_run"])
+                        b = QStandardItem(row_data["nama_run"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.openProgressModel.appendRow([a, b, c])
+                        self.ui.tbOpenProgressTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def searchOpenProgress(self, cariData):
+        cariData = self.ui.txtOpenProgressCari.text()
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM running WHERE nama_run LIKE %s OR kd_run LIKE %s"
+                    cursor.execute(
+                        sql,
+                        ("%" + cariData + "%", "%" + cariData + "%"),
+                    )
+                    result = cursor.fetchall()
+
+                    self.openProgressModel.clear()
+                    self.openProgressModel.setHorizontalHeaderLabels(
+                        ["Progress Code", "Progress Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbOpenProgressTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbOpenProgressTabel.setColumnWidth(0, 200)
+                    self.ui.tbOpenProgressTabel.setColumnWidth(1, 400)
+                    self.ui.tbOpenProgressTabel.setColumnWidth(2, 700)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_run"])
+                        b = QStandardItem(row_data["nama_run"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.openProgressModel.appendRow([a, b, c])
+                        self.ui.tbOpenProgressTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def keyReleaseEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
+            self.searchOpenProgress(event)
+        else:
+            super().keyReleaseEvent(event)
+
+    def setupOpenProgressTable(self):
+        self.ui.tbOpenProgressTabel.clicked.connect(self.displaySelectedOpenProgressCode)
+
+    def displaySelectedOpenProgressCode(self):
+        a = self.ui.tbOpenProgressTabel.selectedIndexes()
+        if a:
+            getRow = a[0].row()
+            getCode = self.openProgressModel.index(getRow, 0).data()
+            self.ui.lbOpenProgressKode.setText(getCode)
+
+    def goToRunOpenProjectGetProject(self):
+        a = self.ui.lbOpenProgressKode.text()
+        if a:
+            self.ui.lb_kd_run.setText(a)
+            
+            self.setRunProject()
+            self.refreshRunKoordinat()
+            self.refreshOpenProgressTable()
+
+    
+    def refreshRunKoordinat(self):
+        d = self.ui.lb_kd_run.text()
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM run_kor WHERE kd_run=%s"
+                    cursor.execute(sql, (d,))
+                    result = cursor.fetchall()
+
+                    self.runningModel_2.clear()
+                    self.runningModel_2.setHorizontalHeaderLabels(     
+                    ["Description", "X", "Y", "Z", "K", "Delay", "kd_cor", "C-Code", "kd_runkor", "kd_run"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbRunningProjectTabel_2.horizontalHeader()
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(0, 500)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(1, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(2, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(3, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(4, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(5, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(6, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(7, 100)
+
+                    for row_data in result:
+                        items = [
+                            QStandardItem(str(row_data["keterangan"])),
+                            QStandardItem(str(row_data["x"])),
+                            QStandardItem(str(row_data["y"])),
+                            QStandardItem(str(row_data["k"])),
+                            QStandardItem(str(row_data["z"])),
+                            QStandardItem(str(row_data["delay"])),
+                            QStandardItem(str(row_data["kd_cor"])),
+                            QStandardItem(str(row_data["kd_act"])),
+                            QStandardItem(str(row_data["kd_runkor"])),
+                            QStandardItem(str(row_data["kd_run"])),
+                        ]
+                        for item in items:
+                            item.setFont(font)
+                            item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.runningModel_2.appendRow(items)
+
+                    self.ui.tbRunningProjectTabel_2.verticalHeader().setDefaultSectionSize(
+                        50
+                    )
+            
+        finally:
+            if connection:
+                connection.close()
+
+    # END Choose Progress ================================================================================================
+            
     # Bagian set up serial ===============================================================================================
 
     def releasedSlider(self):
