@@ -1560,7 +1560,7 @@ class Ui_MainWindow(object):
 "}")
         self.label_28.setObjectName("label_28")
         self.btRunningProjectKembali = QtWidgets.QPushButton(self.frame_7)
-        self.btRunningProjectKembali.setGeometry(QtCore.QRect(1050, 30, 101, 51))
+        self.btRunningProjectKembali.setGeometry(QtCore.QRect(970, 30, 101, 51))
         self.btRunningProjectKembali.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btRunningProjectKembali.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btRunningProjectKembali.setStyleSheet("QPushButton {\n"
@@ -1610,7 +1610,7 @@ class Ui_MainWindow(object):
 "}")
         self.txtRunningProjectGetActivity.setObjectName("txtRunningProjectGetActivity")
         self.btRunningProjectSimpan = QtWidgets.QPushButton(self.frame_7)
-        self.btRunningProjectSimpan.setGeometry(QtCore.QRect(1160, 30, 101, 51))
+        self.btRunningProjectSimpan.setGeometry(QtCore.QRect(1080, 30, 181, 51))
         self.btRunningProjectSimpan.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btRunningProjectSimpan.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btRunningProjectSimpan.setStyleSheet("QPushButton {\n"
@@ -2682,7 +2682,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(9)
+        self.stackedWidget.setCurrentIndex(5)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

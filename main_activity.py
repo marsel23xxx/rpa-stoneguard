@@ -171,7 +171,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.btRunningProjectStop.clicked.connect(self.actionSendeingSteps)
         self.ui.btRunningProjectLoop.clicked.connect(self.toggleSendingLoopSteps)
         self.ui.btRunningProjectStatus.setText("Not Starting")
-        self.ui.btRunningProjectSimpan.clicked.connect(self.setSaveProgress)
+        self.ui.btRunningProjectSimpan.clicked.connect(self.toggleUpdateRunProgress)
 
         # Komponen bagian Save Progress
         self.ui.btSaveProgressSimpan.clicked.connect(self.sendSaveProgress)
@@ -450,7 +450,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def setRunProject(self):
         self.refreshRunningProjectData_1()
-        self.refreshRunKoordinat()
+        # self.refreshRunKoordinat()
         self.ui.stackedWidget.setCurrentWidget(self.ui.runProject_6)
 
     def setRunShowProject(self):
@@ -472,7 +472,21 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         )
         if a == QMessageBox.Yes:
             self.ui.stackedWidget.setCurrentWidget(self.ui.SaveProgress_9)
-    
+
+    def setRunUpdateProgress(self):
+        a = QMessageBox.question(
+            self,
+            "Save Changes",
+            "Are You Sure You want to save changes",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if a == QMessageBox.Yes:
+            self.deleteRunProgress()
+            self.saveRunning()
+            self.setClearTabel()
+            self.getSaveProgressCode()
+
     def setOpenProgress(self):
         a = QMessageBox.question(
             self,
@@ -482,7 +496,11 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             QMessageBox.No,
         )
         if a == QMessageBox.Yes:
+            self.refreshOpenProgressTable()
             self.ui.stackedWidget.setCurrentWidget(self.ui.OpenProgress_10)
+            
+    def setClearTabel(self):
+        self.runningModel_2.setRowCount(0)
 
     # START Activity Menu=====================================================================================================
 
@@ -1540,26 +1558,46 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.current_step += 1 
             delay = int(self.runningModel_2.data(self.runningModel_2.index(self.current_step, 5))) 
 
-            
-            if delay > 0: 
-                self.timer.start(delay) 
-            else: 
-                self.timer.start(2000) 
-            
-            if self.current_step < row_count: 
-                self.highlightRow(self.current_step, QColor("yellow"))
-                data_row = []
-                for column in range(1, 6):
-                    item = self.runningModel_2.item(self.current_step, column) 
-                    if item is not None and item.text():
-                        data_row.append(int(item.text())) 
-                    else: 
-                        data_row.append(0) 
-                sendSerial(*data_row) 
-            sendSerial(300, 2500, 850, 0, 0)    
-        else:             
+            if self.current_step < row_count:
+                if delay > 0:
+                    self.highlightRow(self.current_step, QColor("yellow"))
+                    data_row = []
+                    for column in range(1, 6):
+                        item = self.runningModel_2.item(self.current_step, column) 
+                        if item is not None and item.text():
+                            data_row.append(int(item.text())) 
+                        else: 
+                            data_row.append(0) 
+                    sendSerial(*data_row) 
+                    self.timer.start(delay)
+                elif self.current_step == delay == 0:                     
+                    self.highlightRow(self.current_step, QColor("yellow"))
+                    data_row = []
+                    for column in range(1, 6):
+                        item = self.runningModel_2.item(self.current_step, column) 
+                        if item is not None and item.text():
+                            data_row.append(int(item.text())) 
+                        else: 
+                            data_row.append(0) 
+                    sendSerial(*data_row)
+                    self.timer.start(1000)  
+                else: 
+                    self.highlightRow(self.current_step, QColor("yellow"))
+                    data_row = []
+                    for column in range(1, 6):
+                        item = self.runningModel_2.item(self.current_step, column) 
+                        if item is not None and item.text():
+                            data_row.append(int(item.text())) 
+                        else: 
+                            data_row.append(0) 
+                    sendSerial(*data_row)   
+                    self.timer.start(2000)
+            sendSerial(500, 2000, 850, 0, 0)       
+        else:
+                      
             self.current_step = -1
-            self.setupTimer() 
+            self.setupTimer()
+    
 
 
         
@@ -1706,6 +1744,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             if self.current_step < self.runningModel_2.rowCount():
                 self.highlightRow(self.current_step, QColor("yellow"))
 
+
     def toggleSendingLoopSteps(self):
         if self.ui.btRunningProjectLoop.text() == "Loop":
             self.setupTimer()
@@ -1715,6 +1754,15 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.ui.btRunningProjectStatus.setText("Has Stopped")
             if self.current_step < self.runningModel_2.rowCount():
                 self.highlightRow(self.current_step, QColor("yellow"))
+
+
+    def toggleUpdateRunProgress(self):
+        if self.ui.btRunningProjectSimpan.text() == "Save":
+            self.setSaveProgress()
+        elif self.ui.btRunningProjectSimpan.text() == "Save Changes":
+            self.setRunUpdateProgress()
+        elif self.ui.btOpenProgressOpen.text() == "Open":
+            self.ui.btRunningProjectSimpan.setText("Save Changes")
 
     def pauseProcess(self):
         self.timer.stop()
@@ -1786,6 +1834,23 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         finally:
             if connection:
                 connection.close()
+
+    
+    def deleteRunProgress(self):
+        a = self.ui.lb_kd_run.text()
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+
+                    sql_delete = "DELETE FROM run_kor where kd_run = %s"
+                    cursor.execute(sql_delete, (a))
+                connection.commit()      
+                    
+        finally:
+            if connection:
+                connection.close()
+
 
 
     # END Run Program ====================================================================================================
@@ -2406,10 +2471,12 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         a = self.ui.lbOpenProgressKode.text()
         if a:
             self.ui.lb_kd_run.setText(a)
+            self.ui.btRunningProjectSimpan.setText("Save Changes")
             
             self.setRunProject()
             self.refreshRunKoordinat()
             self.refreshOpenProgressTable()
+
 
     
     def refreshRunKoordinat(self):
@@ -2519,13 +2586,22 @@ def sendSerial(x, y, k, z, delay):
     writeSerial(data)
     print(data)
 
+
 def readSerial():
     while True:
-        if ser.in_waiting > 0:
-            received_data = ser.readline()
-            print(received_data)
-            parse_received_data(received_data)
-
+       if ser.in_waiting > 0:
+            data = ser.readline().decode('utf-8').rstrip()  
+            if data.startswith("moveStep:"):
+                data = data.replace("moveStep:", "").replace(";", "")  
+                parts = data.split(",")
+                x = int(parts[0])
+                y = int(parts[1])
+                k = int(parts[2])
+                z = int(parts[3])
+                delay = int(parts[4])
+                print(data)
+                return x, y, k, z, delay    
+     
 def parse_received_data(data):
     data_parts = data.split(',')
     if len(data_parts) >= 5:
@@ -2539,8 +2615,7 @@ def parse_received_data(data):
         print(x, y, k, z, delay)
     
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)    
     mainWindow = MainWindow()
-    # mainWindow.resize(800, 600)
     mainWindow.show()
     sys.exit(app.exec_())
