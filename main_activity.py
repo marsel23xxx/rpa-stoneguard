@@ -191,8 +191,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.btOpenProgressKembali.clicked.connect(self.setRunProject)
         self.ui.btOpenProgressOpen.clicked.connect(self.goToRunOpenProjectGetProject)
 
-
-        # readSerial()
+        readSerial()
 
         # Komponen bagian show project
         self.ui.tbChooseProjectTabel.setModel(self.chooseProjectModel)
@@ -1592,7 +1591,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                             data_row.append(0) 
                     sendSerial(*data_row)   
                     self.timer.start(2000)
-            sendSerial(500, 2000, 850, 0, 0)       
+            # sendSerial(500, 2000, 850, 0, 0)       
         else:
                       
             self.current_step = -1
@@ -1602,23 +1601,50 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
         
     def sendNextStep(self):
-        row_count = self.runningModel_2.rowCount()
-        if self.current_step < row_count:
+        row_count = self.runningModel_2.rowCount() 
+        
+        if self.current_step < row_count: 
             if self.current_step >= 0:
-                self.resetColorRunningModel_2(self.current_step)
+                self.resetColorRunningModel_2(self.current_step) 
 
-            self.current_step += 1
+            self.current_step += 1 
+            delay = int(self.runningModel_2.data(self.runningModel_2.index(self.current_step, 5))) 
+
             if self.current_step < row_count:
-                self.highlightRow(self.current_step, QColor("yellow"))
-
-            data_row = []
-            for column in range(1, 6):
-                item = self.runningModel_2.item(self.current_step, column)
-                if item is not None and item.text():
-                    data_row.append(int(item.text()))
-                else:
-                    data_row.append(0)
-            sendSerial(*data_row)
+                if delay > 0:
+                    self.highlightRow(self.current_step, QColor("yellow"))
+                    data_row = []
+                    for column in range(1, 6):
+                        item = self.runningModel_2.item(self.current_step, column) 
+                        if item is not None and item.text():
+                            data_row.append(int(item.text())) 
+                        else: 
+                            data_row.append(0) 
+                    sendSerial(*data_row) 
+                    self.timer.start(delay)
+                elif self.current_step == delay == 0:                     
+                    self.highlightRow(self.current_step, QColor("yellow"))
+                    data_row = []
+                    for column in range(1, 6):
+                        item = self.runningModel_2.item(self.current_step, column) 
+                        if item is not None and item.text():
+                            data_row.append(int(item.text())) 
+                        else: 
+                            data_row.append(0) 
+                    sendSerial(*data_row)
+                    self.timer.start(1000)  
+                else: 
+                    self.highlightRow(self.current_step, QColor("yellow"))
+                    data_row = []
+                    for column in range(1, 6):
+                        item = self.runningModel_2.item(self.current_step, column) 
+                        if item is not None and item.text():
+                            data_row.append(int(item.text())) 
+                        else: 
+                            data_row.append(0) 
+                    sendSerial(*data_row)   
+                    self.timer.start(2000)
+            # sendSerial(500, 2000, 850, 0, 0)       
         else:
             self.stopSendingSteps()  
 
@@ -2582,37 +2608,16 @@ def writeSerial(data):
     time.sleep(0.05)
 
 def sendSerial(x, y, k, z, delay):
-    data = "config:%d,%d,%d,%d,%d;" % (x, y, k, z, delay)
+    data = "moveStep:%d,%d,%d,%d,%d;" % (x, y, k, z, delay)
     writeSerial(data)
     print(data)
 
 
-def readSerial():
-    while True:
-       if ser.in_waiting > 0:
-            data = ser.readline().decode('utf-8').rstrip()  
-            if data.startswith("moveStep:"):
-                data = data.replace("moveStep:", "").replace(";", "")  
-                parts = data.split(",")
-                x = int(parts[0])
-                y = int(parts[1])
-                k = int(parts[2])
-                z = int(parts[3])
-                delay = int(parts[4])
-                print(data)
-                return x, y, k, z, delay    
+def readSerial(data):
+    data = ser.readline()  
+    writeSerial(data)
+    print(data)	   
      
-def parse_received_data(data):
-    data_parts = data.split(',')
-    if len(data_parts) >= 5:
-        # Ambil data koordinat x, y, k, z, dan delay
-        x = int(data_parts[0].split(':')[1])
-        y = int(data_parts[1])
-        k = int(data_parts[2])
-        z = int(data_parts[3])
-        delay = int(data_parts[4].split(';')[0])
-
-        print(x, y, k, z, delay)
     
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)    
