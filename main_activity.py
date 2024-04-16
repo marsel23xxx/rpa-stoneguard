@@ -190,6 +190,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.setupOpenProgressTable()
         self.ui.btOpenProgressKembali.clicked.connect(self.setRunProject)
         self.ui.btOpenProgressOpen.clicked.connect(self.goToRunOpenProjectGetProject)
+        self.ui.txtOpenProgressCari.keyReleaseEvent = self.searchOpenProgress
 
         readSerial()
 
@@ -2613,10 +2614,10 @@ def sendSerial(x, y, k, z, delay):
     print(data)
 
 
-def readSerial(data):
-    data = ser.readline()  
-    writeSerial(data)
-    print(data)	   
+def readSerial():
+    data = ser.readline()
+    data = data.decode('utf-8')
+    print(f'read : {data} \n')	   
      
     
 if __name__ == "__main__":
