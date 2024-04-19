@@ -1,13 +1,19 @@
 import sys
-import threading
 import time
 
 import pymysql
 import serial
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread, QTimer, pyqtSignal
+from PyQt5 import QtCore, QtGui, QtSql, QtWidgets
+from PyQt5.QtCore import QPoint, Qt, QThread, QTimer, pyqtSignal
 from PyQt5.QtGui import QColor, QStandardItem, QStandardItemModel
-from PyQt5.QtWidgets import QApplication, QMessageBox, QTableView, QTableWidgetItem
+from PyQt5.QtSql import QSqlQuery
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QMessageBox,
+    QTableView,
+    QTableWidgetItem,
+)
 
 from view_activity import Ui_MainWindow
 
@@ -64,10 +70,14 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.chooseActivityModel = QStandardItemModel()
         self.runningModel_1 = QStandardItemModel()
         self.runningModel_2 = QStandardItemModel()
+        self.saveProgressModel = QStandardItemModel()
+        self.openProgressModel = QStandardItemModel()
+
         self.font = QtGui.QFont()
         self.font.setPointSize(14)
 
         self.kdProjectSignal = QtCore.pyqtSignal(str)
+        self.toCenter()
         self.defaultMenu()
         # Logout
         self.ui.btLogout.clicked.connect(self.setLogout)
@@ -162,12 +172,34 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.btRunningProjectShowActivity.clicked.connect(self.setRunShowActivity)
         self.ui.tbRunningProjectTabel_1.clicked.connect(self.rowClicked)
         self.ui.btRunningProjectRight.clicked.connect(self.moveToTable2)
+        self.ui.btRunningProjectSameData.clicked.connect(self.copyDataToTabel2)
         self.ui.btRunningProjectLeft.clicked.connect(self.removeFromTable2)
-        self.startSendingSteps()
         self.ui.btRunningProjectRun.clicked.connect(self.toggleSendingSteps)
         self.ui.btRunningProjectStop.clicked.connect(self.actionSendeingSteps)
         self.ui.btRunningProjectLoop.clicked.connect(self.toggleSendingLoopSteps)
         self.ui.btRunningProjectStatus.setText("Not Starting")
+        self.ui.btRunningProjectSimpan.clicked.connect(self.toggleUpdateRunProgress)
+
+        # Komponen bagian Save Progress
+        self.ui.btSaveProgressSimpan.clicked.connect(self.sendSaveProgress)
+        self.ui.tbSaveProgressTabel.setModel(self.saveProgressModel)
+        self.refreshSaveProgressTable()
+        self.getSaveProgressCode()
+        self.getSaveRunningCode()
+        self.ui.btSaveProgressKembali.clicked.connect(self.setRunProject)
+
+        # Komponen bagian Open Progress
+        self.ui.btRunningProjectOpen.clicked.connect(self.setOpenProgress)
+        self.ui.tbOpenProgressTabel.setModel(self.openProgressModel)
+        self.refreshOpenProgressTable()
+        self.getSaveProgressCode()
+        # self.getSaveRunningCode()
+        self.setupOpenProgressTable()
+        self.ui.btOpenProgressKembali.clicked.connect(self.setRunProject)
+        self.ui.btOpenProgressOpen.clicked.connect(self.goToRunOpenProjectGetProject)
+        self.ui.txtOpenProgressCari.keyReleaseEvent = self.searchOpenProgress
+
+        readSerial()
 
         # Komponen bagian show project
         self.ui.tbChooseProjectTabel.setModel(self.chooseProjectModel)
@@ -190,6 +222,12 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def defaultMenu(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.dashboard_1)
+
+    def toCenter(self):
+        screenGeometry = QApplication.desktop().screenGeometry()
+        x = (screenGeometry.width() - self.width()) / 2
+        y = (screenGeometry.height() - self.height()) / 2
+        self.move(x, y)
 
     # Start Create Project==========================================================================================================
 
@@ -419,6 +457,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def setRunProject(self):
         self.refreshRunningProjectData_1()
+        # self.refreshRunKoordinat()
         self.ui.stackedWidget.setCurrentWidget(self.ui.runProject_6)
 
     def setRunShowProject(self):
@@ -429,6 +468,46 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.refreshChooseActivityTable()
         self.refreshRunningProjectData_1()
         self.ui.stackedWidget.setCurrentWidget(self.ui.getActivity_8)
+
+    def setSaveProgress(self):
+        a = QMessageBox.question(
+            self,
+            "Save Confirmation",
+            "Are You Sure You will go to next page ?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if a == QMessageBox.Yes:
+            self.ui.stackedWidget.setCurrentWidget(self.ui.SaveProgress_9)
+
+    def setRunUpdateProgress(self):
+        a = QMessageBox.question(
+            self,
+            "Save Changes",
+            "Are You Sure You want to save changes",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if a == QMessageBox.Yes:
+            self.deleteRunProgress()
+            self.saveRunning()
+            self.setClearTabel()
+            self.getSaveProgressCode()
+
+    def setOpenProgress(self):
+        a = QMessageBox.question(
+            self,
+            "Open Confirmation",
+            "Are You Sure You want To Open Your Progress",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if a == QMessageBox.Yes:
+            self.refreshOpenProgressTable()
+            self.ui.stackedWidget.setCurrentWidget(self.ui.OpenProgress_10)
+
+    def setClearTabel(self):
+        self.runningModel_2.setRowCount(0)
 
     # START Activity Menu=====================================================================================================
 
@@ -1364,10 +1443,17 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             if item is not None:
                 item.setBackground(QColor("white"))
 
-    def highlight_selected_row(self, row_index, color):
+    def highlight_selected_row(self, row, color):
         for column_index in range(self.runningModel_1.columnCount()):
-            item = self.runningModel_1.item(row_index, column_index)
-            item.setBackground(QColor(color))
+            item = self.runningModel_1.item(row, column_index)
+            if item is not None:
+                # Set alpha to 0 (transparent)
+                brush = item.background()
+                brush.setColor(QColor(color))
+                brush.setStyle(Qt.SolidPattern)  # Set brush style to solid
+                brush.setColor(QColor(color))
+                brush.setColor(brush.color().lighter(115))  # Adjust transparency
+                item.setBackground(brush)
 
     def add_row_to_table_2(self, row_data):
         code = QStandardItem(row_data[0])
@@ -1391,33 +1477,145 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
         self.runningModel_2.appendRow(items)
 
+    def copyDataToTabel2(self):
+        selected_row_index = self.ui.tbRunningProjectTabel_1.selectedIndexes()
+        if selected_row_index:
+            selected_row = selected_row_index[0].row()
+
+            # Mendapatkan data dari baris yang dipilih di tabel 1
+            row_data = []
+            for column in range(self.runningModel_1.columnCount()):
+                item = self.runningModel_1.item(selected_row, column)
+                self.stacked_data.clear()
+                self.resetColorRunningModel_1()
+                if item is not None:
+                    row_data.append(item.text())
+                else:
+                    row_data.append("")  # Menambahkan nilai default jika sel kosong
+
+            # Mendapatkan baris yang dipilih di tabel 2
+            selected_row_index_table2 = (
+                self.ui.tbRunningProjectTabel_2.selectedIndexes()
+            )
+            if selected_row_index_table2:
+                selected_row_table2 = selected_row_index_table2[0].row()
+            else:
+                selected_row_table2 = 0
+
+            self.inertTableData(row_data, selected_row_table2)
+
+    def inertTableData(self, row_data, row_index=None):
+        code = QStandardItem(row_data[0])
+        x = QStandardItem(row_data[1])
+        y = QStandardItem(row_data[2])
+        z = QStandardItem(row_data[3])
+        k = QStandardItem(row_data[4])
+        delay = QStandardItem(row_data[5])
+        ket = QStandardItem(row_data[6])
+        pr = QStandardItem(row_data[7])
+
+        font_2 = QtGui.QFont()
+        font_2.setPointSize(14)
+        for item in [ket, x, y, z, k, delay, pr, code]:
+            item.setFont(font_2)
+            item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+        items = [code, x, y, k, z, delay, pr, ket] + [
+            QStandardItem("") for _ in range(0)
+        ]
+
+        if row_index is not None:
+            self.runningModel_2.insertRow(row_index, items)
+        else:
+            self.runningModel_2.appendRow(items)
+
+    def handleSameCoordinates(self, row_data):
+        code = QStandardItem(row_data[0])
+        x = QStandardItem(row_data[1])
+        y = QStandardItem(row_data[2])
+        z = QStandardItem(row_data[3])
+        k = QStandardItem(row_data[4])
+        delay = QStandardItem(row_data[5])
+        ket = QStandardItem(row_data[6])
+        pr = QStandardItem(row_data[7])
+
+        font_2 = QtGui.QFont()
+        font_2.setPointSize(14)
+        for item in [ket, x, y, z, k, delay, pr, code]:
+            item.setFont(font_2)
+            item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+        items = [code, x, y, k, z, delay, pr, ket] + [
+            QStandardItem("") for _ in range(1)
+        ]
+        self.runningModel_2.appendRow(items)
+
+        for item, value in zip(items, row_data):
+            item.setData(value, QtCore.Qt.DisplayRole)
+
+    def addTestData(self):
+        data = ["Handling", "300", "2800", "850", "0", "0", "C0000", "R0001"]
+        self.handleSameCoordinates(data)
+
     def startSendingSteps(self):
         self.current_step = -1
         self.timer = QTimer()
         self.timer.timeout.connect(self.sendNextStep)
         self.timer.start(2000)
 
-    def highlightRow(self, row_index, color):
-        view = self.ui.tbRunningProjectTabel_2
-        for column_index in range(self.runningModel_2.columnCount()):
-            item = self.runningModel_2.item(row_index, column_index)
-            if item is not None:
-                item.setBackground(color)
-                view.viewport().update()
+    # def highlightRow(self, row_index, color):
+    #     view = self.ui.tbRunningProjectTabel_2
+    #     for column_index in range(self.runningModel_2.columnCount()):
+    #         item = self.runningModel_2.item(row_index, column_index)
+
+    #         if item is not None:
+    #             item.setBackground(color)
+    #             view.viewport().update()
 
     def stopSendingSteps(self):
         self.timer.stop()
+        sendSerial(0, 0, 0, 0, 0)
 
     def sendLoopStep(self):
-        self.handleDuplicateCoordinates()
         row_count = self.runningModel_2.rowCount()
         if self.current_step < row_count:
             if self.current_step >= 0:
                 self.resetColorRunningModel_2(self.current_step)
+
             self.current_step += 1
+            delay = int(
+                self.runningModel_2.data(
+                    self.runningModel_2.index(self.current_step, 5)
+                )
+            )
+            korY = int(
+                self.runningModel_2.data(
+                    self.runningModel_2.index(self.current_step, 2)
+                )
+            )
+
             if self.current_step < row_count:
-                self.highlightRowLoop(self.current_step, QColor("yellow"))
-            if self.current_step < row_count:
+                highlighted_row = self.current_step
+                self.highlightRow(highlighted_row, QColor("yellow"))
+
+                # Scroll ke bawah jika baris yang di-highlight berada di atas batas atas tabel
+                view = self.ui.tbRunningProjectTabel_2
+                viewport_height = view.viewport().height()
+                row_height = view.rowHeight(
+                    0
+                )  # Menggunakan tinggi baris pertama sebagai acuan
+                top_index = view.indexAt(QPoint(0, 0)).row()
+                bottom_index = view.indexAt(
+                    QPoint(0, viewport_height - row_height)
+                ).row()
+
+                if highlighted_row <= top_index:
+                    # Scroll ke bawah agar baris yang di-highlight berada di bawah batas atas tabel
+                    view.scrollTo(
+                        self.runningModel_2.index(highlighted_row, 0),
+                        QAbstractItemView.PositionAtTop,
+                    )
+
                 data_row = []
                 for column in range(1, 6):
                     item = self.runningModel_2.item(self.current_step, column)
@@ -1426,27 +1624,147 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     else:
                         data_row.append(0)
 
-                delay = data_row[4]  # Mendapatkan nilai delay dari kolom ke-5
-                if (
-                    delay > 0
-                ):  # Memastikan delay hanya diterapkan jika nilainya lebih dari 0
-                    time.sleep(delay)
+                prev_korY = (
+                    int(
+                        self.runningModel_2.data(
+                            self.runningModel_2.index(self.current_step - 1, 2)
+                        )
+                    )
+                    if self.current_step > 0
+                    else korY
+                )  # Menggunakan korY saat ini jika ini adalah baris pertama
 
-                if (
-                    self.previous_data_row is not None
-                    and self.previous_data_row[:5] == data_row[:5]
-                ):
-                    if self.previous_data_row[3] != 0:
-                        data_row[3] = 0
-                        sendSerial(*data_row[:5])
-                        self.previous_data_row = data_row[:]
-                        return
+                prev_Delay = (
+                    int(
+                        self.runningModel_2.data(
+                            self.runningModel_2.index(self.current_step - 1, 5)
+                        )
+                    )
+                    if self.current_step > 0
+                    else delay
+                )
 
-                sendSerial(*data_row[:5])
-                self.previous_data_row = data_row[:]
+                korY_difference = abs(korY - prev_korY)
+
+                # Prioritaskan delay yang sudah ditentukan
+                if delay > 0:
+                    timer_interval = delay + 1000
+                elif 700 <= korY_difference <= 1100 and prev_Delay > 0:
+                    timer_interval = 3400
+                elif 700 <= korY_difference <= 1100 and delay == 0:
+                    timer_interval = 1900
+                elif 1101 <= korY_difference <= 1500 and prev_Delay > 0:
+                    timer_interval = 3400
+                elif 1101 <= korY_difference <= 1500 and delay == 0:
+                    timer_interval = 2000
+                elif korY_difference > 1700 and prev_Delay > 0:
+                    timer_interval = 3400
+                elif korY_difference > 1500 and delay == 0:
+                    timer_interval = 2200
+                else:  # Jarak di bawah 700
+                    timer_interval = 1800
+
+                sendSerial(*data_row)
+                self.timer.start(timer_interval)
+                print(timer_interval)
+
         else:
             self.current_step = -1
-            self.setupTimer()
+            self.timer.start(1000)
+
+    def highlightRow(self, row_index, color):
+        view = self.ui.tbRunningProjectTabel_2
+        for column_index in range(self.runningModel_2.columnCount()):
+            item = self.runningModel_2.item(row_index, column_index)
+
+            if item is not None:
+                item.setBackground(color)
+
+        # Scroll ke baris yang di-highlight
+        view.scrollTo(
+            self.runningModel_2.index(row_index, 0), QAbstractItemView.PositionAtTop
+        )
+
+    def sendNextStep(self):
+        row_count = self.runningModel_2.rowCount()
+        if self.current_step < row_count:
+            if self.current_step >= 0:
+                self.resetColorRunningModel_2(self.current_step)
+
+            self.current_step += 1
+            delay = int(
+                self.runningModel_2.data(
+                    self.runningModel_2.index(self.current_step, 5)
+                )
+            )
+            korY = int(
+                self.runningModel_2.data(
+                    self.runningModel_2.index(self.current_step, 2)
+                )
+            )
+
+            if self.current_step < row_count:
+                self.highlightRow(self.current_step, QColor("yellow"))
+                data_row = []
+                for column in range(1, 6):
+                    item = self.runningModel_2.item(self.current_step, column)
+                    if item is not None and item.text():
+                        data_row.append(int(item.text()))
+                    else:
+                        data_row.append(0)
+
+                prev_korY = (
+                    int(
+                        self.runningModel_2.data(
+                            self.runningModel_2.index(self.current_step - 1, 2)
+                        )
+                    )
+                    if self.current_step > 0
+                    else korY
+                )  # Menggunakan korY saat ini jika ini adalah baris pertama
+
+                prev_Delay = (
+                    int(
+                        self.runningModel_2.data(
+                            self.runningModel_2.index(self.current_step - 1, 5)
+                        )
+                    )
+                    if self.current_step > 0
+                    else delay
+                )
+
+                korY_difference = abs(korY - prev_korY)
+
+                # Prioritaskan delay yang sudah ditentukan
+                if delay > 0:
+                    timer_interval = delay + 1000
+                elif 700 <= korY_difference <= 1100 and prev_Delay > 0:
+                    timer_interval = 3400
+                elif 700 <= korY_difference <= 1100 and delay == 0:
+                    timer_interval = 1900
+                elif 1101 <= korY_difference <= 1500 and prev_Delay > 0:
+                    timer_interval = 3400
+                elif 1101 <= korY_difference <= 1500 and delay == 0:
+                    timer_interval = 2000
+                elif korY_difference > 1700 and prev_Delay > 0:
+                    timer_interval = 3400
+                elif korY_difference > 1500 and delay == 0:
+                    timer_interval = 2200
+                else:  # Jarak di bawah 700
+                    timer_interval = 1800
+
+                sendSerial(*data_row)
+                self.timer.start(timer_interval)
+                print(timer_interval)
+        else:
+            self.stopSendingSteps()
+
+        if self.current_step == row_count - 1:
+            self.ui.btRunningProjectStatus.setText("Has Finished")
+            self.ui.btRunningProjectRun.setText("Run")
+            self.resetColorRunningModel_2(self.current_step)
+            self.timer.stop()
+            sendSerial(0, 0, 0, 0, 0)
 
     def handleDuplicateCoordinates(self):
         row_count = self.runningModel_2.rowCount()
@@ -1457,10 +1775,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             current_data = []
             next_data = []
 
-            # Ambil data dari dua baris berturut-turut
-            for column in range(
-                min(columns_count, 8)
-            ):  # Pertimbangkan kolom pertama hingga keempat saja
+            for column in range(min(columns_count, 8)):
                 current_item = self.runningModel_2.item(current_row, column)
                 if current_item:
                     current_data.append(current_item.text())
@@ -1509,35 +1824,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     return False
             return True
         return False
-
-    def sendNextStep(self):
-        row_count = self.runningModel_2.rowCount()
-        if self.current_step < row_count:
-            if self.current_step >= 0:
-                self.resetColorRunningModel_2(self.current_step)
-
-            self.current_step += 1
-            if self.current_step < row_count:
-                self.highlightRow(self.current_step, QColor("yellow"))
-
-            data_row = []
-            for column in range(1, 6):
-                item = self.runningModel_2.item(self.current_step, column)
-                if item is not None and item.text():
-                    data_row.append(int(item.text()))
-                else:
-                    data_row.append(0)
-            sendSerial(*data_row)
-        else:
-            self.stopSendingSteps()
-
-        if self.current_step == row_count - 1:
-            self.ui.btRunningProjectStatus.setText("Has Finished")
-            self.ui.btRunningProjectRun.setText("Run")
-            self.resetColorRunningModel_2(self.current_step)
-            self.timer.stop()
-            sendSerial(0, 0, 0, 0, 0)
-            sendSerial(0, 0, 0, 0, 0)
 
     def setupTimer(self):
         self.current_step = -1
@@ -1611,18 +1897,113 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             if self.current_step < self.runningModel_2.rowCount():
                 self.highlightRow(self.current_step, QColor("yellow"))
 
+    def toggleUpdateRunProgress(self):
+        if self.ui.btRunningProjectSimpan.text() == "Save":
+            self.setSaveProgress()
+        elif self.ui.btRunningProjectSimpan.text() == "Save Changes":
+            self.setRunUpdateProgress()
+            self.ui.btRunningProjectSimpan.setText("Save")
+        elif self.ui.btOpenProgressOpen.text() == "Open":
+            self.ui.btRunningProjectSimpan.setText("Save Changes")
+
     def pauseProcess(self):
         self.timer.stop()
 
     def resumeProcess(self):
         self.timer.start()
 
-    def executeDelay(delay):
-        time.sleep(delay * 1000)
+    def getSaveRunningCode(self):
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT MAX(kd_runkor) FROM run_kor"
+                    cursor.execute(sql)
+                    result = cursor.fetchone()
 
-    def sendWithDelay(data_row):
-        x, y, k, z, delay = map(int, data_row[1:6])
-        sendSerial(x, y, k, z, delay)
+                    if result["MAX(kd_runkor)"]:
+                        latest_code = result["MAX(kd_runkor)"]
+                        kode_int = int(latest_code[2:]) + 1
+                        new_kode = f"KR{kode_int:05d}"
+                    else:
+                        new_kode = "KR00001"
+
+                    self.ui.lb_kd_runkor.setText(new_kode)
+                    return new_kode
+        finally:
+            if connection:
+                connection.close()
+
+    def saveRunning(self):
+        kd_run = self.ui.lb_kd_run.text()
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    rowCount = self.runningModel_2.rowCount()
+                    for row in range(rowCount):
+                        sql_max_kd_kor = "SELECT MAX(kd_runkor) FROM run_kor"
+                        cursor.execute(sql_max_kd_kor)
+                        result = cursor.fetchone()
+
+                        description = self.runningModel_2.index(row, 0).data()
+                        x = self.runningModel_2.index(row, 1).data()
+                        y = self.runningModel_2.index(row, 2).data()
+                        k = self.runningModel_2.index(row, 3).data()
+                        z = self.runningModel_2.index(row, 4).data()
+                        delay = self.runningModel_2.index(row, 5).data()
+                        act_code = self.runningModel_2.index(row, 6).data()
+                        c_code = self.runningModel_2.index(row, 7).data()
+
+                        if result["MAX(kd_runkor)"]:
+                            latest_code = result["MAX(kd_runkor)"]
+                            kode_int = int(latest_code[2:]) + 1
+                            new_kode = f"KR{kode_int:05d}"
+                        else:
+                            new_kode = "KR00001"
+
+                        # print(c_code)
+                        # print(new_kode)
+
+                        sql = "INSERT INTO run_kor (keterangan, x, y, k, z, delay, kd_cor, kd_act, kd_runkor, kd_run) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                        cursor.execute(
+                            sql,
+                            (
+                                description,
+                                x,
+                                y,
+                                k,
+                                z,
+                                delay,
+                                act_code,
+                                c_code,
+                                new_kode,
+                                kd_run,
+                            ),
+                        )
+
+                    connection.commit()
+                    print("Data inserted successfully.")
+
+        finally:
+            if connection:
+                connection.close()
+
+    def deleteRunProgress(self):
+        a = self.ui.lb_kd_run.text()
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+
+                    sql_delete = "DELETE FROM run_kor where kd_run = %s"
+                    cursor.execute(sql_delete, (a))
+                connection.commit()
+
+        finally:
+            if connection:
+                connection.close()
 
     # END Run Program ====================================================================================================
 
@@ -1643,6 +2024,10 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     )
                     font = QtGui.QFont()
                     font.setPointSize(14)
+
+                    self.ui.tbChooseProjectTabel.setColumnWidth(0, 100)
+                    self.ui.tbChooseProjectTabel.setColumnWidth(1, 400)
+                    self.ui.tbChooseProjectTabel.setColumnWidth(2, 700)
 
                     header_view = self.ui.tbChooseProjectTabel.horizontalHeader()
 
@@ -1665,7 +2050,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                         c.setTextAlignment(QtCore.Qt.AlignCenter)
 
                         self.chooseProjectModel.appendRow([a, b, c])
-                        self.ui.tbChooseProjectTabel.resizeColumnsToContents()
                         self.ui.tbChooseProjectTabel.verticalHeader().setDefaultSectionSize(
                             50
                         )
@@ -1695,6 +2079,10 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     font = QtGui.QFont()
                     font.setPointSize(14)
 
+                    self.ui.tbChooseProjectTabel.setColumnWidth(0, 100)
+                    self.ui.tbChooseProjectTabel.setColumnWidth(1, 400)
+                    self.ui.tbChooseProjectTabel.setColumnWidth(2, 700)
+
                     header_view = self.ui.tbChooseProjectTabel.horizontalHeader()
 
                     header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
@@ -1716,7 +2104,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                         c.setTextAlignment(QtCore.Qt.AlignCenter)
 
                         self.chooseProjectModel.appendRow([a, b, c])
-                        self.ui.tbChooseProjectTabel.resizeColumnsToContents()
                         self.ui.tbChooseProjectTabel.verticalHeader().setDefaultSectionSize(
                             50
                         )
@@ -1809,7 +2196,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                 connection.close()
 
     def searchChooseActivity(self, cariData):
-        getCode = self.ui.lbChooseActivityGetCode.text()
+        getCode = self.ui.lbChooseActivityGetCodeProject.text()
         cariData = self.ui.txtChooseActivityCari.text()
 
         if cariData.strip():
@@ -1842,7 +2229,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
                         self.ui.tbChooseActivityTabel.setColumnWidth(0, 100)
                         self.ui.tbChooseActivityTabel.setColumnWidth(1, 400)
-                        self.ui.tbChooseActivityTabel.setColumnWidth(2, 500)
+                        self.ui.tbChooseActivityTabel.setColumnWidth(2, 700)
                         self.ui.tbChooseActivityTabel.setColumnWidth(3, 1)
 
                         for i, row_data in enumerate(result):
@@ -1875,7 +2262,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def keyReleaseEventShowActivity(self, event):
         if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
-            self.searchDataShowActivity(event)
+            self.searchChooseActivity(event)
         else:
             super().keyReleaseEvent(event)
 
@@ -1907,6 +2294,418 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.refreshChooseActivityTable()
 
     # END Choose Activity ================================================================================================
+
+    # Start Save Progress ==========================================================================================================
+
+    def getSaveProgressCode(self):
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT MAX(kd_run) FROM running"
+                    cursor.execute(sql)
+                    result = cursor.fetchone()
+
+                    if result["MAX(kd_run)"]:
+                        latest_code = result["MAX(kd_run)"]
+                        kode_int = int(latest_code[1:]) + 1
+                        new_kode = f"R{kode_int:04d}"
+                    else:
+                        new_kode = "R0001"
+
+                    self.ui.lb_kd_run.setText(new_kode)
+                    return new_kode
+        finally:
+            if connection:
+                connection.close()
+
+    def insertSaveProgress(self):
+        a = self.ui.lb_kd_run.text()
+        b = self.ui.txtSaveProgressName.text()
+        c = self.ui.txtSaveProgressKet.toPlainText()
+
+        if not a:
+            QMessageBox.warning(self, "Warning", "Please input your daata.")
+            return
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM running WHERE nama_run=%s"
+                    cursor.execute(sql, (b,))
+                    result = cursor.fetchone()
+                    if result:
+                        QMessageBox.warning(
+                            self,
+                            "Warning",
+                            f"The progress Name '{b}' already exists.",
+                        )
+                        return
+
+                    sql = "INSERT INTO running (kd_run, nama_run, keterangan) VALUES (%s, %s, %s)"
+                    cursor.execute(sql, (a, b, c))
+                    connection.commit()
+
+                    # QMessageBox.information(
+                    #     self, "Sukses", "The Running progress has been successfully saved."
+                    # )
+
+                    # self.goToRunProjectGetProject
+                    self.saveRunning()
+                    self.refreshSaveProgressTable()
+                    self.setEmptyColumnSaveProgress()
+                    self.getSaveProgressCode()
+                    self.getSaveRunningCode()
+
+        finally:
+            if connection:
+                connection.close()
+
+    def refreshSaveProgressTable(self):
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM running"
+                    cursor.execute(sql)
+                    result = cursor.fetchall()
+
+                    self.saveProgressModel.clear()
+                    self.saveProgressModel.setHorizontalHeaderLabels(
+                        ["Progress Code", "Progress Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbSaveProgressTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbSaveProgressTabel.setColumnWidth(0, 200)
+                    self.ui.tbSaveProgressTabel.setColumnWidth(1, 400)
+                    self.ui.tbSaveProgressTabel.setColumnWidth(2, 700)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_run"])
+                        b = QStandardItem(row_data["nama_run"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.saveProgressModel.appendRow([a, b, c])
+                        self.ui.tbSaveProgressTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def searchSaveProgress(self, cariData):
+        cariData = self.ui.txtSaveProgressCari.text()
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = (
+                        "SELECT * FROM running WHERE nama_run LIKE %s OR kd_run LIKE %s"
+                    )
+                    cursor.execute(
+                        sql,
+                        ("%" + cariData + "%", "%" + cariData + "%"),
+                    )
+                    result = cursor.fetchall()
+
+                    self.saveProgressModel.clear()
+                    self.saveProgressModel.setHorizontalHeaderLabels(
+                        ["Progress Code", "Progress Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbSaveProgressTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbSaveProgressTabel.setColumnWidth(0, 200)
+                    self.ui.tbSaveProgressTabel.setColumnWidth(1, 400)
+                    self.ui.tbSaveProgressTabel.setColumnWidth(2, 700)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_run"])
+                        b = QStandardItem(row_data["nama_run"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.saveProgressModel.appendRow([a, b, c])
+                        self.ui.tbSaveProgressTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def keyReleaseEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
+            self.searchSaveProgress(event)
+        else:
+            super().keyReleaseEvent(event)
+
+    def setEmptyColumnSaveProgress(self):
+        self.ui.txtSaveProgressName.setText("")
+        self.ui.txtSaveProgressKet.setText("")
+        self.ui.txtSaveProgressCari.setText("")
+
+    # def goToRunningProgram(self):
+    #     a = self.ui.lb_kd_run.text()
+    #     b = self.ui.lb_kd_runkor.text()
+    #     if a:
+    #         self.ui.lbSaveProgressKode.setText(a)
+    #         self.ui.lbSaveProgressKor.setText(b)
+    #         self.r()
+
+    def sendSaveProgress(self):
+        a = QMessageBox.question(
+            self,
+            "Save Confirmation",
+            "Are You Sure want to save your progress ?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if a == QMessageBox.Yes:
+            self.insertSaveProgress()
+            self.ui.stackedWidget.setCurrentWidget(self.ui.runProject_6)
+
+    # END Save Progress ==================================================================================================
+
+    # START Choose Progress ==============================================================================================
+
+    def refreshOpenProgressTable(self):
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM running"
+                    cursor.execute(sql)
+                    result = cursor.fetchall()
+
+                    self.openProgressModel.clear()
+                    self.openProgressModel.setHorizontalHeaderLabels(
+                        ["Progress Code", "Progress Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbOpenProgressTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbOpenProgressTabel.setColumnWidth(0, 200)
+                    self.ui.tbOpenProgressTabel.setColumnWidth(1, 400)
+                    self.ui.tbOpenProgressTabel.setColumnWidth(2, 700)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_run"])
+                        b = QStandardItem(row_data["nama_run"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.openProgressModel.appendRow([a, b, c])
+                        self.ui.tbOpenProgressTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def searchOpenProgress(self, cariData):
+        cariData = self.ui.txtOpenProgressCari.text()
+
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = (
+                        "SELECT * FROM running WHERE nama_run LIKE %s OR kd_run LIKE %s"
+                    )
+                    cursor.execute(
+                        sql,
+                        ("%" + cariData + "%", "%" + cariData + "%"),
+                    )
+                    result = cursor.fetchall()
+
+                    self.openProgressModel.clear()
+                    self.openProgressModel.setHorizontalHeaderLabels(
+                        ["Progress Code", "Progress Name", "Description"]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbOpenProgressTabel.horizontalHeader()
+
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbOpenProgressTabel.setColumnWidth(0, 200)
+                    self.ui.tbOpenProgressTabel.setColumnWidth(1, 400)
+                    self.ui.tbOpenProgressTabel.setColumnWidth(2, 700)
+
+                    for i, row_data in enumerate(result):
+                        a = QStandardItem(row_data["kd_run"])
+                        b = QStandardItem(row_data["nama_run"])
+                        c = QStandardItem(row_data["keterangan"])
+
+                        a.setFont(font)
+                        b.setFont(font)
+                        c.setFont(font)
+
+                        a.setTextAlignment(QtCore.Qt.AlignCenter)
+                        b.setTextAlignment(QtCore.Qt.AlignCenter)
+                        c.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.openProgressModel.appendRow([a, b, c])
+                        self.ui.tbOpenProgressTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
+
+        finally:
+            if connection:
+                connection.close()
+
+    def keyReleaseEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
+            self.searchOpenProgress(event)
+        else:
+            super().keyReleaseEvent(event)
+
+    def setupOpenProgressTable(self):
+        self.ui.tbOpenProgressTabel.clicked.connect(
+            self.displaySelectedOpenProgressCode
+        )
+
+    def displaySelectedOpenProgressCode(self):
+        a = self.ui.tbOpenProgressTabel.selectedIndexes()
+        if a:
+            getRow = a[0].row()
+            getCode = self.openProgressModel.index(getRow, 0).data()
+            self.ui.lbOpenProgressKode.setText(getCode)
+
+    def goToRunOpenProjectGetProject(self):
+        a = self.ui.lbOpenProgressKode.text()
+        if a:
+            self.ui.lb_kd_run.setText(a)
+            self.ui.btRunningProjectSimpan.setText("Save Changes")
+
+            self.setRunProject()
+            self.refreshRunKoordinat()
+            self.refreshOpenProgressTable()
+
+    def refreshRunKoordinat(self):
+        d = self.ui.lb_kd_run.text()
+        try:
+            connection = koneksi()
+            if connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM run_kor WHERE kd_run=%s"
+                    cursor.execute(sql, (d,))
+                    result = cursor.fetchall()
+
+                    self.runningModel_2.clear()
+                    self.runningModel_2.setHorizontalHeaderLabels(
+                        [
+                            "Description",
+                            "X",
+                            "Y",
+                            "Z",
+                            "K",
+                            "Delay",
+                            "kd_cor",
+                            "C-Code",
+                            "kd_runkor",
+                            "kd_run",
+                        ]
+                    )
+                    font = QtGui.QFont()
+                    font.setPointSize(14)
+
+                    header_view = self.ui.tbRunningProjectTabel_2.horizontalHeader()
+                    header_view.setStyleSheet("background-color: rgb(114, 159, 207);")
+                    font = header_view.font()
+                    font.setPointSize(18)
+                    header_view.setFont(font)
+
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(0, 500)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(1, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(2, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(3, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(4, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(5, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(6, 100)
+                    self.ui.tbRunningProjectTabel_2.setColumnWidth(7, 100)
+
+                    for row_data in result:
+                        items = [
+                            QStandardItem(str(row_data["keterangan"])),
+                            QStandardItem(str(row_data["x"])),
+                            QStandardItem(str(row_data["y"])),
+                            QStandardItem(str(row_data["k"])),
+                            QStandardItem(str(row_data["z"])),
+                            QStandardItem(str(row_data["delay"])),
+                            QStandardItem(str(row_data["kd_cor"])),
+                            QStandardItem(str(row_data["kd_act"])),
+                            QStandardItem(str(row_data["kd_runkor"])),
+                            QStandardItem(str(row_data["kd_run"])),
+                        ]
+                        for item in items:
+                            item.setFont(font)
+                            item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                        self.runningModel_2.appendRow(items)
+
+                    self.ui.tbRunningProjectTabel_2.verticalHeader().setDefaultSectionSize(
+                        50
+                    )
+
+        finally:
+            if connection:
+                connection.close()
+
+    # END Choose Progress ================================================================================================
 
     # Bagian set up serial ===============================================================================================
 
@@ -1961,13 +2760,30 @@ def writeSerial(data):
 
 
 def sendSerial(x, y, k, z, delay):
-    data = "config:%d,%d,%d,%d,%d;" % (x, y, k, z, delay)
+    data = "moveStep:%d,%d,%d,%d,%d;" % (x, y, k, z, delay)
     writeSerial(data)
     print(data)
 
 
+def readSerial():
+    data = ser.readline().decode("utf-8").strip()
+    if data:
+        try:
+            x, y, k, z = map(int, data.split(","))
+            print("ss", data)
+            return x, y, k, z
+        except ValueError:
+            print("Data tidak valid:", data)
+    return None
+
+
+# def readSerial():
+#     data = ser.readline()
+#     data = data.decode('utf-8')
+#     print(f'read : {data} \n')
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = MainWindow()
-    mainWindow.showMaximized()
+    mainWindow.show()
     sys.exit(app.exec_())
