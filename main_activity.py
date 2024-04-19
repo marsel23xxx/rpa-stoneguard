@@ -1,12 +1,12 @@
 import sys
+import threading
+import time
 
 import pymysql
 import serial
-import time
-import threading
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer, QThread, pyqtSignal
-from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
+from PyQt5.QtCore import QThread, QTimer, pyqtSignal
+from PyQt5.QtGui import QColor, QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableView, QTableWidgetItem
 
 from view_activity import Ui_MainWindow
@@ -21,14 +21,14 @@ def koneksi():
             database="db_sari",
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor,
-
         )
         return connection
     except pymysql.err.OperationalError as e:
         QMessageBox.critical(None, "Kesalahan", f"Kesalahan koneksi: {e}")
         return None
 
-ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600, timeout=.1)
+
+ser = serial.Serial(port="/dev/ttyUSB0", baudrate=9600, timeout=0.1)
 ser.flush()
 
 currentX = 0
@@ -36,6 +36,7 @@ currentY = 0
 currentZ = 0
 currentK = 0
 delay = 0
+
 
 class WorkerThread(QThread):
     stepCompleted = pyqtSignal()
@@ -45,10 +46,12 @@ class WorkerThread(QThread):
 
     def run(self):
         while True:
-            self.stepCompleted.emit() 
+            self.stepCompleted.emit()
+
 
 class MainWindow(QtWidgets.QMainWindow, QThread):
     finished = pyqtSignal()
+
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
@@ -63,7 +66,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.runningModel_2 = QStandardItemModel()
         self.font = QtGui.QFont()
         self.font.setPointSize(14)
-        
+
         self.kdProjectSignal = QtCore.pyqtSignal(str)
         self.defaultMenu()
         # Logout
@@ -165,7 +168,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.btRunningProjectStop.clicked.connect(self.actionSendeingSteps)
         self.ui.btRunningProjectLoop.clicked.connect(self.toggleSendingLoopSteps)
         self.ui.btRunningProjectStatus.setText("Not Starting")
-        
 
         # Komponen bagian show project
         self.ui.tbChooseProjectTabel.setModel(self.chooseProjectModel)
@@ -183,7 +185,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.ui.btChooseActivityOpen.clicked.connect(self.goToRunActivityGetProject)
         self.ui.btChooseActivityBack.clicked.connect(self.setRunProject)
 
-        # Testing 
+        # Testing
         # self.ui.btRunningProjectRun.clicked.connect(self.runLoopStep)
 
     def defaultMenu(self):
@@ -422,7 +424,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
     def setRunShowProject(self):
         self.refreshChooseProjectTable()
         self.ui.stackedWidget.setCurrentWidget(self.ui.getProject_7)
-        
+
     def setRunShowActivity(self):
         self.refreshChooseActivityTable()
         self.refreshRunningProjectData_1()
@@ -1237,7 +1239,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.setActivity()
 
     # END Open Project ===================================================================================================
-                
+
     # START Run Program ==================================================================================================
 
     def setRunProgramEmptyColumn(self):
@@ -1255,8 +1257,8 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     result = cursor.fetchall()
 
                     self.runningModel_1.clear()
-                    self.runningModel_1.setHorizontalHeaderLabels(     
-                    ["Description", "X", "Y", "Z", "K", "Delay", "", "C-Code"]
+                    self.runningModel_1.setHorizontalHeaderLabels(
+                        ["Description", "X", "Y", "Z", "K", "Delay", "", "C-Code"]
                     )
                     font = QtGui.QFont()
                     font.setPointSize(14)
@@ -1298,7 +1300,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     )
 
                     self.runningModel_2.setHorizontalHeaderLabels(
-                    ["Description", "X", "Y", "K", "Z", "Delay", "", "C-Code"]
+                        ["Description", "X", "Y", "K", "Z", "Delay", "", "C-Code"]
                     )
 
                     font_2 = QtGui.QFont()
@@ -1322,7 +1324,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             if connection:
                 connection.close()
 
-    
     def rowClicked(self, index):
         self.resetColorRunningModel_1()
 
@@ -1331,12 +1332,11 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             item = self.runningModel_1.item(index.row(), column_index)
             selected_row_data.append(item.text())
 
-        if selected_row_data not in self.stacked_data: 
+        if selected_row_data not in self.stacked_data:
             self.stacked_data.append(selected_row_data)
             self.highlight_selected_row(index.row(), "blue")
         else:
             print("zero")
-
 
     def moveToTable2(self):
         if self.stacked_data:
@@ -1346,12 +1346,10 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.stacked_data.clear()
             self.resetColorRunningModel_1()
 
-
     def removeFromTable2(self):
         selected_index = self.ui.tbRunningProjectTabel_2.currentIndex()
         if selected_index.isValid():
             self.runningModel_2.removeRow(selected_index.row())
-
 
     def resetColorRunningModel_1(self):
         for row in range(self.runningModel_1.rowCount()):
@@ -1371,25 +1369,26 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             item = self.runningModel_1.item(row_index, column_index)
             item.setBackground(QColor(color))
 
-
     def add_row_to_table_2(self, row_data):
-        code = QStandardItem(row_data[0])  
-        x = QStandardItem(row_data[1])  
-        y = QStandardItem(row_data[2])  
-        z = QStandardItem(row_data[3])  
-        k = QStandardItem(row_data[4])  
-        delay = QStandardItem(row_data[5])  
-        ket = QStandardItem(row_data[6])  
-        pr = QStandardItem(row_data[7]) 
-        
+        code = QStandardItem(row_data[0])
+        x = QStandardItem(row_data[1])
+        y = QStandardItem(row_data[2])
+        z = QStandardItem(row_data[3])
+        k = QStandardItem(row_data[4])
+        delay = QStandardItem(row_data[5])
+        ket = QStandardItem(row_data[6])
+        pr = QStandardItem(row_data[7])
+
         font_2 = QtGui.QFont()
         font_2.setPointSize(14)
         for item in [ket, x, y, z, k, delay, pr, code]:
-            item.setFont(font_2)  
+            item.setFont(font_2)
             item.setTextAlignment(QtCore.Qt.AlignCenter)
 
-        items = [code, x, y, k, z, delay, pr, ket] + [QStandardItem('') for _ in range(0)]
-        
+        items = [code, x, y, k, z, delay, pr, ket] + [
+            QStandardItem("") for _ in range(0)
+        ]
+
         self.runningModel_2.appendRow(items)
 
     def startSendingSteps(self):
@@ -1398,19 +1397,16 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.timer.timeout.connect(self.sendNextStep)
         self.timer.start(2000)
 
-
     def highlightRow(self, row_index, color):
         view = self.ui.tbRunningProjectTabel_2
         for column_index in range(self.runningModel_2.columnCount()):
             item = self.runningModel_2.item(row_index, column_index)
             if item is not None:
                 item.setBackground(color)
-                view.viewport().update()  
-
+                view.viewport().update()
 
     def stopSendingSteps(self):
         self.timer.stop()
-
 
     def sendLoopStep(self):
         self.handleDuplicateCoordinates()
@@ -1423,7 +1419,7 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                 self.highlightRowLoop(self.current_step, QColor("yellow"))
             if self.current_step < row_count:
                 data_row = []
-                for column in range(1, 6):  
+                for column in range(1, 6):
                     item = self.runningModel_2.item(self.current_step, column)
                     if item is not None and item.text():
                         data_row.append(int(item.text()))
@@ -1431,23 +1427,26 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                         data_row.append(0)
 
                 delay = data_row[4]  # Mendapatkan nilai delay dari kolom ke-5
-                if delay > 0:  # Memastikan delay hanya diterapkan jika nilainya lebih dari 0
+                if (
+                    delay > 0
+                ):  # Memastikan delay hanya diterapkan jika nilainya lebih dari 0
                     time.sleep(delay)
-                    
-                if (self.previous_data_row is not None and 
-                    self.previous_data_row[:5] == data_row[:5]):
-                    if self.previous_data_row[3] != 0:  
-                        data_row[3] = 0  
+
+                if (
+                    self.previous_data_row is not None
+                    and self.previous_data_row[:5] == data_row[:5]
+                ):
+                    if self.previous_data_row[3] != 0:
+                        data_row[3] = 0
                         sendSerial(*data_row[:5])
                         self.previous_data_row = data_row[:]
-                        return  
+                        return
 
-                sendSerial(*data_row[:5])  
-                self.previous_data_row = data_row[:]  
+                sendSerial(*data_row[:5])
+                self.previous_data_row = data_row[:]
         else:
-            self.current_step = -1  
-            self.setupTimer() 
-        
+            self.current_step = -1
+            self.setupTimer()
 
     def handleDuplicateCoordinates(self):
         row_count = self.runningModel_2.rowCount()
@@ -1459,7 +1458,9 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             next_data = []
 
             # Ambil data dari dua baris berturut-turut
-            for column in range(min(columns_count, 8)):  # Pertimbangkan kolom pertama hingga keempat saja
+            for column in range(
+                min(columns_count, 8)
+            ):  # Pertimbangkan kolom pertama hingga keempat saja
                 current_item = self.runningModel_2.item(current_row, column)
                 if current_item:
                     current_data.append(current_item.text())
@@ -1476,37 +1477,35 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             # print("ND:", next_data)
 
             if current_data[:8] == next_data[:8]:
-                # Memeriksa apakah data telah disalin sebelumnya
                 if not self.dataCopied(current_row + 1):
                     print("Inserting row at:", current_row + 1)
-                    # Menambahkan baris baru di antara dua baris yang sama
                     self.runningModel_2.insertRow(current_row + 1)
 
-                    # Menyalin data dari baris pertama ke dalam baris kedua
                     for column in range(columns_count):
                         current_item = QStandardItem(current_data[column])
-                        self.runningModel_2.setItem(current_row + 1, column, current_item)
+                        self.runningModel_2.setItem(
+                            current_row + 1, column, current_item
+                        )
 
-                    # Memperbarui jumlah baris dalam model
                     row_count += 1
 
             current_row += 1
-            
 
     def dataCopied(self, row):
         columns_count = min(self.runningModel_2.columnCount(), 8)
 
-        # Ambil data dari baris yang akan diperiksa
         current_data = []
         for column in range(columns_count):
             item = self.runningModel_2.item(row, column)
             if item and item.text():
                 current_data.append(item.text())
 
-        # Memeriksa apakah data di baris tersebut sama dengan data di kolom pertama hingga keempat
         if len(current_data) == columns_count:
             for column in range(columns_count):
-                if current_data[column] != self.runningModel_2.item(row - 1, column).text():
+                if (
+                    current_data[column]
+                    != self.runningModel_2.item(row - 1, column).text()
+                ):
                     return False
             return True
         return False
@@ -1530,22 +1529,21 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                     data_row.append(0)
             sendSerial(*data_row)
         else:
-            self.stopSendingSteps()  
+            self.stopSendingSteps()
 
-        if self.current_step == row_count-1:
+        if self.current_step == row_count - 1:
             self.ui.btRunningProjectStatus.setText("Has Finished")
             self.ui.btRunningProjectRun.setText("Run")
             self.resetColorRunningModel_2(self.current_step)
             self.timer.stop()
-            sendSerial(0,0,0,0,0)  
-            sendSerial(0,0,0,0,0)  
-
+            sendSerial(0, 0, 0, 0, 0)
+            sendSerial(0, 0, 0, 0, 0)
 
     def setupTimer(self):
         self.current_step = -1
         self.timer = QTimer()
         self.timer.timeout.connect(self.sendLoopStep)
-        self.timer.start(2000)   
+        self.timer.start(2000)
 
     def resetColorRunningModel_2(self, row):
         for column in range(0, 8):
@@ -1561,23 +1559,27 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
     def moveDataToNextColumn(self, data_row):
         for i in range(len(data_row)):
-            next_column_index = (self.current_step + 1) % self.runningModel_2.columnCount()
+            next_column_index = (
+                self.current_step + 1
+            ) % self.runningModel_2.columnCount()
             item = QStandardItem(data_row[i])
             self.runningModel_2.setItem(self.current_step, next_column_index, item)
 
-
     def actionSendeingSteps(self):
-        self.pauseProcess()  
-        sendSerial(0,0,0,0,0)
-        reply = QMessageBox.question(self, 'Caution', 
-                        "If you click this button, the process will be stopped. Do you agree?",
-                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        self.pauseProcess()
+        sendSerial(0, 0, 0, 0, 0)
+        reply = QMessageBox.question(
+            self,
+            "Caution",
+            "If you click this button, the process will be stopped. Do you agree?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
         if reply == QMessageBox.Yes:
-            self.pauseProcess()  
-            sendSerial(0,0,0,0,0)
+            self.pauseProcess()
+            sendSerial(0, 0, 0, 0, 0)
             self.ui.btRunningProjectStatus.setText("Has Stopped")
             self.resetColorRunningModel_2(self.current_step)
-
 
     def toggleSendingSteps(self):
         if self.ui.btRunningProjectRun.text() == "Run":
@@ -1613,20 +1615,19 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         self.timer.stop()
 
     def resumeProcess(self):
-        self.timer.start() 
+        self.timer.start()
 
     def executeDelay(delay):
         time.sleep(delay * 1000)
 
     def sendWithDelay(data_row):
-        x, y, k, z, delay = map(int, data_row[1:6])  
-        sendSerial(x, y, k, z, delay) 
-          
-            
+        x, y, k, z, delay = map(int, data_row[1:6])
+        sendSerial(x, y, k, z, delay)
+
     # END Run Program ====================================================================================================
 
     # START Choose Project ===============================================================================================
-    
+
     def refreshChooseProjectTable(self):
         try:
             connection = koneksi()
@@ -1751,12 +1752,10 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             self.ui.lbChooseActivityGetCodeProject.setText(a)
             self.setRunProject()
 
-
     # END Choose Project =================================================================================================
-         
 
     # START Choose Activity ==============================================================================================
-    
+
     def refreshChooseActivityTable(self):
         eii = self.ui.lbChooseActivityGetCodeProject.text()
         try:
@@ -1801,7 +1800,9 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
                         d.setTextAlignment(QtCore.Qt.AlignCenter)
 
                         self.chooseActivityModel.appendRow([a, b, c, d])
-                        self.ui.tbChooseActivityTabel.verticalHeader().setDefaultSectionSize(50)
+                        self.ui.tbChooseActivityTabel.verticalHeader().setDefaultSectionSize(
+                            50
+                        )
 
         finally:
             if connection:
@@ -1879,7 +1880,9 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
             super().keyReleaseEvent(event)
 
     def setupChooseActivityTable(self):
-        self.ui.tbChooseActivityTabel.clicked.connect(self.displaySelectedShowActivityCode)
+        self.ui.tbChooseActivityTabel.clicked.connect(
+            self.displaySelectedShowActivityCode
+        )
 
     def displaySelectedShowActivityCode(self):
         a = self.ui.tbChooseActivityTabel.selectedIndexes()
@@ -1898,11 +1901,10 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         if a:
             self.ui.txtRunningProjectGetActivity.setText(a)
             self.ui.txtRunProjectActivity.setText(b)
-            
+
             self.setRunProject()
             self.refreshRunningProjectData_1()
             self.refreshChooseActivityTable()
-
 
     # END Choose Activity ================================================================================================
 
@@ -1915,10 +1917,20 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         valueZ = self.ui.slIntegrationZ.value()
         valueK = self.ui.slIntegrationK.value()
 
-        if (valueX != currentX or valueY != currentY or valueZ != currentZ or valueK != currentK):
+        if (
+            valueX != currentX
+            or valueY != currentY
+            or valueZ != currentZ
+            or valueK != currentK
+        ):
             sendSerial(valueX, valueY, valueK, valueZ, delay)
-            currentX, currentY, currentZ, currentK, delay = valueX, valueY, valueZ, valueK, delay
-
+            currentX, currentY, currentZ, currentK, delay = (
+                valueX,
+                valueY,
+                valueZ,
+                valueK,
+                delay,
+            )
 
     def releasedText(self):
         global delay
@@ -1927,7 +1939,6 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
         valueZ = self.ui.txtIntegrationZ.value()
         valueK = self.ui.txtIntegrationK.value()
         sendSerial(valueX, valueY, valueK, valueZ, delay)
-
 
     def sendDataSerial(self):
         data_list = []
@@ -1941,18 +1952,20 @@ class MainWindow(QtWidgets.QMainWindow, QThread):
 
         for data_row in data_list:
             if len(data_row) == 5:
-                sendSerial(*data_row) 
+                sendSerial(*data_row)
+
 
 def writeSerial(data):
-    ser.write(bytes(data, 'utf-8'))
+    ser.write(bytes(data, "utf-8"))
     time.sleep(0.05)
+
 
 def sendSerial(x, y, k, z, delay):
     data = "config:%d,%d,%d,%d,%d;" % (x, y, k, z, delay)
     writeSerial(data)
     print(data)
 
-    
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = MainWindow()
